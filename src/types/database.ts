@@ -17,39 +17,60 @@ export type CampaignStatus = 'draft' | 'active' | 'completed' | 'paused';
 
 export type PartnershipStatus = 'pending' | 'approved' | 'rejected';
 
+export interface Profile {
+  id: string;
+  email: string;
+  full_name: string;
+  avatar_url?: string;
+  phone?: string;
+  karma_points: number;
+  rank_title?: string;
+  department_id?: string;
+  partner_org_name?: string;
+  deleted_at?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface UserRoleRecord {
+  id: string;
+  user_id: string;
+  role: UserRole;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Department {
   id: string;
   name: string;
   description?: string;
   officer_count: number;
   created_at: string;
+  updated_at?: string;
 }
 
-export interface Profile {
+export interface Category {
   id: string;
-  role: UserRole;
-  full_name: string;
-  email: string;
-  avatar_url?: string;
-  karma_points: number;
-  department_id?: string;
-  partner_org_name?: string;
+  name: string;
+  description?: string;
+  default_department_id?: string;
+  icon_name?: string;
   created_at: string;
-  updated_at: string;
 }
 
 export interface CivicReport {
   id: string;
+  reporter_id?: string;
   title: string;
   description: string;
-  category: string;
+  category_id?: string;
+  category?: string;
   status: ReportStatus;
   priority: ReportPriority;
   latitude?: number;
   longitude?: number;
   location_name: string;
   image_url?: string;
-  reporter_id?: string;
   assigned_department_id?: string;
   assigned_officer_id?: string;
   karma_awarded: number;
@@ -60,20 +81,64 @@ export interface CivicReport {
     summary?: string;
     tags?: string[];
   };
+  deleted_at?: string;
   created_at: string;
   updated_at: string;
 }
 
-export interface ReportUpdate {
+export interface KarmaTransaction {
   id: string;
-  report_id: string;
-  author_id?: string;
-  author_name?: string;
-  status_from?: ReportStatus;
-  status_to?: ReportStatus;
-  comment: string;
-  attachment_url?: string;
+  user_id: string;
+  amount: number;
+  action_type: string;
+  reference_id?: string;
+  description?: string;
   created_at: string;
+}
+
+export interface Credential {
+  id: string;
+  category_name: string;
+  title: string;
+  description?: string;
+  icon_name?: string;
+  created_at: string;
+}
+
+export interface CredentialLevel {
+  id: string;
+  credential_id: string;
+  level: number;
+  title: string;
+  required_karma: number;
+  created_at: string;
+}
+
+export interface UserCredential {
+  id: string;
+  user_id: string;
+  credential_id: string;
+  current_level: number;
+  progress_karma: number;
+  earned_at: string;
+  updated_at: string;
+}
+
+export interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  image_url?: string;
+  icon_name?: string;
+  xp_bonus: number;
+  created_at: string;
+}
+
+export interface UserBadge {
+  id: string;
+  user_id: string;
+  badge_id: string;
+  earned_at: string;
 }
 
 export interface VolunteerTask {
@@ -88,14 +153,6 @@ export interface VolunteerTask {
   date_time: string;
   organizer_id?: string;
   status: TaskStatus;
-  created_at: string;
-}
-
-export interface TaskApplication {
-  id: string;
-  task_id: string;
-  volunteer_id: string;
-  status: 'applied' | 'accepted' | 'completed' | 'declined';
   created_at: string;
 }
 
@@ -115,6 +172,7 @@ export interface Campaign {
 
 export interface Reward {
   id: string;
+  category_id?: string;
   title: string;
   description: string;
   partner_name: string;
@@ -126,7 +184,7 @@ export interface Reward {
   created_at: string;
 }
 
-export interface RewardRedemption {
+export interface Redemption {
   id: string;
   reward_id: string;
   user_id: string;
