@@ -10,6 +10,8 @@ const TileLayer = dynamic(() => import('react-leaflet').then(m => m.TileLayer), 
 const CircleMarker = dynamic(() => import('react-leaflet').then(m => m.CircleMarker), { ssr: false });
 const Popup = dynamic(() => import('react-leaflet').then(m => m.Popup), { ssr: false });
 
+import { useGeolocation } from '@/hooks/useGeolocation';
+
 const priorityColorMap: Record<string, string> = {
   low: '#22c55e',
   medium: '#f59e0b',
@@ -20,6 +22,7 @@ const priorityColorMap: Record<string, string> = {
 export default function OfficerMapPage() {
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { coords: officerGps, status: gpsStatus } = useGeolocation(true);
 
   useEffect(() => {
     async function load() {
@@ -46,9 +49,11 @@ export default function OfficerMapPage() {
     );
   }
 
-  const center: [number, number] = reports.length > 0
+  const center: [number, number] = officerGps?.lat && officerGps?.lng
+    ? [officerGps.lat, officerGps.lng]
+    : reports.length > 0
     ? [reports[0].latitude, reports[0].longitude]
-    : [20.5937, 78.9629]; // Default to India center
+    : [12.9716, 77.5946];
 
   return (
     <div className="flex flex-col gap-lg pb-xl">

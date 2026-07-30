@@ -4,9 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { Card } from '@/src/components/ui/Card';
 import { Button } from '@/src/components/ui/Button';
 import { fetchOfficerQueue, type QueueFilters } from '@/services/officerService';
+import type { ReportStatus, ReportPriority } from '@/src/types/database';
 
-const STATUS_OPTIONS = ['submitted', 'ai_verifying', 'approved', 'in_progress', 'resolved', 'rejected'];
-const PRIORITY_OPTIONS = ['low', 'medium', 'high', 'urgent'];
+const STATUS_OPTIONS: ReportStatus[] = ['submitted', 'ai_verifying', 'approved', 'in_progress', 'resolved', 'rejected'];
+const PRIORITY_OPTIONS: ReportPriority[] = ['low', 'medium', 'high', 'urgent'];
 
 const priorityColors: Record<string, string> = {
   low: 'bg-green-500/10 text-green-600 border-green-500/30',
@@ -73,7 +74,7 @@ export default function OfficerQueuePage() {
 
         <select
           value={filters.status || ''}
-          onChange={(e) => setFilters(f => ({ ...f, status: e.target.value || undefined, page: 1 }))}
+          onChange={(e) => setFilters(f => ({ ...f, status: (e.target.value as ReportStatus) || undefined, page: 1 }))}
           className="px-3 py-2 rounded-xl bg-surface-container-high border border-outline-variant/30 text-sm text-on-surface focus:outline-none focus:border-blue-500"
         >
           <option value="">All Status</option>
@@ -82,7 +83,7 @@ export default function OfficerQueuePage() {
 
         <select
           value={filters.priority || ''}
-          onChange={(e) => setFilters(f => ({ ...f, priority: e.target.value || undefined, page: 1 }))}
+          onChange={(e) => setFilters(f => ({ ...f, priority: (e.target.value as ReportPriority) || undefined, page: 1 }))}
           className="px-3 py-2 rounded-xl bg-surface-container-high border border-outline-variant/30 text-sm text-on-surface focus:outline-none focus:border-blue-500"
         >
           <option value="">All Priority</option>
@@ -122,8 +123,8 @@ export default function OfficerQueuePage() {
                     {(report.status || '').replace('_', ' ')}
                   </span>
                 </div>
-                <span className="text-xs text-on-surface-variant flex-shrink-0">
-                  {report.created_at ? new Date(report.created_at).toLocaleDateString() : ''}
+                <span suppressHydrationWarning className="text-xs text-on-surface-variant flex-shrink-0">
+                  {report.created_at ? new Date(report.created_at).toLocaleDateString('en-US') : ''}
                 </span>
               </Card>
             </a>

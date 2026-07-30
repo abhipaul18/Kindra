@@ -14,6 +14,14 @@ import { Button } from '@/src/components/ui/Button';
 import { Input } from '@/src/components/ui/Input';
 import { ImageUploader } from '@/components/reports/ImageUploader';
 import { LocationPicker } from '@/components/maps/LocationPicker';
+import { useGeolocation } from '@/hooks/useGeolocation';
+
+const DEFAULT_CATEGORIES = [
+  { id: 'cat-roads', name: 'Roads & Infrastructure' },
+  { id: 'cat-sanitation', name: 'Sanitation & Waste' },
+  { id: 'cat-safety', name: 'Public Safety & Utilities' },
+  { id: 'cat-parks', name: 'Parks & Recreation' },
+];
 
 export default function ReportIssuePage() {
   const { user } = useAuth();
@@ -22,18 +30,22 @@ export default function ReportIssuePage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
-  // Fetch categories dynamically from Supabase
-  const { data: categories = [], isLoading: isLoadingCategories } = useQuery({
+  const { coords: liveCoords, status: gpsStatus, requestPermissionAndStart } = useGeolocation(true);
+
+  // Fetch categories dynamically from Supabase with fallbacks
+  const { data: dbCategories = [] } = useQuery({
     queryKey: ['categories-catalog'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('categories')
         .select('*')
         .order('name', { ascending: true });
-      if (error) return [];
+      if (error || !data || data.length === 0) return [];
       return data;
     },
   });
+
+  const categories = dbCategories.length > 0 ? dbCategories : DEFAULT_CATEGORIES;
 
   const {
     register,
@@ -43,11 +55,20 @@ export default function ReportIssuePage() {
   } = useForm<ReportFormData>({
     resolver: zodResolver(reportSchema),
     defaultValues: {
-      location_name: 'Near City Center, MG Road',
-      latitude: 12.9716,
-      longitude: 77.5946,
+      location_name: 'Detecting Live GPS Location...',
+      latitude: liveCoords?.lat || 12.9716,
+      longitude: liveCoords?.lng || 77.5946,
     },
   });
+
+  // Dynamically sync real-time GPS coordinates into form
+  React.useEffect(() => {
+    if (liveCoords?.lat && liveCoords?.lng) {
+      setValue('latitude', liveCoords.lat);
+      setValue('longitude', liveCoords.lng);
+      setValue('location_name', `GPS Spot (${liveCoords.lat.toFixed(4)}, ${liveCoords.lng.toFixed(4)})`);
+    }
+  }, [liveCoords, setValue]);
 
   const onSubmit = async (data: ReportFormData) => {
     setImageError(null);

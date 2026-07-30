@@ -1,12 +1,14 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useCitizenDashboard } from '@/hooks/useCitizenDashboard';
 import { Card } from '@/src/components/ui/Card';
 import { ProgressBar } from '@/src/components/ui/ProgressBar';
+import { GoodDeedsDiscovery } from '@/components/citizen/GoodDeedsDiscovery';
 
 export default function CitizenDashboardPage() {
   const { profile, isLoadingProfile, credentials, leaderboard, recentReports } = useCitizenDashboard();
+  const [extraKarma, setExtraKarma] = useState(0);
 
   if (isLoadingProfile) {
     return (
@@ -21,7 +23,7 @@ export default function CitizenDashboardPage() {
     );
   }
 
-  const karmaPoints = profile?.karma_points || 100;
+  const karmaPoints = (profile?.karma_points || 100) + extraKarma;
   const nextMilestoneKarma = 250;
   const levelProgress = Math.min(100, Math.round((karmaPoints / nextMilestoneKarma) * 100));
 
@@ -29,8 +31,8 @@ export default function CitizenDashboardPage() {
     <div className="flex flex-col gap-lg pb-xl">
       {/* 1. Hero Profile Welcome Banner */}
       <Card className="bg-gradient-to-r from-primary/10 via-primary-container/20 to-secondary/10 border-primary/20 p-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-md relative overflow-hidden">
-        <div className="flex items-center gap-md z-10">
-          <div className="w-16 h-16 rounded-2xl bg-primary text-on-primary font-bold text-2xl flex items-center justify-center shadow-md border-2 border-surface">
+        <div className="flex items-center gap-md z-10 flex-1 min-w-0">
+          <div className="w-16 h-16 rounded-2xl bg-primary text-on-primary font-bold text-2xl flex items-center justify-center shadow-md border-2 border-surface shrink-0">
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover rounded-2xl" />
             ) : (
@@ -38,22 +40,24 @@ export default function CitizenDashboardPage() {
             )}
           </div>
 
-          <div className="flex flex-col">
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-black text-on-surface">Welcome back, {profile?.full_name || 'Citizen'}!</h1>
-              <span className="bg-secondary-container/30 text-secondary text-xs font-bold px-2 py-0.5 rounded-full border border-secondary/30">
+          <div className="flex flex-col min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <h1 className="text-xl md:text-2xl font-black text-on-surface leading-tight">
+                Welcome back, {profile?.full_name || 'Citizen'}!
+              </h1>
+              <span className="bg-secondary-container/30 text-secondary text-xs font-bold px-2.5 py-0.5 rounded-full border border-secondary/30 whitespace-nowrap shrink-0">
                 {profile?.rank_title || 'Civic Hero'}
               </span>
             </div>
-            <p className="text-sm text-on-surface-variant mt-0.5">
-              Together We Act. Together We Build. You have earned{' '}
+            <p className="text-sm text-on-surface-variant mt-1 leading-relaxed">
+              <span className="font-bold text-on-surface">"Make Kindness Count." 💚</span> You have earned{' '}
               <span className="font-extrabold text-secondary">{karmaPoints} Karma Points</span>.
             </p>
           </div>
         </div>
 
         {/* Level Progress Indicator */}
-        <div className="w-full md:w-64 flex flex-col gap-1.5 z-10 bg-surface/80 p-3 rounded-xl border border-outline-variant/30 backdrop-blur-sm">
+        <div className="w-full md:w-64 flex flex-col gap-1.5 z-10 bg-surface/90 p-3 rounded-xl border border-outline-variant/30 backdrop-blur-sm shrink-0">
           <div className="flex justify-between text-xs font-bold text-on-surface">
             <span>Level 2 Civic Advocate</span>
             <span className="text-secondary">{karmaPoints} / {nextMilestoneKarma} XP</span>
@@ -111,7 +115,10 @@ export default function CitizenDashboardPage() {
         </div>
       </section>
 
-      {/* 3. Main Dashboard Grid (Credentials + Leaderboard) */}
+      {/* 3. Good Deeds Ecosystem — Discovery Hub */}
+      <GoodDeedsDiscovery onClaimKarma={(amount) => setExtraKarma((prev) => prev + amount)} />
+
+      {/* 4. Main Dashboard Grid (Credentials + Leaderboard) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-lg">
         {/* Credential Progress Section (Left 2 Columns) */}
         <div className="lg:col-span-2 flex flex-col gap-sm">
@@ -164,18 +171,18 @@ export default function CitizenDashboardPage() {
                 return (
                   <div
                     key={userItem.id}
-                    className={`flex items-center justify-between p-2 rounded-xl text-xs font-semibold ${
+                    className={`flex items-center justify-between p-2 rounded-xl text-xs font-semibold gap-2 ${
                       isCurrentUser ? 'bg-primary-container/20 border border-primary/30 text-primary' : 'hover:bg-surface-container-high'
                     }`}
                   >
-                    <div className="flex items-center gap-2">
-                      <span className="w-5 font-extrabold text-on-surface-variant">#{userItem.rank_position}</span>
-                      <div className="w-7 h-7 rounded-full bg-primary/20 text-primary font-bold flex items-center justify-center">
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <span className="w-5 font-extrabold text-on-surface-variant shrink-0">#{userItem.rank_position}</span>
+                      <div className="w-7 h-7 rounded-full bg-primary/20 text-primary font-bold flex items-center justify-center shrink-0">
                         {userItem.full_name[0].toUpperCase()}
                       </div>
-                      <span className="font-bold text-on-surface">{userItem.full_name}</span>
+                      <span className="font-bold text-on-surface truncate">{userItem.full_name}</span>
                     </div>
-                    <span className="font-extrabold text-secondary">{userItem.karma_points} Karma</span>
+                    <span className="font-extrabold text-secondary shrink-0">{userItem.karma_points} Karma</span>
                   </div>
                 );
               })

@@ -53,7 +53,7 @@ export default function LoginPage() {
             K
           </div>
           <h1 className="text-3xl font-extrabold text-on-surface tracking-tight">Sign in to Kindra</h1>
-          <p className="text-sm text-on-surface-variant">Together We Act. Together We Build.</p>
+          <p className="text-sm font-semibold text-on-surface-variant">"Make Kindness Count." 💚</p>
         </div>
 
         {/* Login Card */}
@@ -86,7 +86,7 @@ export default function LoginPage() {
               />
               <div className="flex justify-end">
                 <a
-                  href="/auth/forgot-password"
+                  href="/forgot-password"
                   className="text-xs font-semibold text-primary hover:underline mt-1"
                 >
                   Forgot Password?
@@ -140,7 +140,7 @@ export default function LoginPage() {
 
           <div className="text-center text-xs text-on-surface-variant pt-2 border-t border-outline-variant/20">
             Don't have an account?{' '}
-            <a href="/auth/register" className="font-bold text-primary hover:underline">
+            <a href="/register" className="font-bold text-primary hover:underline">
               Create a Citizen Account
             </a>
           </div>

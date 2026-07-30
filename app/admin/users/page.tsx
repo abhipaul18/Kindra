@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { Card } from '@/src/components/ui/Card';
 import { Button } from '@/src/components/ui/Button';
 import { fetchUsers, updateUserRole, softDeleteUser } from '@/services/adminService';
+import type { UserRole } from '@/src/types/database';
 
-const ROLE_OPTIONS = ['citizen', 'officer', 'partner', 'admin'];
+const ROLE_OPTIONS: UserRole[] = ['citizen', 'officer', 'partner', 'admin'];
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<any[]>([]);
@@ -24,7 +25,7 @@ export default function AdminUsersPage() {
     setLoading(false);
   }
 
-  async function handleRoleChange(userId: string, newRole: string) {
+  async function handleRoleChange(userId: string, newRole: UserRole) {
     try {
       await updateUserRole(userId, newRole);
       await loadUsers();
@@ -78,7 +79,7 @@ export default function AdminUsersPage() {
                 </div>
                 <select
                   value={userRole}
-                  onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                  onChange={(e) => handleRoleChange(user.id, e.target.value as UserRole)}
                   className="px-2 py-1 rounded-lg bg-surface-container-high border border-outline-variant/30 text-xs font-semibold text-on-surface focus:outline-none"
                 >
                   {ROLE_OPTIONS.map(r => <option key={r} value={r}>{r}</option>)}

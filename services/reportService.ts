@@ -30,34 +30,33 @@ export async function submitCivicReport(
     );
   }
 
-  const newReport = {
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(reportData.category_id || '');
+
+  const insertPayload = {
     reporter_id: reportData.reporter_id,
     title: reportData.title || 'Civic Issue',
     description: reportData.description || '',
-    category_id: reportData.category_id,
+    category_id: isUuid ? reportData.category_id : null,
     status: 'submitted' as ReportStatus,
     priority: reportData.priority || 'medium',
     location_name: reportData.location_name || '',
     latitude: reportData.latitude,
     longitude: reportData.longitude,
-    image_url: reportData.image_url,
     karma_awarded: aiAnalysisResult?.karma || 50,
-    ai_analysis: aiAnalysisResult
-      ? {
-          suggested_category: aiAnalysisResult.category,
-          confidence: aiAnalysisResult.confidence,
-          severity_rating: aiAnalysisResult.severity,
-          summary: aiAnalysisResult.summary,
-          tags: [aiAnalysisResult.category, aiAnalysisResult.severity],
-        }
-      : undefined,
   };
 
   const { data, error } = await supabase
     .from('reports')
-    .insert([newReport as any])
+    .insert([insertPayload])
     .select()
     .single();
+
+  if (data?.id && reportData.image_url) {
+    await supabase.from('report_images').insert({
+      report_id: data.id,
+      image_url: reportData.image_url,
+    });
+  }
 
   if (error) {
     console.warn('Error inserting report into Supabase:', error);
@@ -71,7 +70,7 @@ export async function submitCivicReport(
       location_name: reportData.location_name || '',
       image_url: reportData.image_url,
       karma_awarded: 50,
-      ai_analysis: newReport.ai_analysis,
+      ai_analysis: undefined,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };

@@ -27,8 +27,8 @@ export async function fetchOfficerStats(departmentId?: string) {
 
 // ── Officer Queue ────────────────────────────────────────────────
 export interface QueueFilters {
-  status?: string;
-  priority?: string;
+  status?: ReportStatus;
+  priority?: ReportPriority;
   search?: string;
   sortBy?: 'created_at' | 'priority';
   sortOrder?: 'asc' | 'desc';
@@ -43,8 +43,8 @@ export async function fetchOfficerQueue(filters: QueueFilters = {}) {
     .from('view_officer_queue')
     .select('*');
 
-  if (status) query = query.eq('status', status as any);
-  if (priority) query = query.eq('priority', priority as any);
+  if (status) query = query.eq('status', status);
+  if (priority) query = query.eq('priority', priority);
   if (search) query = query.or(`title.ilike.%${search}%,description.ilike.%${search}%`);
 
   query = query.order(sortBy, { ascending: sortOrder === 'asc' });
@@ -58,7 +58,7 @@ export async function fetchOfficerQueue(filters: QueueFilters = {}) {
 // ── Report Detail ────────────────────────────────────────────────
 export async function fetchReportDetail(reportId: string) {
   const [reportRes, aiRes, imagesRes] = await Promise.all([
-    supabase.from('reports').select('*, categories(name, icon_name), departments(name)').eq('id', reportId).single(),
+    supabase.from('reports').select('*, categories(name, icon_name), departments(name)').eq('id', reportId).maybeSingle(),
     supabase.from('report_ai_results').select('*').eq('report_id', reportId).maybeSingle(),
     supabase.from('report_images').select('*').eq('report_id', reportId),
   ]);
@@ -71,10 +71,10 @@ export async function fetchReportDetail(reportId: string) {
 }
 
 // ── Officer Actions ──────────────────────────────────────────────
-export async function updateReportStatus(reportId: string, status: ReportStatus | string) {
+export async function updateReportStatus(reportId: string, status: ReportStatus) {
   const { error } = await supabase
     .from('reports')
-    .update({ status: status as ReportStatus, updated_at: new Date().toISOString() })
+    .update({ status, updated_at: new Date().toISOString() })
     .eq('id', reportId);
   if (error) throw error;
 }

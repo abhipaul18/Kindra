@@ -25,10 +25,11 @@ export async function signInUser(email: string, password: string) {
 }
 
 export async function signInWithGoogle() {
+  const origin = typeof window !== 'undefined' ? window.location.origin : (process.env.NEXT_PUBLIC_SITE_URL || '');
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo: `${window.location.origin}/auth/callback`,
+      redirectTo: `${origin}/auth/callback`,
     },
   });
   if (error) throw error;
@@ -41,8 +42,9 @@ export async function signOutUser() {
 }
 
 export async function resetUserPassword(email: string) {
+  const origin = typeof window !== 'undefined' ? window.location.origin : (process.env.NEXT_PUBLIC_SITE_URL || '');
   const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${window.location.origin}/auth/reset-password`,
+    redirectTo: `${origin}/auth/reset-password`,
   });
   if (error) throw error;
   return data;
@@ -53,7 +55,7 @@ export async function getCurrentUserRole(userId: string): Promise<UserRole> {
     .from('user_roles')
     .select('role')
     .eq('user_id', userId)
-    .single();
+    .maybeSingle();
 
   if (error || !data) return 'citizen';
   return data.role as UserRole;

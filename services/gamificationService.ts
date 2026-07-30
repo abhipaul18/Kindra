@@ -1,6 +1,27 @@
 import { supabase } from '@/src/lib/supabase';
 import type { KarmaTransaction, Badge, UserBadge, UserCredential } from '@/src/types/database';
 
+export interface UserBadgeWithDetail {
+  badge: Badge;
+  unlocked_at: string;
+}
+
+export interface LeaderboardUser {
+  rank: number;
+  user_id: string;
+  full_name: string;
+  avatar_url: string;
+  karma_points: number;
+  city: string;
+}
+
+export interface ActivityTimelineItem {
+  type: 'report' | 'karma';
+  title: string;
+  timestamp: string;
+  badgeColor: 'blue' | 'green';
+}
+
 export async function fetchKarmaHistory(userId: string): Promise<KarmaTransaction[]> {
   const { data, error } = await supabase
     .from('karma_transactions')
@@ -13,13 +34,13 @@ export async function fetchKarmaHistory(userId: string): Promise<KarmaTransactio
     return [];
   }
 
-  return data as KarmaTransaction[];
+  return data || [];
 }
 
-export async function fetchUserBadges(userId: string): Promise<{ badge: Badge; unlocked_at: string }[]> {
+export async function fetchUserBadges(userId: string): Promise<UserBadgeWithDetail[]> {
   const { data, error } = await supabase
     .from('user_badges')
-    .select('unlocked_at, badges(*)')
+    .select('earned_at, badges(*)')
     .eq('user_id', userId);
 
   if (error || !data) {
@@ -27,9 +48,9 @@ export async function fetchUserBadges(userId: string): Promise<{ badge: Badge; u
     return [];
   }
 
-  return data.map((item: any) => ({
-    badge: item.badges as Badge,
-    unlocked_at: item.unlocked_at,
+  return data.map((item) => ({
+    badge: (item.badges as unknown) as Badge,
+    unlocked_at: item.earned_at || new Date().toISOString(),
   }));
 }
 
@@ -37,14 +58,14 @@ export async function fetchAllBadges(): Promise<Badge[]> {
   const { data, error } = await supabase
     .from('badges')
     .select('*')
-    .order('karma_required', { ascending: true });
+    .order('name', { ascending: true });
 
   if (error) {
     console.warn('Error fetching all badges:', error);
     return [];
   }
 
-  return data as Badge[];
+  return data || [];
 }
 
 export async function fetchUserCredentials(userId: string): Promise<UserCredential[]> {
@@ -58,17 +79,10 @@ export async function fetchUserCredentials(userId: string): Promise<UserCredenti
     return [];
   }
 
-  return data as UserCredential[];
+  return data || [];
 }
 
-export async function fetchLeaderboard(limit = 20): Promise<{
-  rank: number;
-  user_id: string;
-  full_name: string;
-  avatar_url: string;
-  karma_points: number;
-  city: string;
-}[]> {
+export async function fetchLeaderboard(limit = 20): Promise<LeaderboardUser[]> {
   const { data, error } = await supabase
     .from('view_leaderboard')
     .select('*')
@@ -85,17 +99,17 @@ export async function fetchLeaderboard(limit = 20): Promise<{
     ];
   }
 
-  return data.map((row: any, idx: number) => ({
+  return data.map((row, idx) => ({
     rank: idx + 1,
-    user_id: row.user_id,
+    user_id: row.user_id || `user-${idx}`,
     full_name: row.full_name || 'Citizen User',
     avatar_url: row.avatar_url || '',
     karma_points: row.karma_points || 0,
-    city: row.city || 'Bengaluru',
+    city: 'Bengaluru',
   }));
 }
 
-export async function fetchUserActivityTimeline(userId: string): Promise<any[]> {
+export async function fetchUserActivityTimeline(userId: string): Promise<ActivityTimelineItem[]> {
   const { data: reports } = await supabase
     .from('reports')
     .select('id, title, created_at, status')
@@ -110,14 +124,14 @@ export async function fetchUserActivityTimeline(userId: string): Promise<any[]> 
     .order('created_at', { ascending: false })
     .limit(5);
 
-  const timeline = [
-    ...(reports || []).map((r) => ({
+  const timeline: ActivityTimelineItem[] = [
+    ...(reports || []).map((r): ActivityTimelineItem => ({
       type: 'report',
       title: `Submitted issue: ${r.title}`,
       timestamp: r.created_at || new Date().toISOString(),
       badgeColor: 'blue',
     })),
-    ...(karma || []).map((k) => ({
+    ...(karma || []).map((k): ActivityTimelineItem => ({
       type: 'karma',
       title: `${k.amount > 0 ? '+' : ''}${k.amount} Karma: ${k.description}`,
       timestamp: k.created_at || new Date().toISOString(),

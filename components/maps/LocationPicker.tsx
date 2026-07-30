@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 
 interface LocationPickerProps {
@@ -28,7 +28,7 @@ const MapInner = dynamic(
       function LocationMarker() {
         const [position, setPosition] = useState<[number, number]>([lat, lng]);
         useMapEvents({
-          click(e: any) {
+          click(e: { latlng: { lat: number; lng: number } }) {
             setPosition([e.latlng.lat, e.latlng.lng]);
             onSelect(e.latlng.lat, e.latlng.lng);
           },
@@ -59,8 +59,8 @@ export function LocationPicker({ initialLat = 12.9716, initialLng = 77.5946, onL
     onLocationSelected(lat, lng, `GPS Location (${lat.toFixed(4)}, ${lng.toFixed(4)})`);
   };
 
-  const handleUseCurrentLocation = () => {
-    if (navigator.geolocation) {
+  const handleUseCurrentLocation = useCallback(() => {
+    if (typeof window !== 'undefined' && 'geolocation' in navigator) {
       setIsLocating(true);
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -73,10 +73,15 @@ export function LocationPicker({ initialLat = 12.9716, initialLng = 77.5946, onL
         (error) => {
           console.warn('Geolocation error:', error);
           setIsLocating(false);
-        }
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
       );
     }
-  };
+  }, [onLocationSelected]);
+
+  useEffect(() => {
+    handleUseCurrentLocation();
+  }, []);
 
   return (
     <div className="flex flex-col gap-2 w-full">

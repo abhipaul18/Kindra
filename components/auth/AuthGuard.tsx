@@ -39,7 +39,7 @@ export function AuthGuard({ children, allowedRoles }: AuthGuardProps) {
           <Button
             variant="primary"
             icon="login"
-            onClick={() => (window.location.href = '/auth/login')}
+            onClick={() => (window.location.href = '/login')}
             className="w-full font-bold"
           >
             Go to Login

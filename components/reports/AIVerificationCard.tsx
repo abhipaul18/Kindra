@@ -41,10 +41,11 @@ export function AIVerificationCard({ reportId, onCompleted }: AIVerificationCard
           setLoading(false);
           if (onCompleted) onCompleted(result.aiResult);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('AI Verification card error:', err);
         if (isMounted) {
-          setErrorMsg(err.message || 'AI processing encountered an issue');
+          const message = err instanceof Error ? err.message : 'AI processing encountered an issue';
+          setErrorMsg(message);
           setLoading(false);
         }
       }
@@ -65,7 +66,7 @@ export function AIVerificationCard({ reportId, onCompleted }: AIVerificationCard
           <div className="w-8 h-8 rounded-xl bg-primary-container/20 text-primary flex items-center justify-center">
             <span className="material-symbols-outlined text-lg">smart_toy</span>
           </div>
-          <span className="font-extrabold text-sm text-on-surface">OpenRouter Gemma Vision Verification</span>
+          <span className="font-extrabold text-sm text-on-surface">Gemma Vision AI Verification</span>
         </div>
         <span className="text-[11px] font-bold text-secondary bg-secondary-container/20 border border-secondary/30 px-2.5 py-0.5 rounded-full">
           AI Engine Active

@@ -57,7 +57,7 @@ export default function CitizenNotificationsPage() {
               <div className="flex-1 flex flex-col gap-0.5">
                 <div className="flex items-center justify-between">
                   <h4 className="font-bold text-sm text-on-surface">{item.title}</h4>
-                  <span className="text-[11px] text-on-surface-variant">{new Date(item.created_at || Date.now()).toLocaleDateString()}</span>
+                  <span suppressHydrationWarning className="text-[11px] text-on-surface-variant">{new Date(item.created_at || Date.now()).toLocaleDateString('en-US')}</span>
                 </div>
                 <p className="text-xs text-on-surface-variant leading-relaxed">{item.message}</p>
               </div>

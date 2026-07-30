@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kindra - Civic Engagement Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#0052cc",
+                      "on-surface": "#191c1e",
+                      "on-secondary-fixed-variant": "#00531e",
+                      "surface": "#f8f9fb",
+                      "surface-variant": "#e1e2e4",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-fixed-dim": "#b2c5ff",
+                      "outline-variant": "#c3c6d6",
+                      "on-secondary-fixed": "#002108",
+                      "on-primary-fixed-variant": "#0040a2",
+                      "on-primary-container": "#c4d2ff",
+                      "surface-container-highest": "#e1e2e4",
+                      "secondary-fixed": "#69ff87",
+                      "on-tertiary-fixed-variant": "#624000",
+                      "tertiary-fixed": "#ffddb3",
+                      "error-container": "#ffdad6",
+                      "secondary": "#006e2a",
+                      "tertiary-fixed-dim": "#ffb950",
+                      "surface-dim": "#d9dadc",
+                      "surface-container": "#edeef0",
+                      "on-secondary-container": "#00732c",
+                      "on-error": "#ffffff",
+                      "outline": "#737685",
+                      "on-tertiary-fixed": "#291800",
+                      "on-primary": "#ffffff",
+                      "inverse-on-surface": "#f0f1f3",
+                      "on-primary-fixed": "#001848",
+                      "on-secondary": "#ffffff",
+                      "surface-container-low": "#f3f4f6",
+                      "on-surface-variant": "#434654",
+                      "surface-bright": "#f8f9fb",
+                      "tertiary-container": "#7d5200",
+                      "tertiary": "#5e3c00",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "primary": "#003d9b",
+                      "background": "#f8f9fb",
+                      "secondary-fixed-dim": "#3ce36a",
+                      "primary-fixed": "#dae2ff",
+                      "secondary-container": "#5cfd80",
+                      "error": "#ba1a1a",
+                      "inverse-surface": "#2e3132",
+                      "surface-tint": "#0c56d0",
+                      "surface-container-high": "#e7e8ea",
+                      "on-background": "#191c1e",
+                      "inverse-primary": "#b2c5ff",
+                      "on-tertiary-container": "#ffca81"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "lg": "48px",
+                      "sm": "12px",
+                      "margin-desktop": "64px",
+                      "md": "24px",
+                      "xs": "4px",
+                      "xl": "80px",
+                      "margin-mobile": "16px",
+                      "base": "8px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "display-lg-mobile": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg-mobile": [
+                              "36px",
+                              {
+                                      "lineHeight": "44px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="h-full bg-surface text-on-surface antialiased flex flex-col items-center justify-center min-h-screen px-margin-mobile md:px-margin-desktop py-lg">
+<!-- Brand Header -->
+<div class="mb-lg text-center">
+<h1 class="font-display-lg text-display-lg text-primary tracking-tight">KINDRA</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-sm">Civic Engagement Platform</p>
+</div>
+<!-- Main Card Container -->
+<main class="w-full max-w-[420px] bg-surface-container-lowest rounded-xl shadow-[0_8px_16px_rgba(0,82,204,0.08)] p-md md:p-lg border border-surface-container">
+<!-- Headline -->
+<h2 class="font-headline-md text-headline-md text-primary mb-md text-center">Welcome, Citizen</h2>
+<!-- Toggle Tabs -->
+<div class="flex rounded-lg bg-surface-container p-xs mb-lg">
+<button class="flex-1 py-sm font-label-md text-label-md rounded-md bg-surface-container-lowest text-primary shadow-sm transition-all">Login</button>
+<button class="flex-1 py-sm font-label-md text-label-md rounded-md text-on-surface-variant hover:text-primary transition-all">Sign Up</button>
+</div>
+<!-- Form Elements -->
+<div class="space-y-md mb-lg">
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-xs">Phone Number</label>
+<div class="relative flex items-center">
+<span class="absolute left-3 font-body-md text-body-md text-on-surface-variant select-none pointer-events-none">+91</span>
+<input class="w-full pl-[52px] pr-3 py-sm bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors text-on-surface placeholder:text-outline h-[44px]" placeholder="Enter mobile number" type="tel"/>
+<button class="absolute right-2 top-1/2 -translate-y-1/2 font-label-sm text-label-sm text-primary hover:text-primary-container px-sm py-1 rounded bg-surface transition-colors">Send OTP</button>
+</div>
+</div>
+<!-- OTP Input (Hidden by default, shown after sending OTP) -->
+<div class="hidden">
+<label class="block font-label-md text-label-md text-on-surface mb-xs">One Time Password</label>
+<input class="w-full px-3 py-sm bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors text-on-surface placeholder:text-outline h-[44px] text-center tracking-widest" placeholder="Enter 6-digit OTP" type="text"/>
+</div>
+<div class="text-right">
+<a class="font-label-sm text-label-sm text-primary hover:underline" href="#">Email + Password</a>
+</div>
+</div>
+<!-- Primary CTA -->
+<button class="w-full bg-primary hover:bg-primary-container text-on-primary font-label-md text-label-md h-[44px] rounded-lg transition-colors mb-lg shadow-sm">
+            Continue
+        </button>
+<!-- Social Divider -->
+<div class="relative flex items-center justify-center mb-lg">
+<div class="absolute inset-x-0 h-px bg-outline-variant"></div>
+<span class="relative bg-surface-container-lowest px-sm font-label-sm text-label-sm text-on-surface-variant">or continue with</span>
+</div>
+<!-- Social Login -->
+<button class="w-full flex items-center justify-center gap-sm bg-surface-container-lowest border border-outline-variant hover:bg-surface text-on-surface font-label-md text-label-md h-[44px] rounded-lg transition-colors mb-lg">
+<svg class="w-5 h-5" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+            Google
+        </button>
+<!-- Institutional Links -->
+<div class="bg-surface-container rounded-lg p-sm text-center mb-lg">
+<p class="font-body-md text-body-md text-on-surface-variant mb-xs">NGOs or Govt Officials?</p>
+<div class="flex justify-center gap-sm font-label-sm text-label-sm">
+<a class="text-primary hover:underline" href="#">Partner Login</a>
+<span class="text-outline-variant">•</span>
+<a class="text-primary hover:underline" href="#">Officer Login</a>
+</div>
+</div>
+<!-- Footer Elements inside card -->
+<div class="pt-md border-t border-surface-container flex flex-col md:flex-row justify-between items-center gap-sm">
+<div class="relative group">
+<button class="flex items-center gap-xs font-label-sm text-label-sm text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-[16px]">language</span>
+                    English
+                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<!-- Dropdown (Hidden by default, simplistic implementation for design visual) -->
+<div class="hidden group-hover:block absolute bottom-full left-0 mb-xs bg-surface-container-lowest border border-surface-container rounded shadow-sm py-xs w-32 z-10">
+<a class="block px-sm py-xs font-label-sm text-label-sm text-on-surface hover:bg-surface" href="#">English</a>
+<a class="block px-sm py-xs font-label-sm text-label-sm text-on-surface hover:bg-surface" href="#">हिंदी</a>
+<a class="block px-sm py-xs font-label-sm text-label-sm text-on-surface hover:bg-surface" href="#">ಕನ್ನಡ</a>
+</div>
+</div>
+<div class="flex gap-sm font-label-sm text-label-sm">
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+</div>
+</div>
+</main>
+</body></html>

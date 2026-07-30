@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Campaign Detail - Kindra</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-variant": "#e1e2e4",
+                      "primary-container": "#1e5aa8",
+                      "on-error-container": "#93000a",
+                      "tertiary": "#5f3c00",
+                      "primary-fixed": "#d6e3ff",
+                      "on-background": "#191c1e",
+                      "outline-variant": "#c2c6d3",
+                      "on-tertiary-container": "#ffca85",
+                      "on-secondary-fixed": "#002113",
+                      "outline": "#737782",
+                      "tertiary-fixed": "#ffddb4",
+                      "karma-gold-soft": "#FEF6E9",
+                      "surface-bright": "#f8f9fb",
+                      "on-tertiary-fixed-variant": "#633f00",
+                      "error-red": "#E85C4A",
+                      "secondary": "#006c48",
+                      "inverse-primary": "#aac7ff",
+                      "surface-container": "#edeef0",
+                      "secondary-fixed-dim": "#65dca4",
+                      "on-surface-variant": "#424751",
+                      "on-primary-fixed-variant": "#00458d",
+                      "inverse-on-surface": "#f0f1f3",
+                      "surface-container-highest": "#e1e2e4",
+                      "on-secondary-container": "#00714b",
+                      "secondary-fixed": "#82f9bf",
+                      "on-surface": "#191c1e",
+                      "on-error": "#ffffff",
+                      "surface-container-low": "#f2f4f6",
+                      "surface": "#f8f9fb",
+                      "tertiary-fixed-dim": "#ffb955",
+                      "on-tertiary-fixed": "#291800",
+                      "on-primary-fixed": "#001b3e",
+                      "inverse-surface": "#2e3132",
+                      "on-secondary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "trust-blue-dark": "#164480",
+                      "tertiary-container": "#7f5200",
+                      "secondary-container": "#7ff6bc",
+                      "on-primary-container": "#bed4ff",
+                      "on-tertiary": "#ffffff",
+                      "surface-tint": "#235eac",
+                      "surface-card": "#FFFFFF",
+                      "success-green-soft": "#EAF7F2",
+                      "primary-fixed-dim": "#aac7ff",
+                      "primary": "#004287",
+                      "surface-dim": "#d9dadc",
+                      "on-secondary-fixed-variant": "#005235",
+                      "surface-container-lowest": "#ffffff",
+                      "error": "#ba1a1a",
+                      "error-container": "#ffdad6",
+                      "surface-container-high": "#e7e8ea",
+                      "background": "#f8f9fb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "1200px",
+                      "stack-md": "16px",
+                      "gutter": "24px",
+                      "stack-lg": "24px",
+                      "stack-sm": "8px",
+                      "margin-desktop": "48px",
+                      "section-gap": "64px"
+              },
+              "fontFamily": {
+                      "label-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "display-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "label-lg": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen">
+<!-- Header Navigation (Sub-page context: no SideNav/BottomNav for focused task flow) -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-surface-container-lowest shadow-sm">
+<div class="flex items-center gap-gutter">
+<button class="text-primary hover:bg-surface-container-low p-2 rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<div class="text-headline-md font-headline-md font-bold text-primary">Kindra</div>
+</div>
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer">notifications</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer">account_circle</span>
+</div>
+</header>
+<main class="pt-16 pb-32">
+<!-- Hero Section -->
+<div class="relative w-full h-[400px] bg-surface-container-high overflow-hidden">
+<div class="absolute inset-0 w-full h-full bg-cover bg-center" data-alt="A wide angle photograph of a bright, sunny city park with modern architecture in the background. The scene depicts a community cleanup event with diverse volunteers in bright clothing working together to gather recycling. The lighting is crisp and optimistic, emphasizing a clean, civic-minded environment. The aesthetic aligns with a modern government-tech platform, focusing on trust and community wellbeing." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBktRFmgeyBBGHsyur8pbsNkKPXaVpkdX2cvl-vjih3mIzwy-0AuslnIkm8TJrpOQ5ZhaUi-DKUoha17D40zEOLhxHPvu3L6tTPqKgPSZJs3sB6E5x8CiDHE2ZFDxVJ0lfWGOHOj2_ohzT9PNy3zRG7-_QDQ-ThX9YTO9TiEOclTKYXCnchumx7HGEklkQC9p0j2nzIebhsPgXkJZbP4OCi-UkjfIDQDIOUI5p7m9DU13aEaqCArPmQ')"></div>
+<!-- Gradient Overlay -->
+<div class="absolute inset-0 bg-gradient-to-t from-on-background/90 via-on-background/40 to-transparent"></div>
+<div class="absolute bottom-0 left-0 w-full px-gutter md:px-margin-desktop py-stack-lg flex flex-col items-start max-w-container-max mx-auto">
+<span class="bg-primary/90 text-on-primary text-label-sm font-label-sm px-3 py-1 rounded-full mb-stack-sm uppercase tracking-wider backdrop-blur-sm">Active Campaign</span>
+<h1 class="text-display-lg font-display-lg text-white mb-stack-sm">City-wide Cleanliness Week</h1>
+<div class="flex items-center gap-stack-lg text-white/90">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">calendar_today</span>
+<span class="text-body-md font-body-md">Oct 12 - Oct 19, 2024</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">group</span>
+<span class="text-body-md font-body-md">1,204 Participants</span>
+</div>
+</div>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-gutter md:px-margin-desktop mt-section-gap">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Main Content Column -->
+<div class="lg:col-span-8 flex flex-col gap-section-gap">
+<!-- Description -->
+<section>
+<h2 class="text-headline-lg font-headline-lg text-primary mb-stack-lg">About this Campaign</h2>
+<div class="bg-surface-card rounded-xl p-stack-lg shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-surface-container-low">
+<p class="text-body-lg font-body-lg text-on-surface-variant mb-stack-md leading-relaxed">
+                                Join the Kindra community in our biggest initiative this season to revitalize public spaces across the metropolitan area. The City-wide Cleanliness Week is designed to bring citizens, local businesses, and municipal services together to create a cleaner, greener, and more sustainable urban environment.
+                            </p>
+<p class="text-body-lg font-body-lg text-on-surface-variant leading-relaxed">
+                                By participating in associated tasks, you not only improve your local neighborhoods but also earn Karma points that unlock community rewards and civic recognition badges. Let's build a better city, together.
+                            </p>
+<!-- Impact Metrics -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-stack-md mt-stack-lg pt-stack-lg border-t border-surface-variant">
+<div>
+<div class="text-headline-md font-headline-md text-primary">5,000</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">Lbs of Waste Target</div>
+</div>
+<div>
+<div class="text-headline-md font-headline-md text-secondary">30+</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">Neighborhoods</div>
+</div>
+<div>
+<div class="text-headline-md font-headline-md text-tertiary">15k</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">Karma Pool</div>
+</div>
+<div>
+<div class="text-headline-md font-headline-md text-primary">12</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">Local Sponsors</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Associated Tasks -->
+<section>
+<div class="flex justify-between items-end mb-stack-lg">
+<h2 class="text-headline-lg font-headline-lg text-primary">Associated Tasks</h2>
+<button class="text-primary text-label-lg font-label-lg hover:underline hidden md:block">View All</button>
+</div>
+<div class="flex flex-col gap-stack-md">
+<!-- Task Card 1 -->
+<div class="bg-surface-card rounded-xl p-stack-lg shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-surface-container-low hover:bg-surface-bright transition-colors cursor-pointer group">
+<div class="flex flex-col md:flex-row justify-between md:items-center gap-stack-md">
+<div class="flex items-start gap-stack-md">
+<div class="w-12 h-12 rounded-full bg-primary-container/10 flex items-center justify-center text-primary shrink-0 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined" data-weight="fill">park</span>
+</div>
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-1 group-hover:text-primary transition-colors">Downtown Park Cleanup</h3>
+<div class="flex flex-wrap items-center gap-3 text-label-sm font-label-sm text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> Central District</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">schedule</span> Oct 14, 9:00 AM</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-stack-md md:justify-end border-t md:border-t-0 border-surface-variant pt-3 md:pt-0">
+<div class="flex flex-col items-end">
+<span class="text-label-lg font-label-lg text-secondary font-bold">+150 Karma</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">45/50 spots filled</span>
+</div>
+<button class="px-4 py-2 rounded-full border border-primary text-primary text-label-lg font-label-lg hover:bg-primary/5 transition-colors">Register</button>
+</div>
+</div>
+</div>
+<!-- Task Card 2 -->
+<div class="bg-surface-card rounded-xl p-stack-lg shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-surface-container-low hover:bg-surface-bright transition-colors cursor-pointer group">
+<div class="flex flex-col md:flex-row justify-between md:items-center gap-stack-md">
+<div class="flex items-start gap-stack-md">
+<div class="w-12 h-12 rounded-full bg-secondary/10 flex items-center justify-center text-secondary shrink-0 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined" data-weight="fill">recycling</span>
+</div>
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-1 group-hover:text-primary transition-colors">Waste Segregation Workshop</h3>
+<div class="flex flex-wrap items-center gap-3 text-label-sm font-label-sm text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> Civic Center</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">schedule</span> Oct 15, 2:00 PM</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-stack-md md:justify-end border-t md:border-t-0 border-surface-variant pt-3 md:pt-0">
+<div class="flex flex-col items-end">
+<span class="text-label-lg font-label-lg text-secondary font-bold">+75 Karma</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">12/100 spots filled</span>
+</div>
+<button class="px-4 py-2 rounded-full border border-primary text-primary text-label-lg font-label-lg hover:bg-primary/5 transition-colors">Register</button>
+</div>
+</div>
+</div>
+<!-- Task Card 3 -->
+<div class="bg-surface-card rounded-xl p-stack-lg shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-surface-container-low hover:bg-surface-bright transition-colors cursor-pointer group">
+<div class="flex flex-col md:flex-row justify-between md:items-center gap-stack-md">
+<div class="flex items-start gap-stack-md">
+<div class="w-12 h-12 rounded-full bg-tertiary/10 flex items-center justify-center text-tertiary shrink-0 group-hover:scale-105 transition-transform">
+<span class="material-symbols-outlined" data-weight="fill">water_drop</span>
+</div>
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-1 group-hover:text-primary transition-colors">Riverbank Restoration</h3>
+<div class="flex flex-wrap items-center gap-3 text-label-sm font-label-sm text-on-surface-variant">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">location_on</span> East Riverside</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">schedule</span> Oct 18, 8:00 AM</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-stack-md md:justify-end border-t md:border-t-0 border-surface-variant pt-3 md:pt-0">
+<div class="flex flex-col items-end">
+<span class="text-label-lg font-label-lg text-secondary font-bold">+200 Karma</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Full</span>
+</div>
+<button class="px-4 py-2 rounded-full bg-surface-variant text-on-surface-variant text-label-lg font-label-lg cursor-not-allowed">Waitlist</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Sidebar / Secondary Column -->
+<div class="lg:col-span-4 flex flex-col gap-stack-lg">
+<!-- Progress Card -->
+<div class="bg-surface-card rounded-xl p-stack-lg shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-surface-container-low sticky top-24">
+<h3 class="text-headline-sm font-headline-sm text-primary mb-stack-md">Campaign Progress</h3>
+<div class="mb-4">
+<div class="flex justify-between text-label-sm font-label-sm mb-2">
+<span class="text-on-surface-variant">Overall Completion</span>
+<span class="text-primary font-bold">42%</span>
+</div>
+<!-- Karma Progress Bar style -->
+<div class="w-full bg-[#F0F0F0] rounded-full h-[12px] overflow-hidden">
+<div class="bg-gradient-to-r from-secondary to-tertiary-fixed-dim h-full rounded-full" style="width: 42%"></div>
+</div>
+</div>
+<div class="bg-karma-gold-soft p-4 rounded-lg mb-stack-lg border border-tertiary-fixed-dim/30">
+<div class="flex items-center gap-3 mb-2">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" data-weight="fill">verified</span>
+<span class="text-label-lg font-label-lg text-on-tertiary-fixed">Unlock "Civic Guardian" Badge</span>
+</div>
+<p class="text-label-sm font-label-sm text-on-tertiary-fixed-variant">Complete at least 3 tasks to earn this exclusive profile badge.</p>
+</div>
+<button class="w-full bg-primary hover:bg-trust-blue-dark text-on-primary font-label-lg text-label-lg py-4 px-6 rounded-full shadow-md hover:shadow-lg transition-all duration-200">
+                            Join Campaign
+                        </button>
+<p class="text-center text-label-sm font-label-sm text-on-surface-variant mt-3">Free to join. Open to all verified citizens.</p>
+</div>
+<!-- Leaderboard -->
+<div class="bg-surface-card rounded-xl p-stack-lg shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-surface-container-low">
+<div class="flex items-center justify-between mb-stack-md">
+<h3 class="text-headline-sm font-headline-sm text-primary">Top Contributors</h3>
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-2xl" data-weight="fill">emoji_events</span>
+</div>
+<div class="flex flex-col gap-4">
+<!-- Leader 1 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img class="w-10 h-10 rounded-full object-cover border-2 border-karma-gold-soft" data-alt="A portrait of a smiling community member, a middle-aged woman with glasses, against a soft-focus urban background. Professional lighting, vibrant and trustworthy civic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLbjwbVEKLdeHHGG5hRGOUJrabHcC2MDQCAiuPWYAtkGGCyoH3HlJyxR2m0EToFjecv1OYC6yxWeUwtanm4oz9efH0IR8-iGKniQ57Kn55Sn7Cqe4FTquii4eUhCSogzToLQkJbP4bQv8DP2SprxEdN1zGmWtdNPG6-m31UD--k8wi6G3QzAPY7-BCQ9R1p2tSKHiMI5TAKY3OJJvk8LQjQkiyVGttPx9prGFp7dOm_p2CraD9RUzG"/>
+<div class="absolute -bottom-1 -right-1 w-5 h-5 bg-karma-gold-soft border border-tertiary-fixed-dim rounded-full flex items-center justify-center text-[10px] font-bold text-tertiary">1</div>
+</div>
+<div>
+<div class="text-label-lg font-label-lg text-on-surface">Sarah J.</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">5 Tasks Completed</div>
+</div>
+</div>
+<div class="text-label-lg font-label-lg text-secondary font-bold">850 Karma</div>
+</div>
+<!-- Leader 2 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="relative">
+<img class="w-10 h-10 rounded-full object-cover border-2 border-surface-variant" data-alt="A portrait of a young male volunteer in a plain t-shirt looking proud, set against a bright, modern light-mode background. Trustworthy and energetic mood." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBm8k3apxTdz2FAxRFfykIr_MKlY4_zaa_Yir6nKQB6EFrEWlOb4NVHh_WTsCO07X6TI9jaH537m4CfunrMgARzji7DqCW5etSTerJPW0IY7DH_jDa0v7-sflfeChLzWjPz4LSL4nVxyS_f6YrINJ5N4z1N8fsFcYLyP5YWOBAGNu70NVFpp9HDYtG5j1d-IX9KiizrerGmTkFuaL7oN39JHMv6F79kR-5piay1NlJ-iV_1WfSfpzJu"/>
+<div class="absolute -bottom-1 -right-1 w-5 h-5 bg-surface-variant border border-outline-variant rounded-full flex items-center justify-center text-[10px] font-bold text-on-surface-variant">2</div>
+</div>
+<div>
+<div class="text-label-lg font-label-lg text-on-surface">Marcus T.</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">4 Tasks Completed</div>
+</div>
+</div>
+<div class="text-label-lg font-label-lg text-secondary font-bold">620 Karma</div>
+</div>
+<!-- Leader 3 -->
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="relative">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-label-lg border-2 border-surface-variant">EL</div>
+<div class="absolute -bottom-1 -right-1 w-5 h-5 bg-surface-variant border border-outline-variant rounded-full flex items-center justify-center text-[10px] font-bold text-on-surface-variant">3</div>
+</div>
+<div>
+<div class="text-label-lg font-label-lg text-on-surface">Elena L.</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">3 Tasks Completed</div>
+</div>
+</div>
+<div class="text-label-lg font-label-lg text-secondary font-bold">450 Karma</div>
+</div>
+</div>
+<button class="w-full text-center text-primary text-label-sm font-label-sm mt-stack-md hover:underline">View Full Leaderboard</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile Fixed Bottom Action Bar (visible only on small screens) -->
+<div class="md:hidden fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-outline-variant p-stack-md z-40 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+<button class="w-full bg-primary hover:bg-trust-blue-dark text-on-primary font-label-lg text-label-lg py-4 px-6 rounded-full shadow-md transition-all duration-200">
+            Join Campaign
+        </button>
+</div>
+</body></html>

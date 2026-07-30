@@ -10,7 +10,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "KINDRA — Civic Engagement Platform",
-  description: "Together We Act. Together We Build.",
+  description: '"Make Kindness Count." 💚 — Gamified Civic Engagement Platform',
 };
 
 export default function RootLayout({
@@ -19,14 +19,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="light">
+    <html lang="en" className="light" suppressHydrationWarning>
       <head>
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
         />
       </head>
-      <body className={`${inter.variable} font-sans antialiased bg-background text-on-surface min-h-screen`}>
+      <body suppressHydrationWarning className={`${inter.variable} font-sans antialiased bg-background text-on-surface min-h-screen`}>
         <Providers>{children}</Providers>
       </body>
     </html>

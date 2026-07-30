@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Card } from '@/src/components/ui/Card';
 import { Button } from '@/src/components/ui/Button';
 import { fetchSettings, updateSetting } from '@/services/adminService';
+import type { Json } from '@/src/types/database';
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<any[]>([]);
@@ -29,7 +30,7 @@ export default function AdminSettingsPage() {
     try {
       let parsedValue: unknown;
       try { parsedValue = JSON.parse(editValue); } catch { parsedValue = editValue; }
-      await updateSetting(key, parsedValue);
+      await updateSetting(key, parsedValue as Json);
       setEditingKey(null);
       await loadSettings();
     } catch (err) { console.error(err); }

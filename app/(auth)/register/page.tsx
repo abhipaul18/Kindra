@@ -32,7 +32,7 @@ export default function RegisterPage() {
       await registerUser(data.email, data.password, data.full_name);
       setSuccessMessage('Registration successful! Redirecting to login...');
       setTimeout(() => {
-        window.location.href = '/auth/login';
+        window.location.href = '/login';
       }, 1500);
     } catch (err: any) {
       setErrorMessage(err.message || 'Failed to create account. Email may already be registered.');
@@ -117,7 +117,7 @@ export default function RegisterPage() {
 
           <div className="text-center text-xs text-on-surface-variant pt-2 border-t border-outline-variant/20">
             Already have an account?{' '}
-            <a href="/auth/login" className="font-bold text-primary hover:underline">
+            <a href="/login" className="font-bold text-primary hover:underline">
               Sign In
             </a>
           </div>

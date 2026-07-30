@@ -36,7 +36,7 @@ export default function ResetPasswordPage() {
 
       setSuccessMessage('Password updated successfully! Redirecting to login...');
       setTimeout(() => {
-        window.location.href = '/auth/login';
+        window.location.href = '/login';
       }, 1500);
     } catch (err: any) {
       setErrorMessage(err.message || 'Failed to update password. Please request a new reset link.');

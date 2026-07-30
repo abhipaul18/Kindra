@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ask Gemma - Kindra</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed": "#002113",
+                      "on-secondary-container": "#00714b",
+                      "on-surface-variant": "#424751",
+                      "on-tertiary-container": "#ffca85",
+                      "error": "#ba1a1a",
+                      "surface-tint": "#235eac",
+                      "surface-bright": "#f8f9fb",
+                      "secondary-container": "#7ff6bc",
+                      "on-error": "#ffffff",
+                      "primary-fixed": "#d6e3ff",
+                      "surface-container-low": "#f2f4f6",
+                      "error-container": "#ffdad6",
+                      "on-secondary-fixed-variant": "#005235",
+                      "primary": "#004287",
+                      "inverse-on-surface": "#f0f1f3",
+                      "tertiary": "#5f3c00",
+                      "on-tertiary": "#ffffff",
+                      "inverse-surface": "#2e3132",
+                      "surface": "#f8f9fb",
+                      "surface-container-high": "#e7e8ea",
+                      "surface-container-highest": "#e1e2e4",
+                      "on-tertiary-fixed-variant": "#633f00",
+                      "success-green-soft": "#EAF7F2",
+                      "trust-blue-dark": "#164480",
+                      "surface-container": "#edeef0",
+                      "background": "#f8f9fb",
+                      "secondary-fixed-dim": "#65dca4",
+                      "on-secondary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "secondary-fixed": "#82f9bf",
+                      "inverse-primary": "#aac7ff",
+                      "tertiary-fixed-dim": "#ffb955",
+                      "tertiary-fixed": "#ffddb4",
+                      "on-tertiary-fixed": "#291800",
+                      "error-red": "#E85C4A",
+                      "secondary": "#006c48",
+                      "tertiary-container": "#7f5200",
+                      "on-primary-fixed": "#001b3e",
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#aac7ff",
+                      "on-primary-container": "#bed4ff",
+                      "on-primary-fixed-variant": "#00458d",
+                      "primary-container": "#1e5aa8",
+                      "surface-variant": "#e1e2e4",
+                      "karma-gold-soft": "#FEF6E9",
+                      "on-surface": "#191c1e",
+                      "surface-card": "#FFFFFF",
+                      "outline": "#737782",
+                      "outline-variant": "#c2c6d3",
+                      "on-error-container": "#93000a",
+                      "surface-dim": "#d9dadc",
+                      "on-background": "#191c1e"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-sm": "8px",
+                      "margin-desktop": "48px",
+                      "stack-md": "16px",
+                      "stack-lg": "24px",
+                      "gutter": "24px",
+                      "section-gap": "64px",
+                      "container-max": "1200px"
+              },
+              "fontFamily": {
+                      "label-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "label-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "label-lg": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .filled-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .chat-container-height {
+            height: calc(100vh - 64px - 140px); /* 140px rough estimate for header + input area */
+        }
+        /* Custom scrollbar for chat */
+        .chat-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background-color: #c2c6d3;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<nav class="fixed top-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-surface-container-lowest shadow-sm">
+<div class="flex items-center gap-stack-lg">
+<span class="text-headline-md font-headline-md font-bold text-primary">Kindra</span>
+<div class="hidden md:flex items-center gap-stack-sm">
+<a class="text-on-surface-variant font-medium text-label-md font-label-md hover:text-primary transition-colors px-3 py-2" href="#">Citizen</a>
+<a class="text-on-surface-variant font-medium text-label-md font-label-md hover:text-primary transition-colors px-3 py-2" href="#">Officer</a>
+<a class="text-on-surface-variant font-medium text-label-md font-label-md hover:text-primary transition-colors px-3 py-2" href="#">Partner</a>
+<a class="text-primary border-b-2 border-primary font-bold pb-1 text-label-md font-label-md transition-colors px-3" href="#">Admin</a>
+</div>
+</div>
+<div class="flex items-center gap-stack-md">
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</nav>
+<div class="pt-16 flex flex-1 overflow-hidden h-screen">
+<!-- Left Sidebar (History & Quick Topics) -->
+<aside class="w-[280px] bg-surface-container-low border-r border-outline-variant flex-shrink-0 flex flex-col h-full hidden md:flex">
+<div class="p-stack-lg border-b border-outline-variant">
+<button class="w-full flex items-center justify-center gap-stack-sm bg-primary text-on-primary rounded-full py-3 px-4 font-label-lg text-label-lg hover:bg-trust-blue-dark transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                    New Conversation
+                </button>
+</div>
+<div class="flex-1 overflow-y-auto p-stack-lg flex flex-col gap-section-gap chat-scroll">
+<div>
+<h3 class="text-label-sm font-label-sm text-outline uppercase tracking-wider mb-stack-md px-2">Quick Topics</h3>
+<div class="flex flex-col gap-stack-sm">
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-container-high transition-colors text-left group">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">policy</span>
+<span class="text-body-md font-body-md text-on-surface-variant group-hover:text-on-surface">Government Schemes</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-container-high transition-colors text-left group">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">search</span>
+<span class="text-body-md font-body-md text-on-surface-variant group-hover:text-on-surface">Track My Application</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-container-high transition-colors text-left group">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">assignment_late</span>
+<span class="text-body-md font-body-md text-on-surface-variant group-hover:text-on-surface">Grievance Status</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-container-high transition-colors text-left group">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">info</span>
+<span class="text-body-md font-body-md text-on-surface-variant group-hover:text-on-surface">Service Information</span>
+</button>
+</div>
+</div>
+<div>
+<h3 class="text-label-sm font-label-sm text-outline uppercase tracking-wider mb-stack-md px-2">Recent History</h3>
+<div class="flex flex-col gap-stack-sm">
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-surface-container-highest text-left">
+<span class="material-symbols-outlined text-primary text-[18px]">chat_bubble</span>
+<span class="text-body-md font-body-md text-on-surface truncate">PM-Kisan scheme details</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-container-high transition-colors text-left group">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-[18px]">chat_bubble_outline</span>
+<span class="text-body-md font-body-md text-on-surface-variant group-hover:text-on-surface truncate">Passport renewal process</span>
+</button>
+<button class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-surface-container-high transition-colors text-left group">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors text-[18px]">chat_bubble_outline</span>
+<span class="text-body-md font-body-md text-on-surface-variant group-hover:text-on-surface truncate">Property tax payment issue</span>
+</button>
+</div>
+</div>
+</div>
+<div class="p-stack-lg border-t border-outline-variant mt-auto">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold">
+                        AG
+                     </div>
+<div class="flex-1">
+<p class="text-label-lg font-label-lg text-on-surface">Ask Gemma</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">AI Assistant</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Main Chat Area -->
+<main class="flex-1 flex flex-col bg-surface relative">
+<!-- Header inside main area -->
+<header class="h-20 border-b border-outline-variant bg-surface-card flex items-center justify-between px-margin-desktop shadow-[0_4px_20px_rgba(0,0,0,0.02)] z-10 flex-shrink-0">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 bg-primary-fixed rounded-2xl flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-primary text-3xl filled-icon" data-icon="smart_toy">smart_toy</span>
+</div>
+<div>
+<h1 class="text-headline-sm font-headline-sm text-on-surface">Ask Gemma</h1>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Civic Intelligence Assistant</p>
+</div>
+</div>
+<!-- Language Selector Chip -->
+<div class="flex items-center bg-surface-container-low rounded-full p-1 border border-outline-variant shadow-sm">
+<button class="px-3 py-1.5 rounded-full bg-surface-card shadow-sm text-label-lg font-label-lg text-primary">EN</button>
+<button class="px-3 py-1.5 rounded-full text-label-lg font-label-lg text-on-surface-variant hover:bg-surface-container transition-colors">हिं</button>
+<button class="px-3 py-1.5 rounded-full text-label-lg font-label-lg text-on-surface-variant hover:bg-surface-container transition-colors">ಕ</button>
+</div>
+</header>
+<!-- Chat Canvas -->
+<div class="flex-1 overflow-y-auto p-margin-desktop chat-scroll">
+<div class="max-w-[700px] mx-auto flex flex-col gap-8 pb-32">
+<!-- AI Welcome Message -->
+<div class="flex gap-4 max-w-[85%]">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+<span class="material-symbols-outlined text-primary text-lg filled-icon" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="flex flex-col gap-1">
+<span class="text-label-sm font-label-sm text-on-surface-variant ml-1">Gemma AI</span>
+<div class="bg-surface-card p-4 rounded-2xl rounded-tl-sm shadow-[0_4px_20px_rgba(0,0,0,0.05)] text-body-md font-body-md text-on-surface border border-surface-container-high">
+                                Hello! I'm Gemma, your civic assistant. I can help you with government schemes, track applications, or find service information. How can I assist you today?
+                            </div>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex gap-4 max-w-[85%] self-end flex-row-reverse">
+<div class="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+<span class="material-symbols-outlined text-on-surface-variant text-lg" data-icon="person">person</span>
+</div>
+<div class="flex flex-col gap-1 items-end">
+<span class="text-label-sm font-label-sm text-on-surface-variant mr-1">You</span>
+<div class="bg-trust-blue-dark text-on-primary p-4 rounded-2xl rounded-tr-sm shadow-[0_4px_12px_rgba(0,66,135,0.2)] text-body-md font-body-md">
+                                Tell me more about the PM-Kisan scheme.
+                            </div>
+</div>
+</div>
+<!-- AI Response -->
+<div class="flex gap-4 max-w-[90%]">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+<span class="material-symbols-outlined text-primary text-lg filled-icon" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="flex flex-col gap-1 w-full">
+<span class="text-label-sm font-label-sm text-on-surface-variant ml-1">Gemma AI</span>
+<div class="bg-surface-card p-5 rounded-2xl rounded-tl-sm shadow-[0_4px_20px_rgba(0,0,0,0.05)] text-body-md font-body-md text-on-surface border border-surface-container-high flex flex-col gap-4">
+<p>The Pradhan Mantri Kisan Samman Nidhi (PM-Kisan) scheme is a central sector scheme that provides income support to all landholding farmers' families in the country to supplement their financial needs for procuring various inputs related to agriculture and allied activities as well as domestic needs.</p>
+<p>Under the scheme, a financial benefit of <strong>₹6,000 per year</strong> is provided to eligible beneficiary farmer families, payable in three equal four-monthly installments of ₹2,000 each.</p>
+<!-- Embedded Info Card -->
+<div class="mt-2 border border-outline-variant rounded-xl p-4 bg-surface flex items-start gap-4 hover:shadow-md transition-shadow cursor-pointer">
+<div class="bg-secondary-container p-2 rounded-lg text-on-secondary-container">
+<span class="material-symbols-outlined">agriculture</span>
+</div>
+<div class="flex-1">
+<h4 class="text-label-lg font-label-lg text-on-surface mb-1">PM-Kisan Scheme Details</h4>
+<p class="text-body-md font-body-md text-on-surface-variant text-sm line-clamp-2 mb-2">Check eligibility, documents required, and application process for the scheme.</p>
+<a class="text-primary text-label-md font-label-md flex items-center gap-1 hover:underline" href="#">
+                                            View Full Details <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</a>
+</div>
+</div>
+<div class="flex gap-2 mt-2">
+<button class="px-3 py-1.5 border border-outline-variant rounded-full text-label-sm font-label-sm text-on-surface-variant hover:bg-surface-container transition-colors">How to apply?</button>
+<button class="px-3 py-1.5 border border-outline-variant rounded-full text-label-sm font-label-sm text-on-surface-variant hover:bg-surface-container transition-colors">Check Status</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Typing Indicator (Mock) -->
+<div class="flex gap-4 max-w-[85%] opacity-60">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center flex-shrink-0 mt-1 shadow-sm">
+<span class="material-symbols-outlined text-primary text-lg filled-icon" data-icon="smart_toy">smart_toy</span>
+</div>
+<div class="flex flex-col gap-1">
+<div class="bg-surface-card p-4 rounded-2xl rounded-tl-sm shadow-sm text-body-md font-body-md text-on-surface border border-surface-container-high flex items-center gap-1">
+<span class="w-2 h-2 bg-outline rounded-full animate-pulse"></span>
+<span class="w-2 h-2 bg-outline rounded-full animate-pulse delay-75"></span>
+<span class="w-2 h-2 bg-outline rounded-full animate-pulse delay-150"></span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Input Area -->
+<div class="absolute bottom-0 left-0 right-0 p-gutter bg-gradient-to-t from-surface via-surface to-transparent pt-12 pb-8">
+<div class="max-w-[700px] mx-auto relative">
+<div class="bg-surface-card border border-outline-variant rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.08)] p-2 flex items-center gap-2 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary-fixed transition-all">
+<button class="p-3 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full transition-colors flex-shrink-0" title="Attach Document">
+<span class="material-symbols-outlined" data-icon="attach_file">attach_file</span>
+</button>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-body-md font-body-md text-on-surface placeholder-outline py-3" placeholder="Ask about services, tracking, or schemes..." type="text"/>
+<button class="p-3 text-on-surface-variant hover:text-primary hover:bg-primary-fixed rounded-full transition-colors flex-shrink-0" title="Voice Input">
+<span class="material-symbols-outlined" data-icon="mic">mic</span>
+</button>
+<button class="bg-primary hover:bg-trust-blue-dark text-on-primary p-3 rounded-full flex items-center justify-center transition-colors shadow-sm flex-shrink-0 shadow-[0_4px_12px_rgba(0,66,135,0.3)]">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+</button>
+</div>
+<div class="text-center mt-3">
+<span class="text-label-sm font-label-sm text-outline">Gemma can make mistakes. Verify important information on official portals.</span>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

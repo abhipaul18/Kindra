@@ -15,44 +15,50 @@ export async function fetchRewards(): Promise<Reward[]> {
         title: 'Free Metro Transit Pass',
         description: '1 Day Unlimited Metro Travel Pass across city lines.',
         partner_name: 'Namma Metro Transit Authority',
-        cost_karma: 250,
-        category: 'Transit',
+        karma_cost: 250,
+        category_id: 'Transit',
         image_url: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=600&q=80',
-        voucher_code: 'METRO2026-KINDRA',
-        is_available: true,
-        quantity_available: 50,
+        discount_code: 'METRO2026-KINDRA',
+        partner_id: 'p1',
+        total_available: 50,
+        remaining: 50,
         created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       },
       {
         id: 'rew-2',
         title: 'Plant a Sapling Voucher',
         description: 'Adopt a tree sapling planted by Urban Forestry Department.',
         partner_name: 'Urban Forestry Board',
-        cost_karma: 150,
-        category: 'Environment',
+        karma_cost: 150,
+        category_id: 'Environment',
         image_url: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&w=600&q=80',
-        voucher_code: 'GREEN-TREE-2026',
-        is_available: true,
-        quantity_available: 100,
+        discount_code: 'GREEN-TREE-2026',
+        partner_id: 'p2',
+        total_available: 100,
+        remaining: 100,
         created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       },
       {
         id: 'rew-3',
         title: '₹200 Coffee Day Coupon',
         description: 'Enjoy a free beverage at any partner coffee lounge.',
         partner_name: 'Café Coffee Express',
-        cost_karma: 200,
-        category: 'Food & Drinks',
+        karma_cost: 200,
+        category_id: 'Food & Drinks',
         image_url: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=600&q=80',
-        voucher_code: 'COFFEE-KINDRA-200',
-        is_available: true,
-        quantity_available: 35,
+        discount_code: 'COFFEE-KINDRA-200',
+        partner_id: 'p3',
+        total_available: 35,
+        remaining: 35,
         created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
       },
-    ] as unknown as Reward[];
+    ];
   }
 
-  return data as unknown as Reward[];
+  return data;
 }
 
 export async function redeemReward(
@@ -64,7 +70,7 @@ export async function redeemReward(
     .from('profiles')
     .select('karma_points')
     .eq('id', userId)
-    .single();
+    .maybeSingle();
 
   if (profileErr || !profile) {
     return { success: false, error: 'User profile not found' };
@@ -78,7 +84,7 @@ export async function redeemReward(
     .from('rewards')
     .select('*')
     .eq('id', rewardId)
-    .single();
+    .maybeSingle();
 
   if (rewardErr || !reward) {
     return { success: false, error: 'Reward not found or unavailable' };
@@ -92,12 +98,12 @@ export async function redeemReward(
     p_reference_id: rewardId,
   });
 
-  const voucherCode = (reward as any).discount_code || `KINDRA-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+  const voucherCode = reward.discount_code || `KINDRA-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
   await supabase.from('redemptions').insert({
     user_id: userId,
     reward_id: rewardId,
     code: voucherCode,
-  } as any);
+  });
 
   await supabase.from('notifications').insert({
     user_id: userId,

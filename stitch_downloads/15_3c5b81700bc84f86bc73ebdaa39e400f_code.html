@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kindra - Notifications</title>
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#005235",
+                      "on-tertiary-fixed": "#291800",
+                      "surface-container-highest": "#e1e2e4",
+                      "inverse-surface": "#2e3132",
+                      "karma-gold-soft": "#FEF6E9",
+                      "error-red": "#E85C4A",
+                      "on-error": "#ffffff",
+                      "secondary-fixed-dim": "#65dca4",
+                      "primary": "#004287",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed": "#001b3e",
+                      "trust-blue-dark": "#164480",
+                      "secondary": "#006c48",
+                      "on-primary-container": "#bed4ff",
+                      "surface": "#f8f9fb",
+                      "on-tertiary-container": "#ffca85",
+                      "outline-variant": "#c2c6d3",
+                      "on-secondary-fixed": "#002113",
+                      "background": "#f8f9fb",
+                      "surface-dim": "#d9dadc",
+                      "surface-container-high": "#e7e8ea",
+                      "outline": "#737782",
+                      "on-tertiary-fixed-variant": "#633f00",
+                      "tertiary-container": "#7f5200",
+                      "surface-bright": "#f8f9fb",
+                      "tertiary": "#5f3c00",
+                      "surface-variant": "#e1e2e4",
+                      "primary-container": "#1e5aa8",
+                      "secondary-container": "#7ff6bc",
+                      "success-green-soft": "#EAF7F2",
+                      "tertiary-fixed": "#ffddb4",
+                      "on-error-container": "#93000a",
+                      "on-background": "#191c1e",
+                      "error": "#ba1a1a",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "inverse-on-surface": "#f0f1f3",
+                      "on-secondary-container": "#00714b",
+                      "error-container": "#ffdad6",
+                      "surface-tint": "#235eac",
+                      "secondary-fixed": "#82f9bf",
+                      "on-surface": "#191c1e",
+                      "on-primary-fixed-variant": "#00458d",
+                      "tertiary-fixed-dim": "#ffb955",
+                      "on-primary": "#ffffff",
+                      "primary-fixed": "#d6e3ff",
+                      "surface-card": "#FFFFFF",
+                      "primary-fixed-dim": "#aac7ff",
+                      "surface-container-low": "#f2f4f6",
+                      "on-surface-variant": "#424751",
+                      "inverse-primary": "#aac7ff",
+                      "surface-container": "#edeef0"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "section-gap": "64px",
+                      "stack-md": "16px",
+                      "stack-lg": "24px",
+                      "stack-sm": "8px",
+                      "margin-desktop": "48px",
+                      "gutter": "24px",
+                      "container-max": "1200px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "label-lg": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-lg": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-body-md text-body-md antialiased">
+<!-- TopNavBar Component -->
+<header class="bg-surface-container-lowest dark:bg-inverse-surface shadow-sm font-label-lg text-label-lg docked full-width top-0 sticky z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop py-4 max-w-container-max mx-auto">
+<!-- Brand Logo -->
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">eco</span>
+                Kindra
+            </div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 transition-transform duration-150 px-3 py-2 rounded-lg" href="#">Citizen</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 transition-transform duration-150 px-3 py-2 rounded-lg" href="#">Officer</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 transition-transform duration-150 px-3 py-2 rounded-lg" href="#">Partner</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 transition-transform duration-150 px-3 py-2 rounded-lg" href="#">Admin</a>
+</nav>
+<!-- Search (Left side concept, placing centrally for balance in this layout) -->
+<div class="hidden md:flex items-center bg-surface-container-low dark:bg-surface-container-highest rounded-full px-4 py-2 border border-outline-variant focus-within:border-primary transition-colors">
+<span class="material-symbols-outlined text-outline mr-2 text-sm">search</span>
+<input class="bg-transparent border-none focus:ring-0 p-0 text-sm w-48 text-on-surface placeholder:text-outline" placeholder="Search..." type="text"/>
+</div>
+<!-- Trailing Icons -->
+<div class="flex items-center gap-4 text-primary dark:text-primary-fixed-dim">
+<button aria-label="Notifications" class="relative p-2 rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 text-primary dark:text-primary-fixed-dim border-b-2 border-primary dark:border-primary-fixed-dim pb-1">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="absolute top-1 right-1 w-2.5 h-2.5 bg-error-red rounded-full border-2 border-surface-container-lowest"></span>
+</button>
+<button aria-label="Profile" class="p-2 rounded-full hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors active:scale-95 text-on-surface-variant dark:text-outline-variant">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex justify-center py-section-gap px-gutter">
+<div class="w-full max-w-[700px]">
+<!-- Header Section -->
+<div class="flex justify-between items-end mb-stack-lg">
+<h1 class="font-headline-lg text-headline-lg text-on-background">Notifications</h1>
+<button class="font-label-sm text-label-sm text-primary hover:text-trust-blue-dark transition-colors font-medium">Mark all as read</button>
+</div>
+<!-- Notifications Card Container -->
+<div class="bg-surface-card rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] overflow-hidden border border-outline-variant/30">
+<!-- Group: Today -->
+<div class="px-stack-lg py-stack-md bg-surface-bright border-b border-outline-variant/20">
+<h2 class="font-label-lg text-label-lg text-on-surface-variant">Today</h2>
+</div>
+<!-- List Items - Today -->
+<div class="flex flex-col">
+<!-- Item 1 (Unread, Approved) -->
+<div class="relative flex items-start gap-stack-md p-stack-lg border-b border-outline-variant/20 bg-surface-container-low hover:bg-surface-container transition-colors group cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-full"></div>
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-success-green-soft flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-lg">check_circle</span>
+</div>
+<div class="flex-grow">
+<p class="font-body-md text-body-md text-on-surface mb-1">
+<span class="font-semibold">Your report was approved!</span> Thank you for keeping the community safe.
+                            </p>
+<p class="font-label-sm text-label-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">stars</span>
+                                +50 karma points earned
+                            </p>
+</div>
+<div class="flex-shrink-0 font-label-sm text-label-sm text-outline">
+                            2h ago
+                        </div>
+</div>
+<!-- Item 2 (Unread, Karma) -->
+<div class="relative flex items-start gap-stack-md p-stack-lg border-b border-outline-variant/20 bg-surface-container-low hover:bg-surface-container transition-colors group cursor-pointer">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-full"></div>
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-karma-gold-soft flex items-center justify-center text-tertiary-container">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">stars</span>
+</div>
+<div class="flex-grow">
+<p class="font-body-md text-body-md text-on-surface mb-1">
+                                You reached the <span class="font-semibold">Civic Leader</span> milestone! Claim your reward badge.
+                            </p>
+</div>
+<div class="flex-shrink-0 font-label-sm text-label-sm text-outline">
+                            5h ago
+                        </div>
+</div>
+<!-- Item 3 (Read, Reminder) -->
+<div class="relative flex items-start gap-stack-md p-stack-lg border-b border-outline-variant/20 bg-surface-card hover:bg-surface-bright transition-colors group cursor-pointer">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-inverse-on-surface flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-lg">notifications</span>
+</div>
+<div class="flex-grow">
+<p class="font-body-md text-body-md text-on-surface mb-1 text-opacity-80">
+                                Reminder: Upcoming volunteer park cleanup event tomorrow morning.
+                            </p>
+</div>
+<div class="flex-shrink-0 font-label-sm text-label-sm text-outline">
+                            8h ago
+                        </div>
+</div>
+</div>
+<!-- Group: Earlier -->
+<div class="px-stack-lg py-stack-md bg-surface-bright border-b border-outline-variant/20">
+<h2 class="font-label-lg text-label-lg text-on-surface-variant">Earlier</h2>
+</div>
+<!-- List Items - Earlier -->
+<div class="flex flex-col">
+<!-- Item 4 (Read, Megaphone) -->
+<div class="relative flex items-start gap-stack-md p-stack-lg border-b border-outline-variant/20 bg-surface-card hover:bg-surface-bright transition-colors group cursor-pointer">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-lg">campaign</span>
+</div>
+<div class="flex-grow">
+<p class="font-body-md text-body-md text-on-surface mb-1 text-opacity-80">
+<span class="font-semibold">New Community Initiative:</span> Help us map accessibility ramps in your neighborhood.
+                            </p>
+</div>
+<div class="flex-shrink-0 font-label-sm text-label-sm text-outline">
+                            Oct 24
+                        </div>
+</div>
+<!-- Item 5 (Read, Standard Alert) -->
+<div class="relative flex items-start gap-stack-md p-stack-lg bg-surface-card hover:bg-surface-bright transition-colors group cursor-pointer">
+<div class="flex-shrink-0 w-10 h-10 rounded-full bg-inverse-on-surface flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined text-lg">info</span>
+</div>
+<div class="flex-grow">
+<p class="font-body-md text-body-md text-on-surface mb-1 text-opacity-80">
+                                System maintenance scheduled for this weekend. Some services may be briefly unavailable.
+                            </p>
+</div>
+<div class="flex-shrink-0 font-label-sm text-label-sm text-outline">
+                            Oct 22
+                        </div>
+</div>
+</div>
+<!-- View All Button in Footer -->
+<div class="p-4 bg-surface-container-lowest text-center border-t border-outline-variant/20">
+<button class="font-label-lg text-label-lg text-primary hover:text-trust-blue-dark transition-colors py-2 px-4 rounded-full hover:bg-surface-container-low">View All History</button>
+</div>
+</div>
+<!-- Empty State Concept (Hidden by default, used for variants) -->
+<!--
+            <div class="bg-surface-card rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] border border-outline-variant/30 p-section-gap flex flex-col items-center justify-center text-center hidden">
+                <div class="w-24 h-24 bg-surface-container-low rounded-full flex items-center justify-center text-outline mb-stack-lg">
+                    <span class="material-symbols-outlined text-[48px]">notifications_paused</span>
+                </div>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface mb-2">You're all caught up!</h3>
+                <p class="font-body-md text-body-md text-on-surface-variant max-w-sm">No new notifications right now. Enjoy the rest of your day contributing to the community.</p>
+            </div>
+            -->
+</div>
+</main>
+<!-- Footer Component -->
+<footer class="bg-surface-container-high dark:bg-surface-dim mt-section-gap font-label-sm text-label-sm full-width bottom flat no shadows">
+<div class="flex flex-col md:flex-row justify-between items-center w-full px-margin-desktop py-stack-lg max-w-container-max mx-auto gap-stack-md">
+<!-- Copyright -->
+<div class="text-on-surface-variant dark:text-outline-variant opacity-80 hover:opacity-100">
+                © 2024 Kindra Civic Platform. Building trust through community.
+            </div>
+<!-- Links -->
+<nav class="flex gap-4 flex-wrap justify-center">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all opacity-80 hover:opacity-100" href="#">Terms of Service</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all opacity-80 hover:opacity-100" href="#">Contact Us</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed-dim underline transition-all opacity-80 hover:opacity-100" href="#">About Kindra</a>
+</nav>
+</div>
+</footer>
+</body></html>

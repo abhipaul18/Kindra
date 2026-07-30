@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kindra - Civic Engagement Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "background": "#f8f9fb",
+                      "outline-variant": "#c2c6d3",
+                      "inverse-primary": "#aac7ff",
+                      "primary-fixed": "#d6e3ff",
+                      "on-surface-variant": "#424751",
+                      "on-primary-container": "#bed4ff",
+                      "surface-container-highest": "#e1e2e4",
+                      "on-tertiary-container": "#ffca85",
+                      "tertiary": "#5f3c00",
+                      "surface-bright": "#f8f9fb",
+                      "primary": "#004287",
+                      "tertiary-container": "#7f5200",
+                      "outline": "#737782",
+                      "on-secondary-fixed": "#002113",
+                      "on-background": "#191c1e",
+                      "on-secondary-fixed-variant": "#005235",
+                      "on-error-container": "#93000a",
+                      "surface-tint": "#235eac",
+                      "error-red": "#E85C4A",
+                      "inverse-on-surface": "#f0f1f3",
+                      "tertiary-fixed-dim": "#ffb955",
+                      "on-surface": "#191c1e",
+                      "on-secondary-container": "#00714b",
+                      "surface-container-low": "#f2f4f6",
+                      "surface-container-lowest": "#ffffff",
+                      "success-green-soft": "#EAF7F2",
+                      "on-primary-fixed-variant": "#00458d",
+                      "on-tertiary-fixed-variant": "#633f00",
+                      "surface-container": "#edeef0",
+                      "primary-fixed-dim": "#aac7ff",
+                      "on-tertiary": "#ffffff",
+                      "surface-card": "#FFFFFF",
+                      "trust-blue-dark": "#164480",
+                      "secondary-fixed-dim": "#65dca4",
+                      "on-tertiary-fixed": "#291800",
+                      "secondary-fixed": "#82f9bf",
+                      "karma-gold-soft": "#FEF6E9",
+                      "inverse-surface": "#2e3132",
+                      "secondary": "#006c48",
+                      "on-error": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface-container-high": "#e7e8ea",
+                      "surface-dim": "#d9dadc",
+                      "on-secondary": "#ffffff",
+                      "surface": "#f8f9fb",
+                      "surface-variant": "#e1e2e4",
+                      "tertiary-fixed": "#ffddb4",
+                      "primary-container": "#1e5aa8",
+                      "on-primary-fixed": "#001b3e",
+                      "secondary-container": "#7ff6bc",
+                      "error-container": "#ffdad6",
+                      "on-primary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px",
+                      "card": "16px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "stack-md": "16px",
+                      "section-gap": "64px",
+                      "container-max": "1200px",
+                      "stack-lg": "24px",
+                      "margin-desktop": "48px",
+                      "stack-sm": "8px",
+                      "card-pad": "24px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter", "sans-serif"],
+                      "label-sm": ["Inter", "sans-serif"],
+                      "label-lg": ["Inter", "sans-serif"],
+                      "headline-lg": ["Inter", "sans-serif"],
+                      "body-lg": ["Inter", "sans-serif"],
+                      "headline-sm": ["Inter", "sans-serif"],
+                      "headline-md": ["Inter", "sans-serif"],
+                      "display-lg": ["Inter", "sans-serif"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "500"}],
+                      "label-lg": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-sm": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              },
+              "boxShadow": {
+                  "ambient": "0px 4px 20px rgba(0, 0, 0, 0.05)",
+                  "interactive": "0px 8px 24px rgba(0, 0, 0, 0.12)"
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-background min-h-screen text-on-background antialiased flex flex-col">
+<!-- Top Navigation -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-surface-container-lowest shadow-sm dark:shadow-none bg-surface-container-lowest dark:bg-inverse-surface">
+<div class="flex items-center">
+<span class="text-headline-md font-headline-md font-bold text-primary dark:text-inverse-primary">Kindra</span>
+</div>
+<nav class="hidden md:flex items-center gap-6">
+<a class="text-primary dark:text-secondary-fixed-dim border-b-2 border-primary font-bold pb-1 text-label-md font-label-md hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Dashboard</a>
+<a class="text-on-surface-variant dark:text-outline-variant font-medium text-label-md font-label-md hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Report</a>
+<a class="text-on-surface-variant dark:text-outline-variant font-medium text-label-md font-label-md hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Volunteer</a>
+<a class="text-on-surface-variant dark:text-outline-variant font-medium text-label-md font-label-md hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Campaigns</a>
+<a class="text-on-surface-variant dark:text-outline-variant font-medium text-label-md font-label-md hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Rewards</a>
+</nav>
+<div class="flex items-center gap-4 text-primary dark:text-primary-fixed-dim">
+<button aria-label="Notifications" class="hover:text-primary dark:hover:text-primary-fixed transition-colors p-2 rounded-full hover:bg-surface-variant">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+</button>
+<button aria-label="Profile" class="hover:text-primary dark:hover:text-primary-fixed transition-colors p-1 rounded-full overflow-hidden hover:bg-surface-variant">
+<span class="material-symbols-outlined text-3xl">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-grow pt-24 pb-12 px-gutter md:px-margin-desktop w-full max-w-container-max mx-auto">
+<!-- Karma Summary Banner -->
+<section class="bg-surface-card rounded-card shadow-ambient p-card-pad mb-section-gap">
+<div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-stack-lg">
+<div class="flex-1">
+<h1 class="text-display-lg font-display-lg text-primary mb-2">1,450</h1>
+<div class="flex items-center gap-3 mb-4">
+<span class="text-body-lg font-body-lg text-on-surface-variant">Karma Points</span>
+<div class="bg-karma-gold-soft text-tertiary-container px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">workspace_premium</span>
+<span class="text-label-sm font-label-sm uppercase tracking-wide">Swachh Sevak</span>
+</div>
+</div>
+<!-- Progress Bar -->
+<div class="w-full max-w-md">
+<div class="flex justify-between text-label-sm font-label-sm text-outline mb-2">
+<span>Level Progress</span>
+<span>75%</span>
+</div>
+<div class="h-3 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-gradient-to-r from-secondary to-tertiary-fixed rounded-full" style="width: 75%;"></div>
+</div>
+<p class="text-label-sm font-label-sm text-outline mt-2">550 points to "Community Leader"</p>
+</div>
+</div>
+<div>
+<button class="bg-secondary text-on-secondary px-6 py-3 rounded-full text-label-lg font-label-lg shadow-ambient hover:shadow-interactive hover:bg-secondary-container hover:text-on-secondary-container transition-all">
+                        View Credentials
+                    </button>
+</div>
+</div>
+</section>
+<!-- 3-Column Action Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-section-gap">
+<!-- Report Issue -->
+<button class="bg-surface-card rounded-card shadow-ambient p-card-pad flex flex-col items-center text-center group hover:shadow-interactive transition-all border border-transparent hover:border-secondary-fixed">
+<div class="w-16 h-16 rounded-full bg-success-green-soft text-secondary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">photo_camera</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-2">Report Issue</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">Identify and document local civic problems to improve your community.</p>
+</button>
+<!-- Volunteer Tasks -->
+<button class="bg-surface-card rounded-card shadow-ambient p-card-pad flex flex-col items-center text-center group hover:shadow-interactive transition-all border border-transparent hover:border-tertiary-fixed-dim">
+<div class="w-16 h-16 rounded-full bg-karma-gold-soft text-tertiary-container flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">volunteer_activism</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-2">Volunteer Tasks</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">Join local drives and hands-on efforts to earn karma rewards.</p>
+</button>
+<!-- Government Services -->
+<button class="bg-surface-card rounded-card shadow-ambient p-card-pad flex flex-col items-center text-center group hover:shadow-interactive transition-all border border-transparent hover:border-primary-fixed">
+<div class="w-16 h-16 rounded-full bg-primary-fixed text-primary flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl">account_balance</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-2">Government Services</h3>
+<p class="text-body-md font-body-md text-on-surface-variant">Access official portals, pay bills, and manage civic responsibilities.</p>
+</button>
+</section>
+<!-- Bottom Section -->
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Nearby Campaigns Carousel (Left 2/3) -->
+<div class="lg:col-span-2">
+<div class="flex justify-between items-center mb-4">
+<h2 class="text-headline-md font-headline-md text-on-surface">Nearby Campaigns</h2>
+<button class="text-primary text-label-lg font-label-lg hover:underline">View All</button>
+</div>
+<div class="flex gap-4 overflow-x-auto pb-4 snap-x hide-scrollbar">
+<!-- Campaign Card 1 -->
+<div class="min-w-[300px] md:min-w-[350px] bg-surface-card rounded-card shadow-ambient snap-start flex-shrink-0 overflow-hidden">
+<div class="h-40 bg-surface-container relative">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A bright, sunny community park with a large group of diverse volunteers picking up litter and planting saplings. The scene is shot with a wide-angle lens, showing a clean, modern aesthetic with lush greens and vibrant sunlight, evoking a sense of active civic duty and environmental care within a safe, high-trust neighborhood." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA7whiwRvwV_7waMt-hWtAPqkiLJNkRBgCh9XW4PRVzWMK8IqxOTbsiRc9E9obJRTYKiy_zmWvSXjzLah-amM7I_iTgkSkdQhJ4ufHla8Z-jr-atSBU8JENViJ_aaiAJHbZHl3tKL0_iL55w__-ayD3eLNYWFcq4a6u-sltLOXzGbo6eurIavF-GcrNu3lvKsKqkXH-55uoAuCcPZvAs92W6f1KtE48IGrPkM6oYYrLc7oVx1sKXNQ3')"></div>
+<div class="absolute top-4 left-4 bg-surface-card/90 backdrop-blur px-3 py-1 rounded-full text-label-sm font-label-sm text-on-surface">
+                                This Weekend
+                            </div>
+</div>
+<div class="p-card-pad">
+<h4 class="text-headline-sm font-headline-sm text-on-surface mb-1">Central Park Cleanup</h4>
+<div class="flex items-center gap-1 text-on-surface-variant text-label-sm font-label-sm mb-4">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span>2 miles away</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-1 text-tertiary-container text-label-lg font-label-lg">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span>+150 Karma</span>
+</div>
+<button class="text-primary font-label-lg text-label-lg hover:underline">Join</button>
+</div>
+</div>
+</div>
+<!-- Campaign Card 2 -->
+<div class="min-w-[300px] md:min-w-[350px] bg-surface-card rounded-card shadow-ambient snap-start flex-shrink-0 overflow-hidden">
+<div class="h-40 bg-surface-container relative">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A modern, sterile, and well-lit indoor community center setting up for a blood drive. Red Cross banners, clean white registration tables, and friendly medical staff interacting with citizens. The lighting is soft and inviting, emphasizing a trustworthy, health-focused, and organized civic initiative." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDoMHwytiOMn9-KcA0b1I5A7Jgy3m5Ky4yl_sUnWUnNMDtPNZoEATaAn-jrKrUxiBI4vd7KPbDYMStgMZjRDNquD0PqpomOPDR5-oIXL3XfRt4liMh1G09VK97JJXzu4XYSjVa2GD5LSL_-jol3KoNuGV_lwC46MdBWsRA8n5Eh-DrBWO1SNdnCQ6hugRsM4TGDX9AdM4sZ_Myn_kO0Y2gzQpObr1Mdduiy1bURFNHUgHWPdcVy8mlb')"></div>
+<div class="absolute top-4 left-4 bg-surface-card/90 backdrop-blur px-3 py-1 rounded-full text-label-sm font-label-sm text-on-surface">
+                                Urgent Need
+                            </div>
+</div>
+<div class="p-card-pad">
+<h4 class="text-headline-sm font-headline-sm text-on-surface mb-1">City Blood Drive</h4>
+<div class="flex items-center gap-1 text-on-surface-variant text-label-sm font-label-sm mb-4">
+<span class="material-symbols-outlined text-sm">location_on</span>
+<span>Downtown Center</span>
+</div>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-1 text-tertiary-container text-label-lg font-label-lg">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span>+300 Karma</span>
+</div>
+<button class="text-primary font-label-lg text-label-lg hover:underline">Register</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Recent Activity (Right 1/3) -->
+<div class="lg:col-span-1">
+<h2 class="text-headline-md font-headline-md text-on-surface mb-4">Recent Activity</h2>
+<div class="bg-surface-card rounded-card shadow-ambient p-card-pad flex flex-col gap-4">
+<!-- Activity Item 1 -->
+<div class="flex items-start gap-4 p-3 hover:bg-surface-container-low rounded-lg transition-colors border-b border-surface-container-highest last:border-0 pb-4 last:pb-0">
+<div class="mt-1 w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-xl">report_problem</span>
+</div>
+<div class="flex-1">
+<h5 class="text-label-lg font-label-lg text-on-surface">Pothole on Main St.</h5>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-2">Reported 2 days ago</p>
+<span class="inline-block px-2 py-1 bg-tertiary-fixed text-on-tertiary-fixed rounded text-xs font-medium">Pending</span>
+</div>
+</div>
+<!-- Activity Item 2 -->
+<div class="flex items-start gap-4 p-3 hover:bg-surface-container-low rounded-lg transition-colors border-b border-surface-container-highest last:border-0 pb-4 last:pb-0">
+<div class="mt-1 w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-xl">streetview</span>
+</div>
+<div class="flex-1">
+<h5 class="text-label-lg font-label-lg text-on-surface">Broken Streetlight</h5>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-2">Reported 1 week ago</p>
+<span class="inline-block px-2 py-1 bg-success-green-soft text-on-secondary-container rounded text-xs font-medium">Approved</span>
+</div>
+</div>
+<!-- Activity Item 3 -->
+<div class="flex items-start gap-4 p-3 hover:bg-surface-container-low rounded-lg transition-colors border-b border-surface-container-highest last:border-0 pb-4 last:pb-0">
+<div class="mt-1 w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-outline">
+<span class="material-symbols-outlined text-xl">recycling</span>
+</div>
+<div class="flex-1">
+<h5 class="text-label-lg font-label-lg text-on-surface">Missed Trash Pickup</h5>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-2">Reported 2 weeks ago</p>
+<span class="inline-block px-2 py-1 bg-error-container text-on-error-container rounded text-xs font-medium">Rejected</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

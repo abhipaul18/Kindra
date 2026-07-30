@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kindra - Redeem Rewards</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config injected from system prompt -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "success-green-soft": "#EAF7F2",
+                        "karma-gold-soft": "#FEF6E9",
+                        "on-secondary-fixed": "#002113",
+                        "on-secondary-container": "#00714b",
+                        "tertiary": "#5f3c00",
+                        "primary-fixed": "#d6e3ff",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#82f9bf",
+                        "on-tertiary-fixed-variant": "#633f00",
+                        "primary-container": "#1e5aa8",
+                        "error": "#ba1a1a",
+                        "error-container": "#ffdad6",
+                        "outline-variant": "#c2c6d3",
+                        "on-primary-fixed-variant": "#00458d",
+                        "outline": "#737782",
+                        "on-tertiary": "#ffffff",
+                        "on-background": "#191c1e",
+                        "on-error": "#ffffff",
+                        "surface-tint": "#235eac",
+                        "surface-container": "#edeef0",
+                        "tertiary-container": "#7f5200",
+                        "inverse-surface": "#2e3132",
+                        "secondary-container": "#7ff6bc",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#005235",
+                        "on-primary": "#ffffff",
+                        "secondary": "#006c48",
+                        "inverse-primary": "#aac7ff",
+                        "surface-container-low": "#f2f4f6",
+                        "surface-bright": "#f8f9fb",
+                        "surface-container-highest": "#e1e2e4",
+                        "surface-dim": "#d9dadc",
+                        "trust-blue-dark": "#164480",
+                        "surface-variant": "#e1e2e4",
+                        "on-tertiary-fixed": "#291800",
+                        "primary-fixed-dim": "#aac7ff",
+                        "on-surface-variant": "#424751",
+                        "background": "#f8f9fb",
+                        "surface-container-high": "#e7e8ea",
+                        "primary": "#004287",
+                        "error-red": "#E85C4A",
+                        "tertiary-fixed": "#ffddb4",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "surface": "#f8f9fb",
+                        "secondary-fixed-dim": "#65dca4",
+                        "on-primary-fixed": "#001b3e",
+                        "on-tertiary-container": "#ffca85",
+                        "inverse-on-surface": "#f0f1f3",
+                        "surface-card": "#FFFFFF",
+                        "tertiary-fixed-dim": "#ffb955",
+                        "on-primary-container": "#bed4ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-md": "16px",
+                        "stack-lg": "24px",
+                        "gutter": "24px",
+                        "section-gap": "64px",
+                        "margin-desktop": "48px",
+                        "container-max": "1200px",
+                        "stack-sm": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "letterSpacing": "0.02em", "fontWeight": "500" }],
+                        "headline-sm": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label-lg": ["14px", { "lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            margin: 0;
+            padding-top: 64px; /* Account for fixed header */
+        }
+        
+        .card-shadow {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .nav-link.active {
+            color: theme('colors.primary');
+            border-bottom: 2px solid theme('colors.primary');
+            font-weight: 700;
+            padding-bottom: 4px;
+        }
+        
+        .tab.active {
+            background-color: theme('colors.surface-container-high');
+            color: theme('colors.primary');
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+<!-- Shared Component: TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-surface-container-lowest shadow-sm dark:shadow-none">
+<div class="flex items-center gap-gutter">
+<span class="text-headline-md font-headline-md font-bold text-primary dark:text-inverse-primary">Kindra</span>
+<nav class="hidden md:flex gap-md items-center h-full pt-4">
+<a class="nav-link active text-label-md font-label-md hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Citizen</a>
+<a class="nav-link text-on-surface-variant dark:text-outline-variant font-medium text-label-md font-label-md hover:text-primary dark:hover:text-primary-fixed transition-colors pb-1 border-b-2 border-transparent" href="#">Officer</a>
+<a class="nav-link text-on-surface-variant dark:text-outline-variant font-medium text-label-md font-label-md hover:text-primary dark:hover:text-primary-fixed transition-colors pb-1 border-b-2 border-transparent" href="#">Partner</a>
+<a class="nav-link text-on-surface-variant dark:text-outline-variant font-medium text-label-md font-label-md hover:text-primary dark:hover:text-primary-fixed transition-colors pb-1 border-b-2 border-transparent" href="#">Admin</a>
+</nav>
+</div>
+<div class="flex items-center gap-stack-md text-primary dark:text-primary-fixed-dim">
+<button class="hover:text-primary transition-colors hover:scale-95 duration-200">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+</button>
+<button class="hover:text-primary transition-colors hover:scale-95 duration-200">
+<span class="material-symbols-outlined text-2xl">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content Container -->
+<main class="max-w-container-max mx-auto px-gutter py-section-gap">
+<!-- Page Header & Karma Balance -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-stack-lg gap-stack-md">
+<div>
+<h1 class="text-headline-lg font-headline-lg text-on-background mb-stack-sm">Redeem Karma Points</h1>
+<p class="text-body-md font-body-md text-on-surface-variant">Turn your civic impact into real-world rewards.</p>
+</div>
+<!-- Karma Badge -->
+<div class="flex items-center gap-2 bg-karma-gold-soft border border-tertiary-fixed-dim px-4 py-2 rounded-full shadow-sm">
+<span class="material-symbols-outlined text-tertiary-container" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-headline-sm font-headline-sm text-tertiary-container font-bold">2,450 pts</span>
+</div>
+</div>
+<!-- Reward Categories (Tabs) -->
+<div class="flex overflow-x-auto gap-2 mb-stack-lg pb-2 hide-scrollbar">
+<button class="tab active px-4 py-2 rounded-full text-label-lg font-label-lg whitespace-nowrap border border-outline-variant transition-colors">Gift Cards</button>
+<button class="tab px-4 py-2 rounded-full text-label-lg font-label-lg text-on-surface-variant whitespace-nowrap border border-outline-variant hover:bg-surface-container-high transition-colors">Local Discounts</button>
+<button class="tab px-4 py-2 rounded-full text-label-lg font-label-lg text-on-surface-variant whitespace-nowrap border border-outline-variant hover:bg-surface-container-high transition-colors">Exclusive Rewards</button>
+</div>
+<!-- Rewards Grid (Bento/Card Grid) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter">
+<!-- Card 1: Affordable Reward -->
+<div class="bg-surface-card rounded-xl p-stack-lg card-shadow flex flex-col h-full hover:-translate-y-1 transition-transform duration-300 border border-transparent hover:border-outline-variant">
+<div class="h-32 mb-stack-md bg-surface-container-low rounded-lg flex items-center justify-center relative overflow-hidden">
+<img class="object-contain h-16 w-32 mix-blend-multiply opacity-80" data-alt="A clean, minimalist logo of a modern e-commerce brand like Amazon, featuring a simple smile arrow icon in dark blue against a white background, highly professional corporate aesthetic, bright studio lighting, soft shadows, light mode UI element." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDY5FmX5ssB4jQ_CaZIjotcZDoK5BZgZ3j3IhXdpyFcox2GPxq98qRt2fCBkxnrzPVYZMbL6HvWdAtInsSTYfERIhxSvKNOgKw57Z8Sv7p1e0eMhuECjc3J09lP28qgOC8eFU1tu6hB9YapgKvRIZUhrqGjtwzqksS5QVcrpLy4p9pwFSjnQNyAdNT9-3-0eT_r7_52vIlFdsz49UuqZG9K6YedGTEAwzNVKMsWdrp0srfMazp8Nlvd"/>
+</div>
+<div class="flex flex-col flex-grow">
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-1">₹500 Gift Card</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-stack-md uppercase tracking-wide">E-Commerce Partner</p>
+<div class="mt-auto">
+<div class="flex items-center gap-1 mb-stack-sm text-tertiary-container">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-label-lg font-label-lg font-bold">500 pts</span>
+</div>
+<button class="w-full bg-primary text-on-primary py-2 rounded-full text-label-lg font-label-lg font-semibold hover:bg-trust-blue-dark transition-colors shadow-sm">Redeem</button>
+</div>
+</div>
+</div>
+<!-- Card 2: Affordable Reward -->
+<div class="bg-surface-card rounded-xl p-stack-lg card-shadow flex flex-col h-full hover:-translate-y-1 transition-transform duration-300 border border-transparent hover:border-outline-variant">
+<div class="h-32 mb-stack-md bg-surface-container-low rounded-lg flex items-center justify-center relative overflow-hidden">
+<img class="object-contain h-16 w-32 mix-blend-multiply opacity-80" data-alt="A minimalist logo for a trendy local coffee shop, featuring a stylized steaming coffee cup in deep teal and gold, set against a crisp white background, professional branding, soft diffused lighting, perfect for a light mode interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBX57wrIvAhbidjNhvYhVLJUpDYAqSU7b3dSTf3pBVWUnthM00prZ79SDxz8g92qJYlNqsYM15apm8fUWelepUe0kNPwRnMYaDZ7gh55HpCY7bRn_2xK-hw2MDzhnw9O89tYJDVW5FGJDOGFVRbP9J4WIYdTSbQD3SZNOADCiwrzYeE2O43B80mgfQ2D9SWTHJwdTLjU8dGiFzynYex2lk73prK2C0jC-btlaLNsGhbhrfRvUwWT_Z"/>
+</div>
+<div class="flex flex-col flex-grow">
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-1">Free Specialty Coffee</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-stack-md uppercase tracking-wide">Local Cafe Co.</p>
+<div class="mt-auto">
+<div class="flex items-center gap-1 mb-stack-sm text-tertiary-container">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-label-lg font-label-lg font-bold">250 pts</span>
+</div>
+<button class="w-full bg-primary text-on-primary py-2 rounded-full text-label-lg font-label-lg font-semibold hover:bg-trust-blue-dark transition-colors shadow-sm">Redeem</button>
+</div>
+</div>
+</div>
+<!-- Card 3: Affordable Reward -->
+<div class="bg-surface-card rounded-xl p-stack-lg card-shadow flex flex-col h-full hover:-translate-y-1 transition-transform duration-300 border border-transparent hover:border-outline-variant">
+<div class="h-32 mb-stack-md bg-surface-container-low rounded-lg flex items-center justify-center relative overflow-hidden">
+<img class="object-contain h-16 w-32 mix-blend-multiply opacity-80" data-alt="A clean, professional logo for a digital entertainment platform, featuring a colorful triangle play button graphic on a white background, corporate tech aesthetic, bright and clear, soft ambient shadow, light mode UI asset." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAf1dQrF4eiKbmq-zs8797uNWEc-DbzwwiXsi_KzAR91L0DWV0wtmVu_MHGsv7RiN0yVq9tTk78ve6UYueXZpHdxgIn9vr3bLC6TVitPRkrV3PaveoY90TxNzwGpn70UVeHGkwA-DfsAoKel2ItLu5tzJls8Wrv-I1R8QN9P5kja9xN1YPTkU0IcMQLBGeEDdyE55MqFyYN6zLSJdbolWXdsrXjYbuVDyE_0i7fcU5NYu3isk_0r_FT"/>
+</div>
+<div class="flex flex-col flex-grow">
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-1">₹1000 App Store Credit</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-stack-md uppercase tracking-wide">Digital Services</p>
+<div class="mt-auto">
+<div class="flex items-center gap-1 mb-stack-sm text-tertiary-container">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-label-lg font-label-lg font-bold">1,000 pts</span>
+</div>
+<button class="w-full bg-primary text-on-primary py-2 rounded-full text-label-lg font-label-lg font-semibold hover:bg-trust-blue-dark transition-colors shadow-sm">Redeem</button>
+</div>
+</div>
+</div>
+<!-- Card 4: Too Expensive (Disabled) -->
+<div class="bg-surface-card rounded-xl p-stack-lg card-shadow flex flex-col h-full border border-outline-variant opacity-80">
+<div class="h-32 mb-stack-md bg-surface-container-high rounded-lg flex items-center justify-center relative overflow-hidden grayscale">
+<img class="object-contain h-16 w-32 mix-blend-multiply" data-alt="A sleek minimalist logo for a premium fashion retailer, featuring sharp elegant typography in dark grey on a white background, high-end retail aesthetic, bright studio lighting, soft subtle shadows, light mode UI design." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKwOn5ArzNU2M9FkG6-QUVcNnO2zj3DJjw07DoisPa7zfFCM-KtoQFiiXg-cVPqsXRkjAG18gEjf8wLokLeyKmyBPZOGaYYa3s7SvVROMrzR4pYZcXXwLgwORR0YCm8S0-mRNNI0wtsC-oICM0ocrDCZTmDdhQq9Mv9UTuGkxpZZC-m3i7hUYktf38eldKZlBnytItRzNIhjq-1rXVyiJvDYZn2CFTimf3F8_R24JZz1ZqilZS4Y9n"/>
+</div>
+<div class="flex flex-col flex-grow">
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-1">₹5000 Shopping Spree</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant mb-stack-md uppercase tracking-wide">Premium Retailer</p>
+<div class="mt-auto">
+<div class="flex items-center gap-1 mb-stack-sm text-outline">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-label-lg font-label-lg font-bold">5,000 pts</span>
+</div>
+<button class="w-full bg-surface-container-highest text-outline py-2 rounded-full text-label-lg font-label-lg font-semibold cursor-not-allowed" disabled="">Insufficient Points</button>
+</div>
+</div>
+</div>
+<!-- Card 5: Affordable Reward (Visual variety) -->
+<div class="bg-surface-card rounded-xl p-stack-lg card-shadow flex flex-col h-full hover:-translate-y-1 transition-transform duration-300 border border-transparent hover:border-outline-variant lg:col-span-2 relative overflow-hidden">
+<!-- Abstract graphic background for featured card -->
+<div class="absolute inset-0 bg-gradient-to-br from-primary-fixed-dim/20 to-transparent pointer-events-none"></div>
+<div class="flex flex-col md:flex-row h-full gap-stack-md relative z-10">
+<div class="h-32 md:h-full md:w-1/3 mb-stack-md md:mb-0 bg-white rounded-lg flex items-center justify-center shadow-sm">
+<img class="object-contain h-16 w-16 mix-blend-multiply" data-alt="A modern transit card icon, featuring a bus and train symbol in deep trust-blue on a pristine white card with soft glowing edges, professional civic tech aesthetic, bright lighting, perfect for light mode UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7VWL0s20pdmOC4t3Z6uI3GTqa8Sish_DoXGYonOOAUgYuOqmFThYOiCcpS783ly1cvcx1jC-yrRco1YT8wwKUkf5V9DF29XGMgNjrye3NCrjmC46UfnwsFbJ85iCUZLFNLusoCrNJq2zz7BCPB4LbMwPu-X5GZfWKuYnL9_UhOufWRgFlItmIUKAETuq-fMKgQ09AiWT2YWWCNxV_AalRVMBXkuXKOWeRoGdThRITM0pBcLZLyeYU"/>
+</div>
+<div class="flex flex-col flex-grow justify-center">
+<div class="inline-flex items-center gap-1 bg-secondary-fixed-dim/20 text-on-secondary-fixed-variant px-2 py-1 rounded mb-2 w-max">
+<span class="material-symbols-outlined text-sm">eco</span>
+<span class="text-label-sm font-label-sm font-semibold uppercase">Green Commute</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface mb-1">1-Month Transit Pass</h3>
+<p class="text-body-md font-body-md text-on-surface-variant mb-stack-md">Unlimited travel on city buses and metro lines.</p>
+<div class="mt-auto flex items-center justify-between">
+<div class="flex items-center gap-1 text-tertiary-container">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-label-lg font-label-lg font-bold">2,000 pts</span>
+</div>
+<button class="bg-primary text-on-primary px-6 py-2 rounded-full text-label-lg font-label-lg font-semibold hover:bg-trust-blue-dark transition-colors shadow-sm">Redeem</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Shared Component: Footer -->
+<footer class="w-full py-lg px-gutter flex flex-col md:flex-row justify-between items-center gap-md bg-surface-container-low dark:bg-inverse-surface border-t border-outline-variant dark:border-outline mt-section-gap">
+<div class="text-label-md font-label-md font-bold text-on-surface">
+            © 2024 Kindra Civic Engagement Platform
+        </div>
+<nav class="flex gap-4">
+<a class="text-on-surface-variant dark:text-surface-variant text-label-sm font-label-sm hover:text-primary dark:hover:text-primary-fixed underline transition-all duration-200" href="#">Support</a>
+<a class="text-on-surface-variant dark:text-surface-variant text-label-sm font-label-sm hover:text-primary dark:hover:text-primary-fixed underline transition-all duration-200" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-surface-variant text-label-sm font-label-sm hover:text-primary dark:hover:text-primary-fixed underline transition-all duration-200" href="#">Terms of Service</a>
+<a class="text-on-surface-variant dark:text-surface-variant text-label-sm font-label-sm hover:text-primary dark:hover:text-primary-fixed underline transition-all duration-200" href="#">Legal</a>
+</nav>
+</footer>
+<script>
+        // Simple tab switching logic for demonstration
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                document.querySelectorAll('.tab').forEach(t => {
+                    t.classList.remove('active', 'bg-surface-container-high', 'text-primary');
+                    t.classList.add('text-on-surface-variant');
+                });
+                this.classList.add('active', 'bg-surface-container-high', 'text-primary');
+                this.classList.remove('text-on-surface-variant');
+            });
+        });
+    </script>
+</body></html>

@@ -142,9 +142,9 @@ export const CitizenDashboardView: React.FC<CitizenDashboardViewProps> = ({
                       {report.category || 'General'}
                     </span>
                   </div>
-                  <span className="text-xs text-outline flex items-center gap-1">
+                  <span suppressHydrationWarning className="text-xs text-outline flex items-center gap-1">
                     <span className="material-symbols-outlined text-sm">schedule</span>
-                    {new Date(report.created_at || Date.now()).toLocaleDateString()}
+                    {new Date(report.created_at || Date.now()).toLocaleDateString('en-US')}
                   </span>
                 </div>
 

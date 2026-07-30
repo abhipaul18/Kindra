@@ -15,3 +15,44 @@
 .material-symbols-outlined.filled {
   font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
 }
+
+/* Modern UI enhancements */
+@layer utilities {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  
+  .dark .glass-card {
+    background: rgba(25, 28, 30, 0.85);
+  }
+
+  .glow-primary {
+    box-shadow: 0 0 20px rgba(0, 82, 204, 0.25);
+  }
+
+  .glow-secondary {
+    box-shadow: 0 0 20px rgba(0, 115, 44, 0.25);
+  }
+}
+
+/* Custom Smooth Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c3c6d6;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #737685;
+}
+

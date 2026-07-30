@@ -1,5 +1,5 @@
 import { supabase } from '@/src/lib/supabase';
-import { UserRole, ReportStatus, ReportPriority } from '@/src/types/database';
+import { UserRole, ReportStatus, ReportPriority, Json } from '@/src/types/database';
 
 // ── System-wide Stats ────────────────────────────────────────────
 export async function fetchAdminStats() {
@@ -47,10 +47,10 @@ export async function fetchUsers(page = 1, pageSize = 20, search?: string) {
   return data || [];
 }
 
-export async function updateUserRole(userId: string, newRole: UserRole | string) {
+export async function updateUserRole(userId: string, newRole: UserRole) {
   const { error } = await supabase
     .from('user_roles')
-    .update({ role: newRole as UserRole, updated_at: new Date().toISOString() })
+    .update({ role: newRole, updated_at: new Date().toISOString() })
     .eq('user_id', userId);
   if (error) throw error;
 }
@@ -88,14 +88,14 @@ export async function updateDepartment(id: string, updates: { name?: string; des
 }
 
 // ── All Reports (Admin view - no department filter) ──────────────
-export async function fetchAllReports(page = 1, pageSize = 20, filters: { status?: string; priority?: string; search?: string } = {}) {
+export async function fetchAllReports(page = 1, pageSize = 20, filters: { status?: ReportStatus; priority?: ReportPriority; search?: string } = {}) {
   let query = supabase
     .from('reports')
     .select('*, categories(name), departments(name)')
     .order('created_at', { ascending: false });
 
-  if (filters.status) query = query.eq('status', filters.status as any);
-  if (filters.priority) query = query.eq('priority', filters.priority as any);
+  if (filters.status) query = query.eq('status', filters.status);
+  if (filters.priority) query = query.eq('priority', filters.priority);
   if (filters.search) query = query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
 
   query = query.range((page - 1) * pageSize, page * pageSize - 1);
@@ -111,10 +111,10 @@ export async function fetchSettings() {
   return data || [];
 }
 
-export async function updateSetting(key: string, value: unknown) {
+export async function updateSetting(key: string, value: Json) {
   const { error } = await supabase
     .from('settings')
-    .update({ value: value as any, updated_at: new Date().toISOString() })
+    .update({ value, updated_at: new Date().toISOString() })
     .eq('key', key);
   if (error) throw error;
 }

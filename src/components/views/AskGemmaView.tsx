@@ -40,8 +40,13 @@ export const AskGemmaView: React.FC = () => {
     setInputQuery('');
     setIsLoading(true);
 
-    // Call OpenRouter Gemma 4 model
-    const gemmaResponse = await askGemmaAssistant(currentQuery);
+    const history = messages.map((m) => ({
+      role: m.sender === 'user' ? ('user' as const) : ('assistant' as const),
+      content: m.text,
+    }));
+
+    // Call Gemma AI model with full context system prompt and conversation history
+    const gemmaResponse = await askGemmaAssistant(currentQuery, history);
 
     const gemmaMsg: ChatMessage = {
       id: `m-${Date.now() + 1}`,

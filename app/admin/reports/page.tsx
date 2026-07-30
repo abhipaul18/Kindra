@@ -4,9 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { Card } from '@/src/components/ui/Card';
 import { Button } from '@/src/components/ui/Button';
 import { fetchAllReports } from '@/services/adminService';
+import type { ReportStatus, ReportPriority } from '@/src/types/database';
 
-const STATUS_OPTIONS = ['submitted', 'ai_verifying', 'approved', 'in_progress', 'resolved', 'rejected'];
-const PRIORITY_OPTIONS = ['low', 'medium', 'high', 'urgent'];
+const STATUS_OPTIONS: ReportStatus[] = ['submitted', 'ai_verifying', 'approved', 'in_progress', 'resolved', 'rejected'];
+const PRIORITY_OPTIONS: ReportPriority[] = ['low', 'medium', 'high', 'urgent'];
 
 const priorityColors: Record<string, string> = {
   low: 'bg-green-500/10 text-green-600 border-green-500/30',
@@ -18,7 +19,7 @@ const priorityColors: Record<string, string> = {
 export default function AdminReportsPage() {
   const [reports, setReports] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState<{ status?: string; priority?: string; search?: string }>({});
+  const [filters, setFilters] = useState<{ status?: ReportStatus; priority?: ReportPriority; search?: string }>({});
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
 
@@ -51,7 +52,7 @@ export default function AdminReportsPage() {
         </div>
         <select
           value={filters.status || ''}
-          onChange={(e) => { setFilters(f => ({ ...f, status: e.target.value || undefined })); setPage(1); }}
+          onChange={(e) => { setFilters(f => ({ ...f, status: (e.target.value as ReportStatus) || undefined })); setPage(1); }}
           className="px-3 py-2 rounded-xl bg-surface-container-high border border-outline-variant/30 text-sm text-on-surface"
         >
           <option value="">All Status</option>
@@ -59,7 +60,7 @@ export default function AdminReportsPage() {
         </select>
         <select
           value={filters.priority || ''}
-          onChange={(e) => { setFilters(f => ({ ...f, priority: e.target.value || undefined })); setPage(1); }}
+          onChange={(e) => { setFilters(f => ({ ...f, priority: (e.target.value as ReportPriority) || undefined })); setPage(1); }}
           className="px-3 py-2 rounded-xl bg-surface-container-high border border-outline-variant/30 text-sm text-on-surface"
         >
           <option value="">All Priority</option>
@@ -95,8 +96,8 @@ export default function AdminReportsPage() {
                 <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-surface-container-high text-on-surface capitalize">
                   {report.status?.replace('_', ' ')}
                 </span>
-                <span className="text-xs text-on-surface-variant flex-shrink-0">
-                  {report.created_at ? new Date(report.created_at).toLocaleDateString() : ''}
+                <span suppressHydrationWarning className="text-xs text-on-surface-variant flex-shrink-0">
+                  {report.created_at ? new Date(report.created_at).toLocaleDateString('en-US') : ''}
                 </span>
               </Card>
             </a>

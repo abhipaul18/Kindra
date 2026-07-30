@@ -6,8 +6,10 @@ import { analyzeCivicReport, type AIReportAnalysis } from '../../lib/openrouter'
 import { submitCivicReport } from '@/services/reportService';
 import { useAuth } from '@/hooks/useAuth';
 
+import type { CivicReport } from '@/src/types/database';
+
 interface ReportIssueViewProps {
-  onAddReport?: (report: any) => void;
+  onAddReport?: (report: CivicReport) => void;
   onNavigate?: (tab: string) => void;
 }
 

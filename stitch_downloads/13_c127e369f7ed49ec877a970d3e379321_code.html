@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kindra - Campaigns &amp; Events</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-variant": "#e1e2e4",
+                      "primary-container": "#1e5aa8",
+                      "on-error-container": "#93000a",
+                      "tertiary": "#5f3c00",
+                      "primary-fixed": "#d6e3ff",
+                      "on-background": "#191c1e",
+                      "outline-variant": "#c2c6d3",
+                      "on-tertiary-container": "#ffca85",
+                      "on-secondary-fixed": "#002113",
+                      "outline": "#737782",
+                      "tertiary-fixed": "#ffddb4",
+                      "karma-gold-soft": "#FEF6E9",
+                      "surface-bright": "#f8f9fb",
+                      "on-tertiary-fixed-variant": "#633f00",
+                      "error-red": "#E85C4A",
+                      "secondary": "#006c48",
+                      "inverse-primary": "#aac7ff",
+                      "surface-container": "#edeef0",
+                      "secondary-fixed-dim": "#65dca4",
+                      "on-surface-variant": "#424751",
+                      "on-primary-fixed-variant": "#00458d",
+                      "inverse-on-surface": "#f0f1f3",
+                      "surface-container-highest": "#e1e2e4",
+                      "on-secondary-container": "#00714b",
+                      "secondary-fixed": "#82f9bf",
+                      "on-surface": "#191c1e",
+                      "on-error": "#ffffff",
+                      "surface-container-low": "#f2f4f6",
+                      "surface": "#f8f9fb",
+                      "tertiary-fixed-dim": "#ffb955",
+                      "on-tertiary-fixed": "#291800",
+                      "on-primary-fixed": "#001b3e",
+                      "inverse-surface": "#2e3132",
+                      "on-secondary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "trust-blue-dark": "#164480",
+                      "tertiary-container": "#7f5200",
+                      "secondary-container": "#7ff6bc",
+                      "on-primary-container": "#bed4ff",
+                      "on-tertiary": "#ffffff",
+                      "surface-tint": "#235eac",
+                      "surface-card": "#FFFFFF",
+                      "success-green-soft": "#EAF7F2",
+                      "primary-fixed-dim": "#aac7ff",
+                      "primary": "#004287",
+                      "surface-dim": "#d9dadc",
+                      "on-secondary-fixed-variant": "#005235",
+                      "surface-container-lowest": "#ffffff",
+                      "error": "#ba1a1a",
+                      "error-container": "#ffdad6",
+                      "surface-container-high": "#e7e8ea",
+                      "background": "#f8f9fb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "container-max": "1200px",
+                      "stack-md": "16px",
+                      "gutter": "24px",
+                      "stack-lg": "24px",
+                      "stack-sm": "8px",
+                      "margin-desktop": "48px",
+                      "section-gap": "64px"
+              },
+              "fontFamily": {
+                      "label-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "headline-sm": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-lg": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-sm": [
+                              "20px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-surface font-sans antialiased">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-gutter h-16 bg-surface-container-lowest shadow-sm">
+<div class="flex items-center gap-gutter">
+<div class="text-headline-md font-headline-md font-bold text-primary">Kindra</div>
+<nav class="hidden md:flex gap-md">
+<!-- Navigation links from JSON -->
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors text-label-md font-label-md" href="#">Citizen</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors text-label-md font-label-md" href="#">Officer</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors text-label-md font-label-md" href="#">Partner</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors text-label-md font-label-md" href="#">Admin</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<!-- Search on right per JSON -->
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" style="font-variation-settings: 'FILL' 0;">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-full focus:ring-2 focus:ring-primary text-body-md font-body-md" placeholder="Search" type="text"/>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_circle</span>
+</button>
+</div>
+</header>
+<!-- SideNavBar (Hidden on md for this layout to match intent, but rendering per instructions as a structural shell option if needed, hiding for now to focus on content canvas) -->
+<aside class="hidden xl:flex fixed left-0 top-16 h-[calc(100vh-64px)] w-64 py-md px-sm flex-col gap-xs bg-surface border-r border-outline-variant/30 shadow-none z-40">
+<div class="px-4 py-3 mb-4">
+<h2 class="text-headline-sm font-headline-sm text-primary">Civic Portal</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Engagement Hub</p>
+</div>
+<nav class="flex-1 flex flex-col gap-xs">
+<a class="flex items-center gap-base text-on-surface-variant px-4 py-3 rounded-lg hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">dashboard</span>
+<span class="text-label-md font-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-base text-on-surface-variant px-4 py-3 rounded-lg hover:bg-surface-container-high transition-colors text-primary bg-primary-container/10" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="text-label-md font-label-md font-bold">Impact</span>
+</a>
+<a class="flex items-center gap-base text-on-surface-variant px-4 py-3 rounded-lg hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">assignment</span>
+<span class="text-label-md font-label-md">Reports</span>
+</a>
+<a class="flex items-center gap-base bg-primary-container text-on-primary-container rounded-lg px-4 py-3 transition-colors opacity-80 shadow-md" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span>
+<span class="text-label-md font-label-md">Community</span>
+</a>
+<a class="flex items-center gap-base text-on-surface-variant px-4 py-3 rounded-lg hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span>
+<span class="text-label-md font-label-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto px-4 py-3">
+<button class="w-full py-2 px-4 bg-primary text-on-primary rounded-full text-label-md font-label-md font-bold shadow-md hover:shadow-lg transition-all">Report Issue</button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="pt-16 xl:pl-64 min-h-screen">
+<div class="max-w-[1200px] mx-auto px-gutter py-margin-desktop">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-stack-md mb-section-gap">
+<div>
+<h1 class="text-display-lg font-display-lg text-on-surface mb-2">Campaigns</h1>
+<p class="text-body-lg font-body-lg text-on-surface-variant">Discover and join local civic initiatives to earn karma.</p>
+</div>
+<div class="flex gap-stack-sm w-full md:w-auto">
+<div class="relative flex-1 md:w-64">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" style="font-variation-settings: 'FILL' 0;">search</span>
+<input class="w-full pl-10 pr-4 py-3 bg-surface-card border border-outline-variant rounded-lg focus:border-primary focus:ring-1 focus:ring-primary text-body-md font-body-md shadow-sm" placeholder="Search campaigns..." type="text"/>
+</div>
+<button class="flex items-center gap-2 px-4 py-3 bg-surface-card border border-outline-variant rounded-lg hover:bg-surface-container-low transition-colors shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">tune</span>
+<span class="text-label-lg font-label-lg text-on-surface">Filters</span>
+</button>
+</div>
+</div>
+<!-- Featured Campaigns -->
+<section class="mb-section-gap">
+<div class="flex justify-between items-end mb-stack-md">
+<h2 class="text-headline-lg font-headline-lg text-on-surface">Featured Campaigns</h2>
+<div class="flex gap-2">
+<button class="p-2 rounded-full bg-surface-card shadow-sm hover:bg-surface-container-low"><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="p-2 rounded-full bg-surface-card shadow-sm hover:bg-surface-container-low"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+<!-- Bento-style featured grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter h-auto lg:h-[400px]">
+<!-- Large Featured Card -->
+<div class="col-span-1 lg:col-span-2 relative rounded-xl overflow-hidden shadow-lg group cursor-pointer h-[300px] lg:h-full">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="A vibrant wide-angle photograph of a city park during a bustling community cleanup event. Dozens of diverse volunteers in green safety vests are planting saplings and picking up litter. The lighting is bright, sunny, and optimistic, capturing a modern, civic-minded atmosphere. The color palette emphasizes lush greens, bright sunny yellows, and the clear blue sky, aligning with a high-trust, positive civic brand. Shot with a high-quality DSLR, shallow depth of field on the foreground volunteers." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAvcnMGLaX__AL8RC1sm99g2MkiTEgneB6jmHvMlv8-FBcfnTz2VV4nBHQb8WG4Hz8tDqn7UhH3akFkk1miAWYpwEtaZ4cuFg9O_aNsW0lyshj7CfNdyI8lkH-HnEEAMe0PEPfPEXHmIU2Na728mzbsLCd-7FscxmuX3vubfA9zxAnZzlpEY42QB4ZzsJuPjroQ4eInUBDXX1Du9vkTzTKNeMSWcFg8-nUrgMasBrS_ttSjDIlUGQDW')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+<div class="absolute top-4 right-4 bg-karma-gold-soft text-on-tertiary-fixed-variant px-3 py-1 rounded-full flex items-center gap-2 shadow-md">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">stars</span>
+<span class="text-label-sm font-label-sm font-bold">500 Karma Max</span>
+</div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<div class="flex items-center gap-3 mb-3">
+<img class="w-10 h-10 rounded-full border-2 border-white shadow-sm object-cover" data-alt="A modern, abstract logo for a city environmental department, featuring a stylized leaf morphing into a city skyline. The logo uses a minimalist design with solid green and trust-blue colors on a clean white circular background. It looks official yet approachable." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBLrHaOM7bji6XQ7NSETkKhvNs8HOkQXqRiF_qnbIwIPJvkvEbF9_-HOnlvmMBAQ5h39nQyu2slVZsVZmIYD0GXJ0qQ80VCDpbMRLZlaZS-GyPxEINQZxsKpmHm4D9mWOq8Z37s_jP8SWL-i_7BbcXyJ4UlNeGSYzA0y6piSTlScJcWb07Io0vD9l0E8eIEmWWXcsoBsMMFOX_T0fzN7oGA1JCoXFv0iMFECB_Xqn-R8rAYzg3wpb_r"/>
+<span class="text-white text-label-md font-label-md font-medium">City Metro Environmental Dept.</span>
+</div>
+<h3 class="text-headline-lg font-headline-lg text-white mb-2 group-hover:underline decoration-white/50">City-wide Cleanliness Week</h3>
+<div class="flex items-center gap-4 text-white/90">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">calendar_month</span>
+<span class="text-label-md font-label-md">Oct 12 - Oct 19</span>
+</div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">group</span>
+<span class="text-label-md font-label-md">1,240 Participants</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Featured Card -->
+<div class="col-span-1 relative rounded-xl overflow-hidden shadow-lg group cursor-pointer h-[300px] lg:h-full">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="A close-up, high-quality photograph of hands carefully packing fresh vegetables into a cardboard box at a local community food bank. The lighting is warm and inviting, highlighting the vibrant colors of the produce—bright reds, deep greens, and earthy browns. The background is softly blurred, showing other volunteers working in a clean, modern warehouse setting. The mood is compassionate, organized, and reliable." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAekDtbYJPbIxxj84_cyC7J2S5koaL6n40rGWI1kwHtvfbNupf1S0_sVxM6ITpWIoD5_j4-wm5JVVEw6JW9sL3czDz8FNHcgX4GiP6kf7GvqEazeBoslcbq8lkeUnjXaSGVElOd_7kXeyUg_p15Xm9sVPVJa4RZSMqc9iAY_uctWAIG4bN6tWetpee5IN4qHH-DJ73EWFgEflFj8W05-n_qtEMI-YNj1ghNKHUJD6-9OyV8IFh9kgW0')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+<div class="absolute top-4 right-4 bg-success-green-soft text-on-secondary-container px-3 py-1 rounded-full flex items-center gap-2 shadow-md">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">volunteer_activism</span>
+<span class="text-label-sm font-label-sm font-bold">High Priority</span>
+</div>
+<div class="absolute bottom-0 left-0 p-6 w-full">
+<h3 class="text-headline-md font-headline-md text-white mb-2 group-hover:underline decoration-white/50">Autumn Food Drive</h3>
+<div class="flex items-center gap-1 text-white/90 mb-3">
+<span class="material-symbols-outlined text-[18px]">group</span>
+<span class="text-label-md font-label-md">450 Needed</span>
+</div>
+<div class="w-full bg-white/30 rounded-full h-1.5 mb-2 overflow-hidden">
+<div class="bg-secondary-fixed h-1.5 rounded-full" style="width: 65%"></div>
+</div>
+<span class="text-white/80 text-label-sm font-label-sm">65% Filled</span>
+</div>
+</div>
+</div>
+</section>
+<!-- All Campaigns Grid -->
+<section>
+<div class="flex justify-between items-center mb-stack-lg border-b border-outline-variant/30 pb-4">
+<h2 class="text-headline-md font-headline-md text-on-surface">All Campaigns</h2>
+<div class="flex gap-2">
+<select class="bg-transparent border-none text-label-md font-label-md text-on-surface-variant focus:ring-0 cursor-pointer">
+<option>Sort by: Newest</option>
+<option>Sort by: Karma</option>
+<option>Sort by: Urgency</option>
+</select>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter">
+<!-- Card 1 -->
+<div class="bg-surface-card rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] border border-outline-variant/20 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300">
+<div class="h-48 relative overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A bright, clear photograph of a newly painted pedestrian crosswalk in a suburban neighborhood. The white and yellow lines are crisp against the dark asphalt. In the background, out of focus, two city workers in safety gear are packing up their equipment. The scene conveys order, safety, and community improvement. Natural daylight, highly detailed, modern civic aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC9fsFfBJTV38o-Q3o3HK_GuWOM-vQqrnzyoNllt33x1970TUw18C_B0zcXzkORcd_1KTbe4Hc1CzJjvW1X7OIFmYwPwkWYwuPucPlGWnOLW0mEUSMgSMIpYv_EIX8XcxXTUgx7kSmMw0Bsno67VUm1ueWwG3pAtzkll9lfzjDOyGXQoJzUBaUyE5HyJYW_RY2_H1f85JqTRDdrhoQeS09Skw7y7xgp0FFjp_JoHZUWeFfjoHf70XGq')"></div>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-label-sm font-label-sm text-primary font-bold shadow-sm">
+                                Infrastructure
+                            </div>
+</div>
+<div class="p-6 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-headline-sm font-headline-sm text-on-surface leading-tight">Safe Streets Initiative: Repainting Crosswalks</h3>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant line-clamp-2 mb-4 flex-1">Help coordinate traffic safely while public works teams repaint critical intersections downtown.</p>
+<div class="space-y-2 mb-6">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">domain</span>
+<span class="text-label-md font-label-md">Dept. of Transportation</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span class="text-label-md font-label-md">Next Sat, 8:00 AM</span>
+</div>
+</div>
+<div class="flex justify-between items-center pt-4 border-t border-outline-variant/30">
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Reward</span>
+<span class="text-label-md font-label-md font-bold text-tertiary-container">50 - 150 pts</span>
+</div>
+<button class="px-6 py-2 bg-primary-container text-on-primary-container rounded-full text-label-md font-label-md font-bold hover:bg-primary hover:text-on-primary transition-colors shadow-sm">View</button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-card rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] border border-outline-variant/20 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300">
+<div class="h-48 relative overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A heartwarming photograph of a diverse group of people planting small trees in an urban park. Focus is on a young woman smiling as she pats down soil around a sapling. The lighting is golden hour, creating long, warm shadows and a sense of hope and growth. The overall mood is uplifting, tactile, and deeply connected to nature and community. High resolution, professional editorial style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCpGU1a0PuaEFpzKqbu_jTG-cPR5-UTMbS7qoZTbOBBCFJOebD3K4Kbc-xUMkqV6XgS1TBxkgsjSOmBiIJh965TjqrUGtFYStTGOciWs71k5yuGjBUC_m8JrEwukJbgJzgMb4ONbB4xZcFJixPXuJCp9K-dHEdQNs9L9fO4q7OAwi_BbqjqUzyMpPo9Hoq788rlIwtH5gcmrhUKfy2w1k8qvBrZKVyKk4smmC0LIek4FGZPplNJjOCh')"></div>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-label-sm font-label-sm text-secondary font-bold shadow-sm">
+                                Environment
+                            </div>
+</div>
+<div class="p-6 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-headline-sm font-headline-sm text-on-surface leading-tight">Green City Plantation Drive</h3>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant line-clamp-2 mb-4 flex-1">Join the massive effort to plant 10,000 new saplings across major city parks to improve air quality.</p>
+<div class="space-y-2 mb-6">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">eco</span>
+<span class="text-label-md font-label-md">EcoAlliance NGO</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span class="text-label-md font-label-md">Nov 1 - Nov 5</span>
+</div>
+</div>
+<div class="flex justify-between items-center pt-4 border-t border-outline-variant/30">
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Reward</span>
+<span class="text-label-md font-label-md font-bold text-tertiary-container">100 - 300 pts</span>
+</div>
+<button class="px-6 py-2 bg-primary-container text-on-primary-container rounded-full text-label-md font-label-md font-bold hover:bg-primary hover:text-on-primary transition-colors shadow-sm">View</button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-card rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] border border-outline-variant/20 overflow-hidden flex flex-col hover:-translate-y-1 transition-transform duration-300">
+<div class="h-48 relative overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A well-lit, contemporary indoor scene showing rows of neatly organized laptops and tablets on long white tables in a community center. A few individuals are interacting with the screens, focusing on an online survey form. The environment feels modern, educational, and accessible. The color palette features clean whites, tech-blues, and warm wood tones. Shot from a slightly elevated angle." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCR55LDHacP6OojYmzpv6xpBZyKHX91UzxONjmzoC4TTq8cxFNOb4cO9Q8FP6hIDJm1TlWKZPr1ZaegBTILJtbf68KpVLQSDS1NDsvm8eoTVwcbyWA4uWxq3YdheLk_MSbR_LCpkXTPeDHfDHlFDEVVYoZ0MvsLl7tPg9AGhAZsiEOuW4L7sTlA11YaE9MQRpCDcMBPXWgNpGOLEd3COi86fe_lbYouM-nsny4ts-v0JyQ4eeUtyuvC')"></div>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-label-sm font-label-sm text-trust-blue-dark font-bold shadow-sm">
+                                Civic Tech
+                            </div>
+</div>
+<div class="p-6 flex-1 flex flex-col">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-headline-sm font-headline-sm text-on-surface leading-tight">Digital Literacy Workshop Mentors</h3>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant line-clamp-2 mb-4 flex-1">Volunteer to teach basic internet and security skills to senior citizens at the central library.</p>
+<div class="space-y-2 mb-6">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">local_library</span>
+<span class="text-label-md font-label-md">Central Library Board</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span class="text-label-md font-label-md">Ongoing (Tuesdays)</span>
+</div>
+</div>
+<div class="flex justify-between items-center pt-4 border-t border-outline-variant/30">
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-on-surface-variant">Reward</span>
+<span class="text-label-md font-label-md font-bold text-tertiary-container">50 pts / hour</span>
+</div>
+<button class="px-6 py-2 bg-primary-container text-on-primary-container rounded-full text-label-md font-label-md font-bold hover:bg-primary hover:text-on-primary transition-colors shadow-sm">View</button>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-stack-lg flex justify-center">
+<button class="px-6 py-3 border-2 border-outline-variant text-on-surface-variant rounded-full text-label-md font-label-md font-bold hover:bg-surface-container-low transition-colors">Load More Campaigns</button>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-lg px-gutter flex flex-col md:flex-row justify-between items-center gap-md bg-surface-container-low dark:bg-inverse-surface border-t border-outline-variant dark:border-outline ml-0 xl:ml-64 transition-all duration-200 p-8">
+<div class="text-label-md font-label-md font-bold text-on-surface">© 2024 Kindra Civic Engagement Platform</div>
+<div class="flex gap-4 flex-wrap justify-center">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed underline text-label-sm font-label-sm" href="#">Support</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed underline text-label-sm font-label-sm" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed underline text-label-sm font-label-sm" href="#">Terms of Service</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed underline text-label-sm font-label-sm" href="#">Legal</a>
+</div>
+</footer>
+</body></html>

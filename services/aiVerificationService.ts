@@ -1,5 +1,6 @@
 import { supabase } from '@/src/lib/supabase';
-import { analyzeCivicReportWithGemma, type AIVerificationResult } from '@/src/lib/openrouter';
+import { executeGemmaVerificationPipeline } from '@/src/lib/gemma/verificationPipeline';
+import type { AIVerificationResult } from '@/src/lib/openrouter';
 import type { ReportPriority } from '@/src/types/database';
 
 export async function verifyCivicReport(reportId: string): Promise<{
@@ -7,8 +8,9 @@ export async function verifyCivicReport(reportId: string): Promise<{
   isDuplicate: boolean;
   duplicateCount: number;
   finalKarma: number;
+  pipelineOutput?: any;
 }> {
-  // 1. Fetch report details from database
+  // 1. Fetch report details & image from database
   const { data: report, error } = await supabase
     .from('reports')
     .select('*')
@@ -19,116 +21,96 @@ export async function verifyCivicReport(reportId: string): Promise<{
     throw new Error(`Report ${reportId} not found in database`);
   }
 
-  // 2. Call OpenRouter Gemma Vision AI Analysis
-  const aiResult = await analyzeCivicReportWithGemma(
-    report.title,
-    report.description,
-    report.location_name,
-    (report as any).image_url
-  );
+  const { data: imageRecords } = await supabase
+    .from('report_images')
+    .select('image_url')
+    .eq('report_id', reportId);
 
-  // 3. Duplicate Detection Check (Within ~500m radius and 48 hours window)
-  let isDuplicate = false;
-  let duplicateCount = 0;
+  const images = imageRecords && imageRecords.length > 0
+    ? imageRecords.map(r => r.image_url)
+    : ['https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&auto=format&fit=crop&q=60'];
 
-  if (report.latitude && report.longitude) {
-    const latMin = report.latitude - 0.005;
-    const latMax = report.latitude + 0.005;
-    const lngMin = report.longitude - 0.005;
-    const lngMax = report.longitude + 0.005;
-    const timeThreshold = new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString();
+  // 2. Execute Full Gemma AI Verification Production Pipeline
+  const pipelineOutput = await executeGemmaVerificationPipeline({
+    userId: report.reporter_id || '00000000-0000-0000-0000-000000000000',
+    reportId: report.id,
+    title: report.title,
+    notes: report.description,
+    images,
+    latitude: report.latitude || 28.6139,
+    longitude: report.longitude || 77.2090,
+    locationAddress: report.location_name,
+  });
 
-    const { data: nearbyReports } = await supabase
-      .from('reports')
-      .select('id')
-      .neq('id', reportId)
-      .gte('latitude', latMin)
-      .lte('latitude', latMax)
-      .gte('longitude', lngMin)
-      .lte('longitude', lngMax)
-      .gte('created_at', timeThreshold);
+  const isDuplicate = pipelineOutput.fraud.isDuplicate;
+  const finalKarma = pipelineOutput.karma.finalKarmaAwarded;
 
-    if (nearbyReports && nearbyReports.length > 0) {
-      isDuplicate = true;
-      duplicateCount = nearbyReports.length;
-    }
-  }
-
-  // 4. Calculate Final Karma Award based on Severity & Duplicate Flag
-  let finalKarma = aiResult.karma;
   let mappedPriority: ReportPriority = 'medium';
+  if (pipelineOutput.impact.urgencyRating > 80) mappedPriority = 'urgent';
+  else if (pipelineOutput.impact.urgencyRating > 60) mappedPriority = 'high';
+  else if (pipelineOutput.impact.urgencyRating < 30) mappedPriority = 'low';
 
-  if (aiResult.severity === 'Critical') {
-    finalKarma = 100;
-    mappedPriority = 'urgent';
-  } else if (aiResult.severity === 'High') {
-    finalKarma = 70;
-    mappedPriority = 'high';
-  } else if (aiResult.severity === 'Medium') {
-    finalKarma = 40;
-    mappedPriority = 'medium';
-  } else if (aiResult.severity === 'Low') {
-    finalKarma = 20;
-    mappedPriority = 'low';
-  }
-
-  if (isDuplicate) {
-    finalKarma = 10; // Reduced Karma for duplicate report submission
-  }
-
-  // 5. Query Department ID for matching department name
+  // 3. Query Department ID for matching department name
   let assignedDepartmentId = report.assigned_department_id;
-  if (aiResult.department) {
+  if (pipelineOutput.routing.destinationDepartment) {
     const { data: dept } = await supabase
       .from('departments')
       .select('id')
-      .ilike('name', `%${aiResult.department}%`)
-      .single();
+      .ilike('name', `%${pipelineOutput.routing.routingTargetEntity}%`)
+      .maybeSingle();
 
     if (dept) {
       assignedDepartmentId = dept.id;
     }
   }
 
-  // 6. Update Reports PostgreSQL Table
-  const newStatus = aiResult.is_valid ? 'approved' : 'rejected';
+  // 4. Update Reports PostgreSQL Table with verified state
+  const isApproved = pipelineOutput.decision.status === 'auto_verified' || pipelineOutput.decision.status === 'verified_low_confidence';
+  const newStatus = isApproved ? 'approved' : pipelineOutput.decision.requiresManualReview ? 'ai_verifying' : 'rejected';
+
   await supabase
     .from('reports')
     .update({
       status: newStatus,
       priority: mappedPriority,
       assigned_department_id: assignedDepartmentId,
-      karma_awarded: finalKarma,
+      karma_awarded: isApproved ? finalKarma : 0,
       updated_at: new Date().toISOString(),
     })
     .eq('id', reportId);
 
-  // 7. Insert into report_ai_results table
+  // 5. Insert into report_ai_results table for backwards compatibility
   await supabase.from('report_ai_results').upsert({
     report_id: reportId,
-    suggested_category: aiResult.category,
-    confidence_score: aiResult.confidence,
-    severity_rating: aiResult.severity,
-    ai_summary: aiResult.summary,
+    suggested_category: pipelineOutput.classification.category,
+    confidence_score: pipelineOutput.decision.confidenceScore,
+    severity_rating: mappedPriority.toUpperCase(),
+    ai_summary: pipelineOutput.summaries.executiveSummary,
     is_duplicate: isDuplicate,
-    raw_response: aiResult as any,
+    raw_response: JSON.parse(JSON.stringify(pipelineOutput)),
   });
 
-  // 8. Award Karma & Create Notification for Citizen
-  if (report.reporter_id && aiResult.is_valid) {
-    await supabase.rpc('award_karma', {
-      p_user_id: report.reporter_id,
-      p_amount: finalKarma,
-      p_action_type: 'report_approved',
-      p_description: `Verified civic report: ${report.title}`,
-      p_reference_id: reportId,
-    });
-  }
+  const aiResult: AIVerificationResult = {
+    is_valid: isApproved,
+    category: pipelineOutput.classification.category,
+    confidence: pipelineOutput.decision.confidenceScore,
+    severity: mappedPriority === 'urgent' ? 'Critical' : mappedPriority === 'high' ? 'High' : 'Medium',
+    urgency: mappedPriority === 'urgent' ? 'Urgent' : mappedPriority === 'high' ? 'High' : 'Medium',
+    department: pipelineOutput.routing.destinationDepartment,
+    summary: pipelineOutput.summaries.executiveSummary,
+    reasoning: pipelineOutput.decision.decisionReasoning,
+    environment_score: pipelineOutput.impact.environmentalScore,
+    public_safety_score: pipelineOutput.impact.communityScore,
+    karma: finalKarma,
+    model_used: 'gemma-4-26b-a4b-it:free',
+    prompt_version: 'v2.4-enterprise',
+  };
 
   return {
     aiResult,
     isDuplicate,
-    duplicateCount,
+    duplicateCount: isDuplicate ? 1 : 0,
     finalKarma,
+    pipelineOutput,
   };
 }

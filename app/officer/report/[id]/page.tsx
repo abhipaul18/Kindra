@@ -5,8 +5,9 @@ import { useParams, useRouter } from 'next/navigation';
 import { Card } from '@/src/components/ui/Card';
 import { Button } from '@/src/components/ui/Button';
 import { fetchReportDetail, updateReportStatus, assignReportDepartment, fetchDepartments } from '@/services/officerService';
+import type { ReportStatus } from '@/src/types/database';
 
-const STATUS_TRANSITIONS = ['submitted', 'approved', 'in_progress', 'resolved', 'rejected'];
+const STATUS_TRANSITIONS: ReportStatus[] = ['submitted', 'approved', 'in_progress', 'resolved', 'rejected'];
 
 export default function OfficerReportDetailPage() {
   const params = useParams();
@@ -39,7 +40,7 @@ export default function OfficerReportDetailPage() {
     load();
   }, [reportId]);
 
-  async function handleStatusChange(newStatus: string) {
+  async function handleStatusChange(newStatus: ReportStatus) {
     setUpdating(true);
     try {
       await updateReportStatus(reportId, newStatus);

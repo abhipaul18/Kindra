@@ -1,0 +1,221 @@
+export interface OpenRouterDiagnosticResult {
+  content: string | null;
+  modelUsed?: string;
+  apiError?: {
+    statusCode: number;
+    statusText: string;
+    endpoint: string;
+    model: string;
+    message: string;
+  };
+}
+
+/**
+ * Convert a browser File or Blob into a proper Base64 Data URL
+ * (e.g. "data:image/jpeg;base64,/9j/4AAQSk...").
+ *
+ * This is the ONLY correct way to prepare an uploaded image for OpenRouter.
+ * Never send blob: URLs — they are local browser references that the API cannot access.
+ */
+export function fileToBase64(file: File | Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      console.log('[Image Base64 Conversion]');
+      console.log('  File Name  :', (file as File).name || 'Blob');
+      console.log('  MIME Type  :', file.type || 'unknown');
+      console.log('  Base64 Len :', result.length);
+      console.log('  First 50ch :', result.substring(0, 50));
+      resolve(result);
+    };
+    reader.onerror = () => reject(new Error('FileReader failed to read image'));
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
+ * Validate and normalize an image string for OpenRouter's `image_url.url` field.
+ *
+ * - Accepts: `data:image/...;base64,...` or `https://...` URLs.
+ * - Rejects: `blob:` URLs (they are browser-local and cannot be decoded by the API).
+ */
+export function normalizeImageToDataUrl(imageInput?: string): string | undefined {
+  if (!imageInput) return undefined;
+
+  // Reject blob: URLs — they MUST be converted to base64 before reaching here
+  if (imageInput.startsWith('blob:')) {
+    console.error('[Image Validation FAILED] Received a blob: URL. This is a browser-local reference and cannot be sent to OpenRouter.');
+    console.error('  Received:', imageInput);
+    return undefined;
+  }
+
+  // Already a valid data URI or remote URL
+  if (imageInput.startsWith('data:image/') || imageInput.startsWith('https://') || imageInput.startsWith('http://')) {
+    return imageInput;
+  }
+
+  // Bare base64 string — wrap it in a JPEG data URI
+  return `data:image/jpeg;base64,${imageInput}`;
+}
+
+/**
+ * Send a multimodal (text + optional image) request directly to OpenRouter.
+ *
+ * - No local model whitelist — every configured model is sent to the API.
+ * - If OpenRouter rejects the model or payload, the raw API error is captured
+ *   and returned so the UI can display it.
+ */
+export async function executeGemmaMultimodalRequest(
+  promptText: string,
+  imageUrl?: string,
+  modelOverride?: string
+): Promise<OpenRouterDiagnosticResult> {
+  const apiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
+  const endpointUrl = 'https://openrouter.ai/api/v1/chat/completions';
+
+  if (!apiKey) {
+    console.warn('[Gemma AI Client] OpenRouter API key missing in environment.');
+    return { content: null };
+  }
+
+  // Determine the model — no local capability filtering
+  const primaryModel = modelOverride || process.env.NEXT_PUBLIC_OPENROUTER_MODEL || 'google/gemma-4-26b-a4b-it:free';
+
+  const fallbackModels = [
+    primaryModel,
+    'meta-llama/llama-3.2-11b-vision-instruct:free',
+    'qwen/qwen-2-vl-7b-instruct:free',
+    'google/gemini-2.0-flash-exp:free',
+  ];
+  // Deduplicate while preserving order
+  const models = Array.from(new Set(fallbackModels));
+
+  let lastApiError: OpenRouterDiagnosticResult['apiError'] | undefined;
+
+  for (const model of models) {
+    try {
+      const normalizedImage = normalizeImageToDataUrl(imageUrl);
+
+      // Build the multimodal messages array per OpenRouter spec
+      const messages: any[] = normalizedImage
+        ? [
+            {
+              role: 'user',
+              content: [
+                { type: 'text', text: promptText },
+                { type: 'image_url', image_url: { url: normalizedImage } },
+              ],
+            },
+          ]
+        : [
+            {
+              role: 'user',
+              content: promptText,
+            },
+          ];
+
+      const requestHeaders = {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://kindra.app',
+        'X-Title': 'KINDRA Gemma Verification Engine',
+      };
+
+      const requestBody = {
+        model,
+        messages,
+        temperature: 0.1,
+        max_tokens: 600,
+      };
+
+      // ── Debug: Full Request Diagnostics ──────────────────────────
+      console.log('====================================================');
+      console.log('[OpenRouter Request Diagnostics]');
+      console.log('  Selected Model  :', model);
+      console.log('  Request URL     :', endpointUrl);
+      console.log('  HTTP Method     : POST');
+      console.log('  Image Included  :', Boolean(normalizedImage));
+      console.log('  Headers (redacted):', {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer [REDACTED]',
+        'HTTP-Referer': 'https://kindra.app',
+        'X-Title': 'KINDRA Gemma Verification Engine',
+      });
+      console.log('  Request Body    :', JSON.stringify(requestBody, null, 2));
+      console.log('  Request Sent    : true');
+      console.log('====================================================');
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+      const response = await fetch(endpointUrl, {
+        method: 'POST',
+        headers: requestHeaders,
+        body: JSON.stringify(requestBody),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      // Read the full response body once
+      const rawResponseText = await response.text();
+
+      // ── Debug: Full Response Diagnostics ─────────────────────────
+      console.log('====================================================');
+      console.log('[OpenRouter Response Received]');
+      console.log('  HTTP Status     :', response.status, response.statusText);
+      console.log('  Response OK     :', response.ok);
+      console.log('  Raw Response    :', rawResponseText);
+      console.log('====================================================');
+
+      if (!response.ok) {
+        lastApiError = {
+          statusCode: response.status,
+          statusText: response.statusText,
+          endpoint: endpointUrl,
+          model,
+          message: rawResponseText,
+        };
+        // Try next fallback model on 400/404/429/5xx
+        continue;
+      }
+
+      let data: any;
+      try {
+        data = JSON.parse(rawResponseText);
+      } catch {
+        console.error('[OpenRouter] Could not parse JSON response:', rawResponseText);
+        continue;
+      }
+
+      const rawContent = data.choices?.[0]?.message?.content?.trim();
+      if (!rawContent) continue;
+
+      const cleanedContent = rawContent
+        .replace(/```json/gi, '')
+        .replace(/```/g, '')
+        .trim();
+
+      return {
+        content: cleanedContent,
+        modelUsed: model,
+      };
+    } catch (err: any) {
+      console.warn(`[Gemma AI Client] Exception invoking model ${model}:`, err);
+      lastApiError = {
+        statusCode: 500,
+        statusText: 'Client Fetch Exception',
+        endpoint: endpointUrl,
+        model,
+        message: String(err?.message || err),
+      };
+    }
+  }
+
+  // All models exhausted — return the last error for the UI to display
+  return {
+    content: null,
+    apiError: lastApiError,
+  };
+}

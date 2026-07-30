@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/src/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
-import type { CivicReport, NotificationItem, Credential } from '@/src/types/database';
+import type { CivicReport, NotificationItem, Credential, UserCredential } from '@/src/types/database';
 import { mockCivicReports, mockNotifications } from '@/src/lib/mockData';
 
 export interface FormattedUserCredential {
@@ -29,7 +29,7 @@ export function useCitizenDashboard() {
         .from('profiles')
         .select('*')
         .eq('id', userId)
-        .single();
+        .maybeSingle();
       if (error) return authProfile;
       return data;
     },
@@ -68,7 +68,7 @@ export function useCitizenDashboard() {
         ];
       }
 
-      let userCreds: any[] = [];
+      let userCreds: UserCredential[] = [];
       if (userId) {
         const { data } = await supabase
           .from('user_credentials')
@@ -78,7 +78,7 @@ export function useCitizenDashboard() {
       }
 
       return catalog.map((cred: Credential) => {
-        const userMatch = userCreds.find((uc: any) => uc.credential_id === cred.id);
+        const userMatch = userCreds.find((uc: UserCredential) => uc.credential_id === cred.id);
         return {
           id: cred.id,
           category_name: cred.category_name,
