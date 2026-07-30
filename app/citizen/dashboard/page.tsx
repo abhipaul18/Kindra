@@ -201,7 +201,7 @@ export default function CitizenDashboardPage() {
                   </div>
                   <div>
                     <h4 className="font-bold text-sm text-on-surface">{report.title}</h4>
-                    <p className="text-xs text-on-surface-variant">{report.location_name} • {new Date(report.created_at).toLocaleDateString()}</p>
+                    <p className="text-xs text-on-surface-variant">{report.location_name} • {new Date(report.created_at || Date.now()).toLocaleDateString()}</p>
                   </div>
                 </div>
                 <span className="text-xs font-extrabold bg-secondary-container/20 text-secondary border border-secondary/30 px-3 py-1 rounded-full">

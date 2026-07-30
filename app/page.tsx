@@ -159,7 +159,7 @@ export default function HomePage() {
                   <Card key={n.id} className="p-sm bg-surface-container-low border border-outline-variant/20 gap-1">
                     <span className="font-bold text-on-surface text-sm">{n.title}</span>
                     <p className="text-xs text-on-surface-variant leading-relaxed">{n.message}</p>
-                    <span className="text-[10px] text-outline mt-1">{new Date(n.created_at).toLocaleTimeString()}</span>
+                    <span className="text-[10px] text-outline mt-1">{new Date(n.created_at || Date.now()).toLocaleTimeString()}</span>
                   </Card>
                 ))}
               </div>

@@ -22,6 +22,10 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN null; END $$;
 
 DO $$ BEGIN
+    CREATE TYPE task_status AS ENUM ('open', 'in_progress', 'completed', 'cancelled');
+EXCEPTION WHEN duplicate_object THEN null; END $$;
+
+DO $$ BEGIN
     CREATE TYPE partnership_status AS ENUM ('pending', 'approved', 'rejected');
 EXCEPTION WHEN duplicate_object THEN null; END $$;
 

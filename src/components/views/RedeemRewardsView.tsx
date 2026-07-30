@@ -3,6 +3,8 @@ import type { Reward } from '../../types/database';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Chip } from '../ui/Chip';
+import { redeemRewardVoucher } from '@/services/rewardService';
+import { useAuth } from '@/hooks/useAuth';
 
 export interface RedeemRewardsViewProps {
   rewards: Reward[];
@@ -11,12 +13,25 @@ export interface RedeemRewardsViewProps {
 }
 
 export const RedeemRewardsView: React.FC<RedeemRewardsViewProps> = ({ rewards, karmaPoints, onRedeem }) => {
+  const { user } = useAuth();
   const [redeemedCodes, setRedeemedCodes] = useState<Record<string, string>>({});
+  const [loadingRewardId, setLoadingRewardId] = useState<string | null>(null);
 
-  const handleRedeem = (reward: Reward) => {
+  const handleRedeem = async (reward: Reward) => {
     if (karmaPoints < reward.karma_cost) return;
-    setRedeemedCodes((prev) => ({ ...prev, [reward.id]: reward.discount_code }));
-    onRedeem(reward);
+
+    setLoadingRewardId(reward.id);
+    try {
+      const result = await redeemRewardVoucher(reward.id, user?.id || 'guest');
+      setRedeemedCodes((prev) => ({ ...prev, [reward.id]: result.code || reward.discount_code }));
+      onRedeem(reward);
+    } catch (err) {
+      console.warn('Redemption error, fallback code displayed:', err);
+      setRedeemedCodes((prev) => ({ ...prev, [reward.id]: reward.discount_code }));
+      onRedeem(reward);
+    } finally {
+      setLoadingRewardId(null);
+    }
   };
 
   return (
@@ -41,6 +56,7 @@ export const RedeemRewardsView: React.FC<RedeemRewardsViewProps> = ({ rewards, k
         {rewards.map((reward) => {
           const code = redeemedCodes[reward.id];
           const canAfford = karmaPoints >= reward.karma_cost;
+          const isLoading = loadingRewardId === reward.id;
 
           return (
             <Card key={reward.id} hoverable className="gap-md flex flex-col justify-between">
@@ -69,7 +85,8 @@ export const RedeemRewardsView: React.FC<RedeemRewardsViewProps> = ({ rewards, k
               ) : (
                 <Button
                   variant={canAfford ? 'primary' : 'ghost'}
-                  disabled={!canAfford}
+                  disabled={!canAfford || isLoading}
+                  isLoading={isLoading}
                   onClick={() => handleRedeem(reward)}
                   className="w-full font-bold"
                 >

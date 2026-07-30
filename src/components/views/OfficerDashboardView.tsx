@@ -49,7 +49,7 @@ export const OfficerDashboardView: React.FC<OfficerDashboardViewProps> = ({
                 <div className="flex items-center gap-2 text-xs text-outline font-medium">
                   <span>ID: #{report.id}</span>
                   <span>•</span>
-                  <span>{new Date(report.created_at).toLocaleString()}</span>
+                  <span>{new Date(report.created_at || Date.now()).toLocaleString()}</span>
                 </div>
               </div>
 

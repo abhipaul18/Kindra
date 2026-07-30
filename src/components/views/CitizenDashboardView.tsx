@@ -139,12 +139,12 @@ export const CitizenDashboardView: React.FC<CitizenDashboardViewProps> = ({
                       {report.status.replace('_', ' ').toUpperCase()}
                     </Chip>
                     <span className="text-xs text-on-surface-variant font-medium">
-                      {report.category}
+                      {report.category || 'General'}
                     </span>
                   </div>
                   <span className="text-xs text-outline flex items-center gap-1">
                     <span className="material-symbols-outlined text-sm">schedule</span>
-                    {new Date(report.created_at).toLocaleDateString()}
+                    {new Date(report.created_at || Date.now()).toLocaleDateString()}
                   </span>
                 </div>
 
@@ -191,27 +191,30 @@ export const CitizenDashboardView: React.FC<CitizenDashboardViewProps> = ({
             Active Campaigns
           </h2>
 
-          {campaigns.slice(0, 2).map((camp) => (
-            <Card key={camp.id} className="gap-sm">
-              <div className="flex justify-between items-start">
-                <span className="text-xs font-bold text-secondary uppercase tracking-wider">
-                  {camp.category}
-                </span>
-                <span className="text-xs text-outline">{camp.partner_name}</span>
-              </div>
-              <h4 className="font-bold text-on-surface text-base">{camp.title}</h4>
-              <p className="text-xs text-on-surface-variant line-clamp-2">{camp.description}</p>
-              
-              <ProgressBar
-                value={(camp.current_amount / camp.target_amount) * 100}
-                color="green"
-                label={`$${camp.current_amount.toLocaleString()} raised of $${camp.target_amount.toLocaleString()}`}
-              />
-              <Button variant="outline" size="sm" className="mt-1 w-full" onClick={() => onNavigate('campaigns')}>
-                Contribute to Campaign
-              </Button>
-            </Card>
-          ))}
+          {campaigns.slice(0, 2).map((camp) => {
+            const current = camp.current_amount ?? 0;
+            return (
+              <Card key={camp.id} className="gap-sm">
+                <div className="flex justify-between items-start">
+                  <span className="text-xs font-bold text-secondary uppercase tracking-wider">
+                    {camp.category || 'Campaign'}
+                  </span>
+                  <span className="text-xs text-outline">{camp.partner_name}</span>
+                </div>
+                <h4 className="font-bold text-on-surface text-base">{camp.title}</h4>
+                <p className="text-xs text-on-surface-variant line-clamp-2">{camp.description}</p>
+                
+                <ProgressBar
+                  value={(current / camp.target_amount) * 100}
+                  color="green"
+                  label={`$${current.toLocaleString()} raised of $${camp.target_amount.toLocaleString()}`}
+                />
+                <Button variant="outline" size="sm" className="mt-1 w-full" onClick={() => onNavigate('campaigns')}>
+                  Contribute to Campaign
+                </Button>
+              </Card>
+            );
+          })}
 
           {/* Ask Gemma Promo Card */}
           <Card className="bg-gradient-to-br from-primary-fixed/30 to-surface-container border-primary-container/30 gap-sm">

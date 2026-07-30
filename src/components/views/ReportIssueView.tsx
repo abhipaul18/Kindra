@@ -5,6 +5,8 @@ import { Button } from '../ui/Button';
 import { Input } from '../ui/Input';
 import { Chip } from '../ui/Chip';
 import { analyzeCivicReport, type AIReportAnalysis } from '../../lib/openrouter';
+import { submitCivicReport } from '@/services/reportService';
+import { useAuth } from '@/hooks/useAuth';
 
 export interface ReportIssueViewProps {
   onAddReport: (report: CivicReport) => void;
@@ -12,6 +14,7 @@ export interface ReportIssueViewProps {
 }
 
 export const ReportIssueView: React.FC<ReportIssueViewProps> = ({ onAddReport, onNavigate }) => {
+  const { user } = useAuth();
   const [title, setTitle] = useState('');
   const [locationName, setLocationName] = useState('');
   const [category, setCategory] = useState('Roads & Infrastructure');
@@ -19,6 +22,7 @@ export const ReportIssueView: React.FC<ReportIssueViewProps> = ({ onAddReport, o
   const [imageUrl, setImageUrl] = useState('');
   
   const [isVerifying, setIsVerifying] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [aiResult, setAiResult] = useState<AIReportAnalysis | null>(null);
 
   const handleAnalyzeAndSubmit = async (e: React.FormEvent) => {
@@ -29,37 +33,40 @@ export const ReportIssueView: React.FC<ReportIssueViewProps> = ({ onAddReport, o
     setAiResult(null);
 
     // Call OpenRouter Gemma 4 AI analysis
-    const analysis = await analyzeCivicReport(title, description, locationName);
-    setAiResult(analysis);
-    setIsVerifying(false);
+    try {
+      const analysis = await analyzeCivicReport(title, description, locationName);
+      setAiResult(analysis);
+    } catch (err) {
+      console.warn('AI analysis error:', err);
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
-  const handleFinalSubmit = () => {
+  const handleFinalSubmit = async () => {
     if (!title || !description || !locationName) return;
 
-    const newReport: CivicReport = {
-      id: `rep-${Date.now()}`,
-      title,
-      description,
-      category: aiResult?.category || category,
-      status: 'approved',
-      priority: aiResult?.priority || 'medium',
-      location_name: locationName,
-      image_url: imageUrl || 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
-      karma_awarded: 50,
-      ai_analysis: {
-        suggested_category: aiResult?.category,
-        confidence: aiResult?.confidence,
-        severity_rating: aiResult?.priority,
-        summary: aiResult?.summary,
-        tags: aiResult?.tags,
-      },
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-    };
+    setIsSubmitting(true);
+    try {
+      const createdReport = await submitCivicReport({
+        title,
+        description,
+        category: aiResult?.category || category,
+        status: 'approved',
+        priority: aiResult?.priority || 'medium',
+        location_name: locationName,
+        image_url: imageUrl || 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&w=800&q=80',
+        reporter_id: user?.id || null,
+        karma_awarded: 50,
+      });
 
-    onAddReport(newReport);
-    onNavigate('dashboard');
+      onAddReport(createdReport);
+      onNavigate('dashboard');
+    } catch (err) {
+      console.error('Failed to submit report:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -205,7 +212,13 @@ export const ReportIssueView: React.FC<ReportIssueViewProps> = ({ onAddReport, o
                     <span className="material-symbols-outlined text-sm">workspace_premium</span>
                     Earn +50 Karma Points upon submit!
                   </span>
-                  <Button variant="secondary" icon="check_circle" onClick={handleFinalSubmit} className="w-full font-bold">
+                  <Button
+                    variant="secondary"
+                    icon="check_circle"
+                    isLoading={isSubmitting}
+                    onClick={handleFinalSubmit}
+                    className="w-full font-bold"
+                  >
                     Confirm & Publish Report
                   </Button>
                 </div>

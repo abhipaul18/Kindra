@@ -1,10 +1,10 @@
 import type { CivicReport, Department, VolunteerTask, Campaign, Reward, NotificationItem } from '../types/database';
 
 export const mockDepartments: Department[] = [
-  { id: 'dept-1', name: 'Roads & Infrastructure', description: 'Handles pothole repairs, street pavement, and bridge maintenance.', officer_count: 14, created_at: '2026-01-10' },
-  { id: 'dept-2', name: 'Sanitation & Waste', description: 'Public cleanliness, trash removal, and recycling services.', officer_count: 22, created_at: '2026-01-10' },
-  { id: 'dept-3', name: 'Public Safety & Utilities', description: 'Streetlight outages, traffic signal repair, and hazard mitigation.', officer_count: 18, created_at: '2026-01-10' },
-  { id: 'dept-4', name: 'Parks & Recreation', description: 'Park maintenance, tree pruning, and public garden upkeep.', officer_count: 9, created_at: '2026-01-10' },
+  { id: 'dept-1', name: 'Roads & Infrastructure', description: 'Handles pothole repairs, street pavement, and bridge maintenance.', officer_count: 14, created_at: '2026-01-10', updated_at: '2026-01-10' },
+  { id: 'dept-2', name: 'Sanitation & Waste', description: 'Public cleanliness, trash removal, and recycling services.', officer_count: 22, created_at: '2026-01-10', updated_at: '2026-01-10' },
+  { id: 'dept-3', name: 'Public Safety & Utilities', description: 'Streetlight outages, traffic signal repair, and hazard mitigation.', officer_count: 18, created_at: '2026-01-10', updated_at: '2026-01-10' },
+  { id: 'dept-4', name: 'Parks & Recreation', description: 'Park maintenance, tree pruning, and public garden upkeep.', officer_count: 9, created_at: '2026-01-10', updated_at: '2026-01-10' },
 ];
 
 export const mockCivicReports: CivicReport[] = [
@@ -150,6 +150,9 @@ export const mockRewards: Reward[] = [
     remaining: 32,
     image_url: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&w=800&q=80',
     created_at: '2026-07-01',
+    category_id: null,
+    partner_id: null,
+    updated_at: '2026-07-01',
   },
   {
     id: 'rew-02',
@@ -162,6 +165,9 @@ export const mockRewards: Reward[] = [
     remaining: 68,
     image_url: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
     created_at: '2026-07-05',
+    category_id: null,
+    partner_id: null,
+    updated_at: '2026-07-05',
   },
 ];
 

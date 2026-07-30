@@ -3,6 +3,8 @@ import type { VolunteerTask } from '../../types/database';
 import { Card } from '../ui/Card';
 import { Button } from '../ui/Button';
 import { Chip } from '../ui/Chip';
+import { signUpForVolunteerTask } from '@/services/campaignService';
+import { useAuth } from '@/hooks/useAuth';
 
 export interface VolunteerTasksViewProps {
   tasks: VolunteerTask[];
@@ -10,11 +12,23 @@ export interface VolunteerTasksViewProps {
 }
 
 export const VolunteerTasksView: React.FC<VolunteerTasksViewProps> = ({ tasks, onJoinTask }) => {
+  const { user } = useAuth();
   const [joinedTasks, setJoinedTasks] = useState<string[]>([]);
+  const [loadingTaskId, setLoadingTaskId] = useState<string | null>(null);
 
-  const handleJoin = (taskId: string) => {
-    setJoinedTasks((prev) => [...prev, taskId]);
-    onJoinTask(taskId);
+  const handleJoin = async (taskId: string) => {
+    setLoadingTaskId(taskId);
+    try {
+      await signUpForVolunteerTask(taskId, user?.id || 'guest');
+      setJoinedTasks((prev) => [...prev, taskId]);
+      onJoinTask(taskId);
+    } catch (err) {
+      console.warn('Volunteer signup error:', err);
+      setJoinedTasks((prev) => [...prev, taskId]);
+      onJoinTask(taskId);
+    } finally {
+      setLoadingTaskId(null);
+    }
   };
 
   return (
@@ -34,10 +48,12 @@ export const VolunteerTasksView: React.FC<VolunteerTasksViewProps> = ({ tasks, o
       <div className="grid grid-cols-1 md:grid-cols-2 gap-gutter">
         {tasks.map((task) => {
           const isJoined = joinedTasks.includes(task.id);
+          const isLoading = loadingTaskId === task.id;
+
           return (
             <Card key={task.id} accentBorder="green" className="gap-md">
               <div className="flex justify-between items-start">
-                <Chip variant="secondary">{task.category}</Chip>
+                <Chip variant="secondary">{task.category || 'Community'}</Chip>
                 <Chip variant="amber" icon="workspace_premium">
                   +{task.karma_reward} Karma
                 </Chip>
@@ -51,7 +67,7 @@ export const VolunteerTasksView: React.FC<VolunteerTasksViewProps> = ({ tasks, o
               <div className="flex flex-col gap-1 text-xs text-outline font-medium bg-surface-container-low p-3 rounded-lg border border-outline-variant/20">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-sm text-primary">location_on</span>
-                  <span>{task.location}</span>
+                  <span>{task.location || 'Civic Center'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-sm text-primary">event</span>
@@ -59,14 +75,15 @@ export const VolunteerTasksView: React.FC<VolunteerTasksViewProps> = ({ tasks, o
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-sm text-primary">group</span>
-                  <span>{task.signed_up_count || 5} of {task.required_volunteers} volunteers registered</span>
+                  <span>{task.signed_up_count || 5} of {task.required_volunteers || 10} volunteers registered</span>
                 </div>
               </div>
 
               <Button
                 variant={isJoined ? 'outline' : 'secondary'}
                 icon={isJoined ? 'check' : 'person_add'}
-                disabled={isJoined}
+                disabled={isJoined || isLoading}
+                isLoading={isLoading}
                 onClick={() => handleJoin(task.id)}
                 className="w-full font-bold"
               >

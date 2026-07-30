@@ -62,9 +62,9 @@ export const PartnerDashboardView: React.FC<PartnerDashboardViewProps> = ({ camp
               <h3 className="font-bold text-on-surface text-base">{camp.title}</h3>
               <p className="text-xs text-on-surface-variant">{camp.description}</p>
               <ProgressBar
-                value={(camp.current_amount / camp.target_amount) * 100}
+                value={((camp.current_amount ?? 0) / camp.target_amount) * 100}
                 color="green"
-                label={`$${camp.current_amount.toLocaleString()} of $${camp.target_amount.toLocaleString()}`}
+                label={`$${(camp.current_amount ?? 0).toLocaleString()} of $${camp.target_amount.toLocaleString()}`}
               />
             </Card>
           ))}
