@@ -1,15 +1,15 @@
 {
   "/auth/callback/route": "app/auth/callback/route.js",
   "/_not-found/page": "app/_not-found/page.js",
-  "/(auth)/register/page": "app/(auth)/register/page.js",
   "/(auth)/forgot-password/page": "app/(auth)/forgot-password/page.js",
-  "/(auth)/reset-password/page": "app/(auth)/reset-password/page.js",
   "/(auth)/login/page": "app/(auth)/login/page.js",
+  "/(auth)/reset-password/page": "app/(auth)/reset-password/page.js",
   "/page": "app/page.js",
+  "/(auth)/register/page": "app/(auth)/register/page.js",
   "/citizen/credentials/page": "app/citizen/credentials/page.js",
-  "/citizen/notifications/page": "app/citizen/notifications/page.js",
-  "/citizen/dashboard/page": "app/citizen/dashboard/page.js",
   "/citizen/report/submitted/page": "app/citizen/report/submitted/page.js",
+  "/citizen/notifications/page": "app/citizen/notifications/page.js",
+  "/citizen/report/page": "app/citizen/report/page.js",
   "/citizen/rewards/page": "app/citizen/rewards/page.js",
-  "/citizen/report/page": "app/citizen/report/page.js"
+  "/citizen/dashboard/page": "app/citizen/dashboard/page.js"
 }
