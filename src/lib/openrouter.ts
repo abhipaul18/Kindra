@@ -1,5 +1,5 @@
-const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || '';
-const OPENROUTER_MODEL = import.meta.env.VITE_OPENROUTER_MODEL || 'google/gemma-4-26b-a4b-it:free';
+const OPENROUTER_API_KEY = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || '';
+const OPENROUTER_MODEL = process.env.NEXT_PUBLIC_OPENROUTER_MODEL || 'google/gemma-4-26b-a4b-it:free';
 
 export interface AIReportAnalysis {
   category: string;
@@ -12,9 +12,8 @@ export interface AIReportAnalysis {
 
 export async function analyzeCivicReport(title: string, description: string, location: string): Promise<AIReportAnalysis> {
   if (!OPENROUTER_API_KEY) {
-    // Fallback if API key is missing
     return {
-      category: 'Infrastructure',
+      category: 'Roads & Infrastructure',
       priority: 'medium',
       confidence: 0.85,
       summary: 'Report recorded and queued for department verification.',
@@ -23,9 +22,9 @@ export async function analyzeCivicReport(title: string, description: string, loc
     };
   }
 
-  const prompt = `You are Gemma, an AI assistant analyzing civic issue reports for the Kindra Civic Engagement Platform.
+  const prompt = `You are Gemma, an AI vision & text assistant analyzing civic issue reports for the KINDRA Civic Engagement Platform.
 Analyze the following report and return a JSON object with:
-- category: one of ["Roads & Infrastructure", "Sanitation & Waste", "Public Safety", "Parks & Recreation", "Water & Utilities", "Environmental", "Other"]
+- category: one of ["Roads & Infrastructure", "Sanitation & Waste", "Public Safety & Utilities", "Parks & Recreation", "Water & Drainage", "Other"]
 - priority: one of ["low", "medium", "high", "urgent"]
 - confidence: numeric between 0.5 and 0.99
 - summary: concise 1-sentence summary of the issue
@@ -45,7 +44,7 @@ Return ONLY valid JSON in your response.`;
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
         'HTTP-Referer': 'https://kindra-civic.app',
-        'X-Title': 'Kindra Civic Platform',
+        'X-Title': 'KINDRA Civic Platform',
       },
       body: JSON.stringify({
         model: OPENROUTER_MODEL,
@@ -61,7 +60,6 @@ Return ONLY valid JSON in your response.`;
     const data = await res.json();
     const content = data.choices?.[0]?.message?.content || '';
     
-    // Extract JSON block from response
     const jsonMatch = content.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       const parsed = JSON.parse(jsonMatch[0]);
@@ -90,10 +88,10 @@ Return ONLY valid JSON in your response.`;
 
 export async function askGemmaAssistant(userMessage: string, context?: string): Promise<string> {
   if (!OPENROUTER_API_KEY) {
-    return "Hello! I am Gemma, Kindra's AI assistant. I am here to help you navigate civic reports, volunteer opportunities, and Karma rewards.";
+    return "Hello! I am Gemma, KINDRA's AI assistant. How can I help you navigate civic reports, volunteer events, or Karma rewards today?";
   }
 
-  const systemMessage = `You are Gemma, the helpful, empathetic, and knowledgeable AI assistant for Kindra, a civic engagement platform.
+  const systemMessage = `You are Gemma, the helpful, empathetic, and knowledgeable AI assistant for KINDRA, a civic engagement platform.
 You assist citizens with:
 1. Submitting civic issue reports (road potholes, broken streetlights, trash overflow, public safety).
 2. Finding volunteer tasks to earn Karma points.
@@ -109,7 +107,7 @@ Keep your answers concise, encouraging, and actionable. Use Material Design clar
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${OPENROUTER_API_KEY}`,
         'HTTP-Referer': 'https://kindra-civic.app',
-        'X-Title': 'Kindra Civic Platform',
+        'X-Title': 'KINDRA Civic Platform',
       },
       body: JSON.stringify({
         model: OPENROUTER_MODEL,
