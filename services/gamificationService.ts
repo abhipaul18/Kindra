@@ -114,13 +114,13 @@ export async function fetchUserActivityTimeline(userId: string): Promise<any[]> 
     ...(reports || []).map((r) => ({
       type: 'report',
       title: `Submitted issue: ${r.title}`,
-      timestamp: r.created_at,
+      timestamp: r.created_at || new Date().toISOString(),
       badgeColor: 'blue',
     })),
     ...(karma || []).map((k) => ({
       type: 'karma',
       title: `${k.amount > 0 ? '+' : ''}${k.amount} Karma: ${k.description}`,
-      timestamp: k.created_at,
+      timestamp: k.created_at || new Date().toISOString(),
       badgeColor: 'green',
     })),
   ];
