@@ -26,28 +26,6 @@
       "static/chunks/971-7601da0f68a1a274.js",
       "static/chunks/app/layout-1c34a4f390a16d3f.js"
     ],
-    "/(auth)/forgot-password/page": [
-      "static/chunks/webpack-9cc25313c55182ad.js",
-      "static/chunks/4bd1b696-f77d711dff7a60eb.js",
-      "static/chunks/517-bb023059d33a9ffa.js",
-      "static/chunks/main-app-dd35c4bd4f0faa05.js",
-      "static/chunks/44530001-17190279c8cf4471.js",
-      "static/chunks/623-0384a346c93304cd.js",
-      "static/chunks/181-4ae7f860cf050f73.js",
-      "static/chunks/458-fb55e338f4996201.js",
-      "static/chunks/app/(auth)/forgot-password/page-40a619590fd24191.js"
-    ],
-    "/(auth)/login/page": [
-      "static/chunks/webpack-9cc25313c55182ad.js",
-      "static/chunks/4bd1b696-f77d711dff7a60eb.js",
-      "static/chunks/517-bb023059d33a9ffa.js",
-      "static/chunks/main-app-dd35c4bd4f0faa05.js",
-      "static/chunks/44530001-17190279c8cf4471.js",
-      "static/chunks/623-0384a346c93304cd.js",
-      "static/chunks/181-4ae7f860cf050f73.js",
-      "static/chunks/458-fb55e338f4996201.js",
-      "static/chunks/app/(auth)/login/page-27bc40698ff3c715.js"
-    ],
     "/(auth)/register/page": [
       "static/chunks/webpack-9cc25313c55182ad.js",
       "static/chunks/4bd1b696-f77d711dff7a60eb.js",
@@ -69,6 +47,28 @@
       "static/chunks/181-4ae7f860cf050f73.js",
       "static/chunks/458-fb55e338f4996201.js",
       "static/chunks/app/(auth)/reset-password/page-eff1e8fd5cc668b6.js"
+    ],
+    "/(auth)/login/page": [
+      "static/chunks/webpack-9cc25313c55182ad.js",
+      "static/chunks/4bd1b696-f77d711dff7a60eb.js",
+      "static/chunks/517-bb023059d33a9ffa.js",
+      "static/chunks/main-app-dd35c4bd4f0faa05.js",
+      "static/chunks/44530001-17190279c8cf4471.js",
+      "static/chunks/623-0384a346c93304cd.js",
+      "static/chunks/181-4ae7f860cf050f73.js",
+      "static/chunks/458-fb55e338f4996201.js",
+      "static/chunks/app/(auth)/login/page-27bc40698ff3c715.js"
+    ],
+    "/(auth)/forgot-password/page": [
+      "static/chunks/webpack-9cc25313c55182ad.js",
+      "static/chunks/4bd1b696-f77d711dff7a60eb.js",
+      "static/chunks/517-bb023059d33a9ffa.js",
+      "static/chunks/main-app-dd35c4bd4f0faa05.js",
+      "static/chunks/44530001-17190279c8cf4471.js",
+      "static/chunks/623-0384a346c93304cd.js",
+      "static/chunks/181-4ae7f860cf050f73.js",
+      "static/chunks/458-fb55e338f4996201.js",
+      "static/chunks/app/(auth)/forgot-password/page-40a619590fd24191.js"
     ],
     "/page": [
       "static/chunks/webpack-9cc25313c55182ad.js",
@@ -94,6 +94,16 @@
       "static/chunks/736-498913339805258b.js",
       "static/chunks/app/citizen/layout-04a039a46711681a.js"
     ],
+    "/citizen/campaigns/page": [
+      "static/chunks/webpack-9cc25313c55182ad.js",
+      "static/chunks/4bd1b696-f77d711dff7a60eb.js",
+      "static/chunks/517-bb023059d33a9ffa.js",
+      "static/chunks/main-app-dd35c4bd4f0faa05.js",
+      "static/chunks/44530001-17190279c8cf4471.js",
+      "static/chunks/623-0384a346c93304cd.js",
+      "static/chunks/181-4ae7f860cf050f73.js",
+      "static/chunks/app/citizen/campaigns/page-3cad424118456d29.js"
+    ],
     "/citizen/credentials/page": [
       "static/chunks/webpack-9cc25313c55182ad.js",
       "static/chunks/4bd1b696-f77d711dff7a60eb.js",
@@ -107,16 +117,6 @@
       "static/chunks/736-498913339805258b.js",
       "static/chunks/app/citizen/credentials/page-b051c191c5b5f13a.js"
     ],
-    "/citizen/campaigns/page": [
-      "static/chunks/webpack-9cc25313c55182ad.js",
-      "static/chunks/4bd1b696-f77d711dff7a60eb.js",
-      "static/chunks/517-bb023059d33a9ffa.js",
-      "static/chunks/main-app-dd35c4bd4f0faa05.js",
-      "static/chunks/44530001-17190279c8cf4471.js",
-      "static/chunks/623-0384a346c93304cd.js",
-      "static/chunks/181-4ae7f860cf050f73.js",
-      "static/chunks/app/citizen/campaigns/page-3cad424118456d29.js"
-    ],
     "/citizen/dashboard/page": [
       "static/chunks/webpack-9cc25313c55182ad.js",
       "static/chunks/4bd1b696-f77d711dff7a60eb.js",
@@ -129,6 +129,16 @@
       "static/chunks/556-5d57f3b293c84576.js",
       "static/chunks/736-498913339805258b.js",
       "static/chunks/app/citizen/dashboard/page-1bbec7bab9cfe316.js"
+    ],
+    "/citizen/profile/page": [
+      "static/chunks/webpack-9cc25313c55182ad.js",
+      "static/chunks/4bd1b696-f77d711dff7a60eb.js",
+      "static/chunks/517-bb023059d33a9ffa.js",
+      "static/chunks/main-app-dd35c4bd4f0faa05.js",
+      "static/chunks/44530001-17190279c8cf4471.js",
+      "static/chunks/623-0384a346c93304cd.js",
+      "static/chunks/181-4ae7f860cf050f73.js",
+      "static/chunks/app/citizen/profile/page-e62afa9743432c3a.js"
     ],
     "/citizen/leaderboard/page": [
       "static/chunks/webpack-9cc25313c55182ad.js",
@@ -163,16 +173,6 @@
       "static/chunks/181-4ae7f860cf050f73.js",
       "static/chunks/app/citizen/report/submitted/page-f483618049ceedf6.js"
     ],
-    "/citizen/profile/page": [
-      "static/chunks/webpack-9cc25313c55182ad.js",
-      "static/chunks/4bd1b696-f77d711dff7a60eb.js",
-      "static/chunks/517-bb023059d33a9ffa.js",
-      "static/chunks/main-app-dd35c4bd4f0faa05.js",
-      "static/chunks/44530001-17190279c8cf4471.js",
-      "static/chunks/623-0384a346c93304cd.js",
-      "static/chunks/181-4ae7f860cf050f73.js",
-      "static/chunks/app/citizen/profile/page-e62afa9743432c3a.js"
-    ],
     "/citizen/report/page": [
       "static/chunks/webpack-9cc25313c55182ad.js",
       "static/chunks/4bd1b696-f77d711dff7a60eb.js",
@@ -198,7 +198,7 @@
       "static/chunks/44530001-17190279c8cf4471.js",
       "static/chunks/623-0384a346c93304cd.js",
       "static/chunks/181-4ae7f860cf050f73.js",
-      "static/chunks/app/citizen/rewards/page-308fab76519eb80b.js"
+      "static/chunks/app/citizen/rewards/page-344ad40c6a61b352.js"
     ]
   }
 }

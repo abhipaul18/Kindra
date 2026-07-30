@@ -29,7 +29,8 @@ export default function RewardsPage() {
     setRedeemingId(reward.id);
     setErrorMsg(null);
 
-    const res = await redeemReward(user.id, reward.id, reward.cost_karma);
+    const costKarma = (reward as any).cost_karma || (reward as any).karma_cost || 150;
+    const res = await redeemReward(user.id, reward.id, costKarma);
     setRedeemingId(null);
 
     if (res.success && res.voucherCode) {
@@ -60,36 +61,42 @@ export default function RewardsPage() {
         <div className="p-xl text-center text-xs font-bold text-on-surface-variant">Loading rewards catalog...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
-          {rewards.map((r) => (
-            <Card key={r.id} className="p-0 border-outline-variant/30 overflow-hidden shadow-sm flex flex-col justify-between">
-              {r.image_url && (
-                <div className="h-36 w-full relative overflow-hidden bg-surface-container-high">
-                  <img src={r.image_url} alt={r.title} className="w-full h-full object-cover" />
-                  <div className="absolute top-2 right-2 bg-primary text-on-primary text-xs font-black px-2.5 py-1 rounded-full shadow-sm">
-                    {r.cost_karma} Karma XP
+          {rewards.map((r) => {
+            const costKarma = (r as any).cost_karma || (r as any).karma_cost || 150;
+            const partnerName = (r as any).partner_name || (r as any).category || 'Partner Special';
+            const imageUrl = r.image_url;
+
+            return (
+              <Card key={r.id} className="p-0 border-outline-variant/30 overflow-hidden shadow-sm flex flex-col justify-between">
+                {imageUrl && (
+                  <div className="h-36 w-full relative overflow-hidden bg-surface-container-high">
+                    <img src={imageUrl} alt={r.title} className="w-full h-full object-cover" />
+                    <div className="absolute top-2 right-2 bg-primary text-on-primary text-xs font-black px-2.5 py-1 rounded-full shadow-sm">
+                      {costKarma} Karma XP
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
-              <div className="p-md flex flex-col gap-md flex-1 justify-between">
-                <div className="flex flex-col gap-1">
-                  <span className="text-[10px] font-bold uppercase text-secondary tracking-wider">{r.partner_name || r.category}</span>
-                  <h3 className="font-extrabold text-base text-on-surface line-clamp-1">{r.title}</h3>
-                  <p className="text-xs text-on-surface-variant line-clamp-2">{r.description}</p>
-                </div>
+                <div className="p-md flex flex-col gap-md flex-1 justify-between">
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[10px] font-bold uppercase text-secondary tracking-wider">{partnerName}</span>
+                    <h3 className="font-extrabold text-base text-on-surface line-clamp-1">{r.title}</h3>
+                    <p className="text-xs text-on-surface-variant line-clamp-2">{r.description}</p>
+                  </div>
 
-                <Button
-                  variant="primary"
-                  icon="confirmation_number"
-                  isLoading={redeemingId === r.id}
-                  onClick={() => handleRedeem(r)}
-                  className="w-full font-bold mt-2"
-                >
-                  Redeem for {r.cost_karma} XP
-                </Button>
-              </div>
-            </Card>
-          ))}
+                  <Button
+                    variant="primary"
+                    icon="confirmation_number"
+                    isLoading={redeemingId === r.id}
+                    onClick={() => handleRedeem(r)}
+                    className="w-full font-bold mt-2"
+                  >
+                    Redeem for {costKarma} XP
+                  </Button>
+                </div>
+              </Card>
+            );
+          })}
         </div>
       )}
 
