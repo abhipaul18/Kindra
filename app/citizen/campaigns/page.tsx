@@ -48,15 +48,16 @@ export default function CampaignsPage() {
             const currentPart = (c as any).current_participants || 342;
             const goalPart = (c as any).goal_participants || 500;
             const percent = Math.min(100, Math.round((currentPart / goalPart) * 100));
+            const bannerUrl = (c as any).banner_url;
 
             return (
               <Card key={c.id} className="p-0 border-outline-variant/30 overflow-hidden shadow-sm flex flex-col justify-between">
                 {/* Banner Image */}
-                {c.banner_url && (
+                {bannerUrl && (
                   <div className="h-40 w-full relative overflow-hidden bg-surface-container-high">
-                    <img src={c.banner_url} alt={c.title} className="w-full h-full object-cover" />
+                    <img src={bannerUrl} alt={c.title} className="w-full h-full object-cover" />
                     <div className="absolute top-2 right-2 bg-secondary text-on-secondary text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-wider">
-                      +{c.karma_reward} XP Karma
+                      +{(c as any).karma_reward || 200} XP Karma
                     </div>
                   </div>
                 )}
@@ -64,7 +65,7 @@ export default function CampaignsPage() {
                 {/* Content Details */}
                 <div className="p-md flex flex-col gap-md flex-1">
                   <div className="flex flex-col gap-1">
-                    <span className="text-[10px] font-bold uppercase text-secondary tracking-wider">{c.category}</span>
+                    <span className="text-[10px] font-bold uppercase text-secondary tracking-wider">{(c as any).category || 'Civic Drive'}</span>
                     <h2 className="font-extrabold text-base text-on-surface line-clamp-1">{c.title}</h2>
                     <p className="text-xs text-on-surface-variant line-clamp-2">{c.description}</p>
                   </div>

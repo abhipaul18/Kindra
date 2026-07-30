@@ -10,9 +10,9 @@
   "/citizen/campaigns/page": "app/citizen/campaigns/page.js",
   "/citizen/dashboard/page": "app/citizen/dashboard/page.js",
   "/citizen/leaderboard/page": "app/citizen/leaderboard/page.js",
-  "/citizen/rewards/page": "app/citizen/rewards/page.js",
-  "/citizen/profile/page": "app/citizen/profile/page.js",
+  "/citizen/notifications/page": "app/citizen/notifications/page.js",
   "/citizen/report/submitted/page": "app/citizen/report/submitted/page.js",
+  "/citizen/profile/page": "app/citizen/profile/page.js",
   "/citizen/report/page": "app/citizen/report/page.js",
-  "/citizen/notifications/page": "app/citizen/notifications/page.js"
+  "/citizen/rewards/page": "app/citizen/rewards/page.js"
 }
