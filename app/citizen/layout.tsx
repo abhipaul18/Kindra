@@ -15,10 +15,12 @@ export default function CitizenLayout({ children }: { children: React.ReactNode 
   const navItems = [
     { label: 'Dashboard', path: '/citizen/dashboard', icon: 'dashboard' },
     { label: 'Report Issue', path: '/citizen/report', icon: 'report_problem' },
+    { label: 'Leaderboard', path: '/citizen/leaderboard', icon: 'leaderboard' },
+    { label: 'Civic Campaigns', path: '/citizen/campaigns', icon: 'campaign' },
     { label: 'My Credentials', path: '/citizen/credentials', icon: 'military_tech' },
-    { label: 'Notifications', path: '/citizen/notifications', icon: 'notifications', badge: unreadNotificationCount },
     { label: 'Redeem Rewards', path: '/citizen/rewards', icon: 'redeem' },
-    { label: 'Ask Gemma AI', path: '/citizen/gemma', icon: 'smart_toy' },
+    { label: 'Notifications', path: '/citizen/notifications', icon: 'notifications', badge: unreadNotificationCount },
+    { label: 'My Profile', path: '/citizen/profile', icon: 'account_circle' },
   ];
 
   return (
@@ -68,13 +70,16 @@ export default function CitizenLayout({ children }: { children: React.ReactNode 
 
             {/* User Profile Avatar & Logout */}
             <div className="flex items-center gap-2 pl-2 border-l border-outline-variant/30">
-              <div className="w-9 h-9 rounded-full bg-primary-container/20 text-primary font-bold flex items-center justify-center overflow-hidden border border-primary/20">
+              <a
+                href="/citizen/profile"
+                className="w-9 h-9 rounded-full bg-primary-container/20 text-primary font-bold flex items-center justify-center overflow-hidden border border-primary/20 hover:scale-105 transition-transform"
+              >
                 {profile?.avatar_url ? (
                   <img src={profile.avatar_url} alt="User Avatar" className="w-full h-full object-cover" />
                 ) : (
                   <span>{(profile?.full_name || 'C')[0].toUpperCase()}</span>
                 )}
-              </div>
+              </a>
               <button
                 onClick={logout}
                 title="Sign Out"
