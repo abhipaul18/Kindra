@@ -3,7 +3,6 @@
 import React from 'react';
 import { useCitizenDashboard } from '@/hooks/useCitizenDashboard';
 import { Card } from '@/src/components/ui/Card';
-import { Button } from '@/src/components/ui/Button';
 import { ProgressBar } from '@/src/components/ui/ProgressBar';
 
 export default function CitizenDashboardPage() {
@@ -59,7 +58,7 @@ export default function CitizenDashboardPage() {
             <span>Level 2 Civic Advocate</span>
             <span className="text-secondary">{karmaPoints} / {nextMilestoneKarma} XP</span>
           </div>
-          <ProgressBar progress={levelProgress} color="secondary" />
+          <ProgressBar value={levelProgress} color="green" showPercentage={false} />
           <span className="text-[10px] text-on-surface-variant font-medium">
             Earn {nextMilestoneKarma - karmaPoints} more Karma to reach Level 3
           </span>
@@ -146,7 +145,7 @@ export default function CitizenDashboardPage() {
                     <span>Progress</span>
                     <span>{cred.progress_karma || 25} / 100 XP</span>
                   </div>
-                  <ProgressBar progress={cred.progress_karma || 25} color="secondary" />
+                  <ProgressBar value={cred.progress_karma || 25} color="green" showPercentage={false} />
                 </div>
               </Card>
             ))}

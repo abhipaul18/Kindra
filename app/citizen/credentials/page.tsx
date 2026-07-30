@@ -6,7 +6,7 @@ import { Card } from '@/src/components/ui/Card';
 import { ProgressBar } from '@/src/components/ui/ProgressBar';
 
 export default function CitizenCredentialsPage() {
-  const { credentials, profile } = useCitizenDashboard();
+  const { credentials } = useCitizenDashboard();
 
   return (
     <div className="flex flex-col gap-lg pb-xl">
@@ -36,16 +36,12 @@ export default function CitizenCredentialsPage() {
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <div className="flex justify-between text-xs font-semibold text-on-surface-variant">
-                <span>Milestone Progress</span>
-                <span>{cred.progress_karma || 25} / 100 XP</span>
-              </div>
-              <ProgressBar progress={cred.progress_karma || 25} color="secondary" />
+              <ProgressBar value={cred.progress_karma || 25} color="green" showPercentage={false} />
             </div>
 
             <div className="flex items-center justify-between text-xs pt-2 border-t border-outline-variant/20">
-              <span className="text-on-surface-variant">Next Badge: <span className="font-bold text-on-surface font-sans">Level { (cred.current_level || 1) + 1 } Master</span></span>
-              <span className="text-secondary font-bold">+{50} Karma Reward</span>
+              <span className="text-on-surface-variant">Next Badge: <span className="font-bold text-on-surface">Level {(cred.current_level || 1) + 1} Master</span></span>
+              <span className="text-secondary font-bold">+50 Karma Reward</span>
             </div>
           </Card>
         ))}
