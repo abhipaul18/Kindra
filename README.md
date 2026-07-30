@@ -6,10 +6,12 @@ KINDRA is a full-stack civic engagement platform where citizens report infrastru
 
 ---
 
-## 🏆 Hackathon Judging Materials
+## 🏆 Hackathon Judging & Enterprise Materials
 
 - 📄 **[HACKATHON_DEMO.md](file:///d:/AntiGravity/Kindra/HACKATHON_DEMO.md)** — Elevator Pitch (30s), 5–7 min Demo Script, Problem/Solution Matrix, AI Workflow, & Judge Q&A Cheat Sheet.
 - 📊 **[PRESENTATION_SLIDES.md](file:///d:/AntiGravity/Kindra/PRESENTATION_SLIDES.md)** — Complete 12-Slide Pitch Deck Content.
+- 🏢 **[ENTERPRISE_RUNBOOK.md](file:///d:/AntiGravity/Kindra/ENTERPRISE_RUNBOOK.md)** — Multi-Tenant City Isolation, Disaster Recovery PITR Backups, Incident Protocol, & System Probes.
+- 📜 **[TERMS_AND_PRIVACY.md](file:///d:/AntiGravity/Kindra/TERMS_AND_PRIVACY.md)** — GDPR/CCPA Legal Privacy Policy, Terms of Service, & Cookie Consent Framework.
 
 ---
 
