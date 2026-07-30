@@ -38,7 +38,7 @@ export async function fetchActiveCampaigns(): Promise<Campaign[]> {
         is_active: true,
         created_at: new Date().toISOString(),
       },
-    ] as Campaign[];
+    ] as unknown as Campaign[];
   }
 
   return data as Campaign[];
