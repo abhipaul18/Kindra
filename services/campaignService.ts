@@ -41,7 +41,7 @@ export async function fetchActiveCampaigns(): Promise<Campaign[]> {
     ] as unknown as Campaign[];
   }
 
-  return data as Campaign[];
+  return data as unknown as Campaign[];
 }
 
 export async function joinCampaign(userId: string, campaignId: string): Promise<boolean> {
@@ -56,6 +56,6 @@ export async function joinCampaign(userId: string, campaignId: string): Promise<
   return true;
 }
 
-export async function signUpForVolunteerTask(taskId: string): Promise<boolean> {
+export async function signUpForVolunteerTask(taskId: string, userId?: string): Promise<boolean> {
   return true;
 }

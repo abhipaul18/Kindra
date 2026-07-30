@@ -112,9 +112,11 @@ export async function redeemReward(
   };
 }
 
-export async function redeemRewardVoucher(rewardId: string): Promise<{ success: boolean; voucherCode?: string }> {
+export async function redeemRewardVoucher(rewardId: string, userId?: string): Promise<{ success: boolean; voucherCode?: string; code?: string }> {
+  const code = `KINDRA-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
   return {
     success: true,
-    voucherCode: `KINDRA-${Math.random().toString(36).substring(2, 8).toUpperCase()}`,
+    voucherCode: code,
+    code,
   };
 }
