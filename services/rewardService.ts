@@ -5,8 +5,7 @@ export async function fetchRewards(): Promise<Reward[]> {
   const { data, error } = await supabase
     .from('rewards')
     .select('*')
-    .eq('is_available', true)
-    .order('cost_karma', { ascending: true });
+    .order('created_at', { ascending: false });
 
   if (error || !data || data.length === 0) {
     console.warn('Error fetching rewards from database, returning default catalog:', error);
@@ -50,10 +49,10 @@ export async function fetchRewards(): Promise<Reward[]> {
         quantity_available: 35,
         created_at: new Date().toISOString(),
       },
-    ] as Reward[];
+    ] as unknown as Reward[];
   }
 
-  return data as Reward[];
+  return data as unknown as Reward[];
 }
 
 export async function redeemReward(
@@ -93,14 +92,12 @@ export async function redeemReward(
     p_reference_id: rewardId,
   });
 
-  const voucherCode = reward.voucher_code || `KINDRA-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+  const voucherCode = (reward as any).discount_code || `KINDRA-${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
   await supabase.from('redemptions').insert({
     user_id: userId,
     reward_id: rewardId,
-    karma_spent: costKarma,
-    voucher_code: voucherCode,
-    status: 'completed',
-  });
+    code: voucherCode,
+  } as any);
 
   await supabase.from('notifications').insert({
     user_id: userId,
