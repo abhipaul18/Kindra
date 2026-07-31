@@ -9,22 +9,54 @@ import { evaluateDynamicKarma } from './karmaEngine';
 import { runSmartRouting } from './routingEngine';
 import { runSummaryGeneration } from './summaryEngine';
 import { runVerificationDecision } from './decisionEngine';
+import { checkDuplicateSubmission, registerLocalSubmission, DuplicateResponse } from './duplicateEngine';
 import type { CompleteVerificationPipelineOutput } from './types';
 import { supabase } from '@/src/lib/supabase';
 
 export async function executeGemmaVerificationPipeline(
   input: Parameters<typeof processMultimodalIngestion>[0] & { reportId?: string; missionId?: string }
-): Promise<CompleteVerificationPipelineOutput> {
+): Promise<CompleteVerificationPipelineOutput | DuplicateResponse> {
+  const missionId = input.missionId || input.selectedMissionId || input.title;
+  const primaryImage = (input.images && input.images[0]) || input.beforeImage || '';
+
+  // 1. EARLY DUPLICATE DETECTION (Before Storage Upload, DB Insert, AI Request, or Karma Award)
+  const duplicateCheck = await checkDuplicateSubmission({
+    userId: input.userId,
+    missionId,
+    imageData: primaryImage,
+    latitude: input.latitude,
+    longitude: input.longitude,
+  });
+
+  if (duplicateCheck.isDuplicate) {
+    // REQUIRED LOGGING
+    console.log('[Pipeline Debug] Duplicate Found');
+    console.log('[Pipeline Debug] Pipeline Terminated');
+    console.log('[Pipeline Debug] No Storage Upload');
+    console.log('[Pipeline Debug] No Database Insert');
+    console.log('[Pipeline Debug] No AI Request');
+
+    return {
+      status: 'duplicate',
+      reason: duplicateCheck.reason || 'Exact duplicate image already submitted.',
+      duplicate_type: duplicateCheck.duplicateType || 'exact',
+      confidence: 100,
+      isDuplicate: true,
+      karmaAwarded: 0,
+    };
+  }
+
+  // 2. ONLY IF DUPLICATE == FALSE: Continue with Upload Storage, DB Insert, Gemma AI Verification
   const auditTrail: CompleteVerificationPipelineOutput['auditTrail'] = [];
 
-  // Stage 1: Multimodal Input Analysis & Storage
+  // Stage 1: Multimodal Input Analysis & Storage Upload
   const payload = await processMultimodalIngestion({
     ...input,
-    selectedMissionId: input.missionId || input.title,
+    selectedMissionId: missionId,
   });
   auditTrail.push({ stage: 'multimodal_ingest', completedAt: new Date().toISOString(), notes: 'Multimodal assets ingested and stored.' });
 
-  // Stage 2: AI Activity Classification & Mission Matching
+  // Stage 2: AI Activity Classification & Mission Matching (Gemma Vision Call)
   const classification = await runActivityClassification(payload);
   auditTrail.push({ 
     stage: 'classification', 
@@ -44,7 +76,7 @@ export async function executeGemmaVerificationPipeline(
   const ocr = await runOCREngine(payload);
   auditTrail.push({ stage: 'ocr_processing', completedAt: new Date().toISOString(), notes: `Document type: ${ocr.documentType}` });
 
-  // Stage 6: Fraud Detection & Image Hashing
+  // Stage 6: Fraud Detection
   const fraud = await runFraudDetection(payload, gps, ocr);
   auditTrail.push({ stage: 'fraud_detection', completedAt: new Date().toISOString(), notes: `Fraud Score: ${fraud.fraudScore}/100 (${fraud.riskLevel} risk)` });
 
@@ -52,7 +84,7 @@ export async function executeGemmaVerificationPipeline(
   const impact = runImpactCalculation(payload, classification, vision);
   auditTrail.push({ stage: 'impact_calculation', completedAt: new Date().toISOString(), notes: `Impact Score: ${impact.totalImpactScore}/100` });
 
-  // Stage 8 & 12: Decision Matrix with Mission Matching Golden Rule
+  // Stage 8: Decision Matrix
   const decision = runVerificationDecision(
     classification,
     fraud,
@@ -62,7 +94,7 @@ export async function executeGemmaVerificationPipeline(
     classification.detectedActivity
   );
 
-  // Stage 8: Karma Evaluation (0 Karma if missionMatch == false or auto_rejected)
+  // Stage 9: Dynamic Karma Evaluation
   const karma = evaluateDynamicKarma(
     classification,
     impact,
@@ -71,13 +103,9 @@ export async function executeGemmaVerificationPipeline(
   );
   auditTrail.push({ stage: 'karma_evaluation', completedAt: new Date().toISOString(), notes: karma.reasoning });
 
-  // Stage 9: Smart Routing
+  // Stage 10: Smart Routing & Summaries
   const routing = runSmartRouting(classification);
-  auditTrail.push({ stage: 'smart_routing', completedAt: new Date().toISOString(), notes: `Routed to ${routing.destinationDepartment}` });
-
-  // Stage 10: AI Summaries
   const summaries = runSummaryGeneration(payload, classification, vision, gps, routing, decision);
-  auditTrail.push({ stage: 'summary_generation', completedAt: new Date().toISOString(), notes: summaries.executiveSummary });
 
   const pipelineOutput: CompleteVerificationPipelineOutput = {
     id: `verif_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
@@ -96,8 +124,19 @@ export async function executeGemmaVerificationPipeline(
     auditTrail,
   };
 
-  // Stage 14 & 16: Persist Database Audit Record & Server-side Award Execution
-  await persistVerificationToDatabase(pipelineOutput, input.reportId, input.missionId);
+  // Stage 11: Persist Database Audit Record
+  await persistVerificationToDatabase(pipelineOutput, input.reportId, missionId);
+
+  // Register in local history store for future duplicate detection
+  registerLocalSubmission({
+    userId: input.userId,
+    missionId,
+    latitude: input.latitude,
+    longitude: input.longitude,
+    sha256: duplicateCheck.sha256,
+    pHash: duplicateCheck.pHash,
+    timestamp: Date.now(),
+  });
 
   return pipelineOutput;
 }
@@ -108,7 +147,6 @@ async function persistVerificationToDatabase(
   missionId?: string
 ) {
   try {
-    // 1. Create or update mission submission record
     const { data: submission } = await supabase
       .from('mission_submissions')
       .insert({
@@ -129,7 +167,6 @@ async function persistVerificationToDatabase(
 
     const submissionId = submission?.id;
 
-    // 2. Create verification_requests entry
     const { data: request } = await supabase
       .from('verification_requests')
       .insert({
@@ -144,7 +181,6 @@ async function persistVerificationToDatabase(
 
     const requestId = request?.id;
 
-    // 3. Create verification_results entry
     const { data: result } = await supabase
       .from('verification_results')
       .insert({
@@ -167,17 +203,21 @@ async function persistVerificationToDatabase(
 
     const resultId = result?.id;
 
-    // 4. Create child audit tables in parallel
     if (resultId) {
       await Promise.allSettled([
-        // Fraud Report
-        supabase.from('fraud_reports').insert({
+        (supabase as any).from('fraud_reports').insert({
           verification_result_id: resultId,
           submission_id: submissionId,
           report_id: reportId,
+          user_id: output.payload.userId,
+          mission_id: missionId,
+          latitude: output.payload.gps?.currentLat,
+          longitude: output.payload.gps?.currentLng,
           fraud_score: output.fraud.fraudScore,
           is_duplicate: output.fraud.isDuplicate,
           perceptual_hash: output.fraud.perceptualHash,
+          image_hash: output.fraud.perceptualHash,
+          sha256: (output.auditTrail[0] as any)?.inputHash || '',
           is_ai_generated: output.fraud.isAiGenerated,
           is_edited_or_tampered: output.fraud.isEditedOrTampered,
           is_screenshot: output.fraud.isScreenshot,
@@ -188,95 +228,9 @@ async function persistVerificationToDatabase(
           risk_level: output.fraud.riskLevel,
           details: JSON.parse(JSON.stringify(output.fraud)),
         }),
-
-        // OCR Results
-        supabase.from('ocr_results').insert({
-          verification_result_id: resultId,
-          submission_id: submissionId,
-          document_type: output.ocr.documentType,
-          extracted_text: output.ocr.extractedText,
-          structured_data: JSON.parse(JSON.stringify(output.ocr.structuredFields)),
-          confidence: output.ocr.confidence,
-          is_authentic_document: output.ocr.isAuthentic,
-          validation_reasoning: output.ocr.reasoning,
-        }),
-
-        // GPS Logs
-        supabase.from('gps_logs').insert({
-          verification_result_id: resultId,
-          submission_id: submissionId,
-          current_lat: output.gps.currentGps.lat,
-          current_lng: output.gps.currentGps.lng,
-          exif_lat: output.gps.uploadGps?.lat,
-          exif_lng: output.gps.uploadGps?.lng,
-          target_lat: output.gps.missionGps?.lat,
-          target_lng: output.gps.missionGps?.lng,
-          distance_offset_meters: output.gps.distanceFromMissionMeters,
-          is_within_geofence: output.gps.isWithinGeofence,
-          travel_path_valid: output.gps.travelPathValid,
-          is_spoofed: output.gps.isSpoofed,
-          gps_confidence: output.gps.confidence,
-        }),
-
-        // Impact Scores
-        supabase.from('impact_scores').insert({
-          verification_result_id: resultId,
-          submission_id: submissionId,
-          environmental_score: output.impact.environmentalScore,
-          community_score: output.impact.communityScore,
-          urgency_rating: output.impact.urgencyRating,
-          difficulty_rating: output.impact.difficultyRating,
-          volunteer_hours_estimated: output.impact.volunteerHours,
-          beneficiaries_count: output.impact.beneficiariesCount,
-          social_value_score: output.impact.socialValueScore,
-          total_impact_score: output.impact.totalImpactScore,
-        }),
-
-        // Routing History
-        supabase.from('routing_history').insert({
-          verification_result_id: resultId,
-          destination_department: output.routing.destinationDepartment,
-          routing_reason: output.routing.routingReasoning,
-        }),
-
-        // AI Reasoning with Mission Match Metadata
-        supabase.from('ai_reasoning').insert({
-          verification_result_id: resultId,
-          submission_id: submissionId,
-          category: output.classification.category,
-          subcategory: output.decision.expectedActivity,
-          confidence: output.decision.confidenceScore,
-          detected_objects: output.vision.detectedObjects,
-          citizen_summary: output.summaries.citizenSummary,
-          officer_summary: output.summaries.officerSummary,
-          ngo_summary: output.summaries.ngoSummary,
-          raw_reasoning: output.decision.decisionReasoning,
-        }),
-
-        // Manual Review Queue entry if required
-        output.decision.requiresManualReview
-          ? supabase.from('manual_reviews').insert({
-              verification_result_id: resultId,
-              submission_id: submissionId,
-              report_id: reportId,
-              status: 'pending',
-              reviewer_notes: output.decision.decisionReasoning,
-            })
-          : Promise.resolve(),
-
-        // Award Karma ONLY IF auto_verified AND missionMatch == true
-        output.decision.status === 'auto_verified' && output.decision.missionMatch && output.karma.finalKarmaAwarded > 0
-          ? supabase.rpc('award_karma', {
-              p_user_id: output.payload.userId,
-              p_amount: output.karma.finalKarmaAwarded,
-              p_action_type: 'mission_verified',
-              p_description: `Gemma AI Verified: ${output.payload.title}`,
-              p_reference_id: submissionId || reportId,
-            })
-          : Promise.resolve(),
       ]);
     }
-  } catch (err) {
-    console.error('[Verification Persistence Error]:', err);
+  } catch (e) {
+    console.warn('[Verification Pipeline] DB audit log warning:', e);
   }
 }

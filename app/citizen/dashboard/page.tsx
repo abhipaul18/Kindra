@@ -1,14 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useCitizenDashboard } from '@/hooks/useCitizenDashboard';
 import { Card } from '@/src/components/ui/Card';
 import { ProgressBar } from '@/src/components/ui/ProgressBar';
 import { GoodDeedsDiscovery } from '@/components/citizen/GoodDeedsDiscovery';
+import { getLevelFromKarma } from '@/src/lib/karmaProgression';
+import { LevelProgressCard } from '@/components/citizen/LevelProgressCard';
+import { LevelUpModal } from '@/components/citizen/LevelUpModal';
+import { AnimatedNumber } from '@/components/core/animated-number';
 
 export default function CitizenDashboardPage() {
   const { profile, isLoadingProfile, credentials, leaderboard, recentReports } = useCitizenDashboard();
-  const [extraKarma, setExtraKarma] = useState(0);
 
   if (isLoadingProfile) {
     return (
@@ -23,12 +26,14 @@ export default function CitizenDashboardPage() {
     );
   }
 
-  const karmaPoints = (profile?.karma_points || 100) + extraKarma;
-  const nextMilestoneKarma = 250;
-  const levelProgress = Math.min(100, Math.round((karmaPoints / nextMilestoneKarma) * 100));
+  const karmaPoints = profile?.karma_points || 0;
+  const levelInfo = getLevelFromKarma(karmaPoints);
 
   return (
     <div className="flex flex-col gap-lg pb-xl">
+      {/* Level Up Celebration Modal Listener */}
+      <LevelUpModal karma={karmaPoints} userId={profile?.id} />
+
       {/* 1. Hero Profile Welcome Banner */}
       <Card className="bg-gradient-to-r from-primary/10 via-primary-container/20 to-secondary/10 border-primary/20 p-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-md relative overflow-hidden">
         <div className="flex items-center gap-md z-10 flex-1 min-w-0">
@@ -46,27 +51,20 @@ export default function CitizenDashboardPage() {
                 Welcome back, {profile?.full_name || 'Citizen'}!
               </h1>
               <span className="bg-secondary-container/30 text-secondary text-xs font-bold px-2.5 py-0.5 rounded-full border border-secondary/30 whitespace-nowrap shrink-0">
-                {profile?.rank_title || 'Civic Hero'}
+                Level {levelInfo.level} {levelInfo.title}
               </span>
             </div>
             <p className="text-sm text-on-surface-variant mt-1 leading-relaxed">
-              <span className="font-bold text-on-surface">"Make Kindness Count." 💚</span> You have earned{' '}
-              <span className="font-extrabold text-secondary">{karmaPoints} Karma Points</span>.
+              <span className="font-bold text-on-surface">&quot;Make Kindness Count.&quot; 💚</span> You have earned{' '}
+              <span className="font-extrabold text-secondary">
+                <AnimatedNumber value={karmaPoints} springOptions={{ bounce: 0, duration: 2000 }} /> Karma Points
+              </span>.
             </p>
           </div>
         </div>
 
-        {/* Level Progress Indicator */}
-        <div className="w-full md:w-64 flex flex-col gap-1.5 z-10 bg-surface/90 p-3 rounded-xl border border-outline-variant/30 backdrop-blur-sm shrink-0">
-          <div className="flex justify-between text-xs font-bold text-on-surface">
-            <span>Level 2 Civic Advocate</span>
-            <span className="text-secondary">{karmaPoints} / {nextMilestoneKarma} XP</span>
-          </div>
-          <ProgressBar value={levelProgress} color="green" showPercentage={false} />
-          <span className="text-[10px] text-on-surface-variant font-medium">
-            Earn {nextMilestoneKarma - karmaPoints} more Karma to reach Level 3
-          </span>
-        </div>
+        {/* Dynamic Level Progress Indicator */}
+        <LevelProgressCard karma={karmaPoints} compact className="w-full md:w-72 z-10 shrink-0" />
       </Card>
 
       {/* 2. Quick Action Grid */}
@@ -116,7 +114,7 @@ export default function CitizenDashboardPage() {
       </section>
 
       {/* 3. Good Deeds Ecosystem — Discovery Hub */}
-      <GoodDeedsDiscovery onClaimKarma={(amount) => setExtraKarma((prev) => prev + amount)} />
+      <GoodDeedsDiscovery />
 
       {/* 4. Main Dashboard Grid (Credentials + Leaderboard) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-lg">
@@ -196,7 +194,7 @@ export default function CitizenDashboardPage() {
         <h2 className="text-lg font-extrabold text-on-surface">Recent Reports & Activity</h2>
         {recentReports.length === 0 ? (
           <Card className="p-lg text-center text-xs text-on-surface-variant border-dashed border-outline-variant">
-            No civic reports submitted yet. Click "Report Issue" to submit your first issue and earn +50 Karma!
+            No civic reports submitted yet. Click &quot;Report Issue&quot; to submit your first issue and earn +50 Karma!
           </Card>
         ) : (
           <div className="flex flex-col gap-sm">

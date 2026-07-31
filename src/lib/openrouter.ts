@@ -20,8 +20,7 @@ export interface AIVerificationResult {
 export type AIReportAnalysis = AIVerificationResult;
 
 const PROMPT_VERSION = 'v1.2-enterprise';
-const PRIMARY_MODEL = process.env.NEXT_PUBLIC_OPENROUTER_MODEL || 'google/gemma-4-26b-a4b-it:free';
-const FALLBACK_MODEL = 'meta-llama/llama-3.2-11b-vision-instruct:free';
+const PRIMARY_MODEL = process.env.NEXT_PUBLIC_OPENROUTER_MODEL || process.env.OPENROUTER_MODEL || 'google/gemma-4-26b-a4b-it:free';
 
 export interface OpenRouterTextContent {
   type: 'text';
@@ -58,7 +57,7 @@ export async function analyzeCivicReportWithGemma(
   locationName: string,
   imageUrl?: string
 ): Promise<AIVerificationResult> {
-  const apiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
 
   if (!apiKey) {
     console.warn('[AI Pipeline] OpenRouter API key missing. Invoking local rule-based fallback verdict.');
@@ -104,32 +103,30 @@ Urgency Levels: Low, Medium, High, Urgent
     ? [{ role: 'user', content: [{ type: 'text', text: promptText }, { type: 'image_url', image_url: { url: imageUrl } }] }]
     : [{ role: 'user', content: promptText }];
 
-  // ── Multi-Model Fallback Chain ─────────────────────────────────
-  const modelsToTry = [PRIMARY_MODEL, FALLBACK_MODEL];
-
-  for (const model of modelsToTry) {
-    try {
-      const result = await executeOpenRouterRequest(apiKey, model, messages);
-      if (result) {
-        return {
-          ...result,
-          prompt_version: PROMPT_VERSION,
-          model_used: model,
-        };
-      }
-    } catch (err) {
-      console.warn(`[AI Pipeline] Primary model ${model} failed, trying fallback chain...`, err);
+  try {
+    const result = await executeOpenRouterRequest(apiKey, PRIMARY_MODEL, messages);
+    if (result) {
+      return {
+        ...result,
+        prompt_version: PROMPT_VERSION,
+        model_used: PRIMARY_MODEL,
+      };
     }
+  } catch (err) {
+    console.warn(`[AI Pipeline] Primary model ${PRIMARY_MODEL} failed:`, err);
   }
 
-  console.warn('[AI Pipeline] All OpenRouter AI models exhausted. Executing fallback verdict.');
+  console.warn('[AI Pipeline] OpenRouter request failed. Executing fallback verdict.');
   return getFallbackAIVerdict(title, description, 'deterministic-fallback-v1.2');
 }
 
-async function executeOpenRouterRequest(apiKey: string, model: string, messages: OpenRouterMessage[], retries = 2): Promise<AIVerificationResult | null> {
+async function executeOpenRouterRequest(apiKey: string, model: string, messages: OpenRouterMessage[], retries = 1): Promise<AIVerificationResult | null> {
   for (let attempt = 0; attempt <= retries; attempt++) {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s Timeout limit
+    const timeoutId = setTimeout(() => {
+      console.warn('[OpenRouter] Request timed out after 60 seconds.');
+      controller.abort();
+    }, 60000); // 60s timeout
 
     try {
       const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
@@ -145,10 +142,18 @@ async function executeOpenRouterRequest(apiKey: string, model: string, messages:
           messages,
           temperature: 0.15,
           max_tokens: 500,
+          provider: {
+            allow_fallbacks: true,
+          },
         }),
         signal: controller.signal,
       });
       clearTimeout(timeoutId);
+
+      if (response.status === 404) {
+        console.error(`[OpenRouter 404] No endpoints found for model "${model}". Stopping execution immediately.`);
+        return null;
+      }
 
       if (response.status === 429 || response.status >= 500) {
         if (attempt < retries) {
@@ -171,8 +176,13 @@ async function executeOpenRouterRequest(apiKey: string, model: string, messages:
       
       const parsedRaw = JSON.parse(cleanedJson);
       return validateAndSanitizeAIResult(parsedRaw);
-    } catch {
+    } catch (err: any) {
       clearTimeout(timeoutId);
+      if (err.name === 'AbortError') {
+        console.error('[OpenRouter] Request timed out or was aborted.');
+      } else {
+        console.error('[OpenRouter] Fetch exception:', err);
+      }
       if (attempt === retries) return null;
     }
   }
@@ -362,7 +372,7 @@ Every answer should help the user use KINDRA more effectively.
 When uncertain, admit uncertainty instead of making assumptions.`;
 
 export async function askGemmaAssistant(userMessage: string, history: OpenRouterMessage[] = []): Promise<string> {
-  const apiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY;
+  const apiKey = process.env.NEXT_PUBLIC_OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
   if (!apiKey) {
     return getFallbackGemmaResponse(userMessage);
   }
@@ -373,40 +383,39 @@ export async function askGemmaAssistant(userMessage: string, history: OpenRouter
     { role: 'user', content: userMessage },
   ];
 
-  const modelsToTry = [PRIMARY_MODEL, FALLBACK_MODEL];
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
 
-  for (const model of modelsToTry) {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 12000);
-
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://kindra.app',
-          'X-Title': 'KINDRA Enterprise Platform',
+    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://kindra.app',
+        'X-Title': 'KINDRA Enterprise Platform',
+      },
+      body: JSON.stringify({
+        model: PRIMARY_MODEL,
+        messages,
+        temperature: 0.2,
+        max_tokens: 450,
+        provider: {
+          allow_fallbacks: true,
         },
-        body: JSON.stringify({
-          model,
-          messages,
-          temperature: 0.2,
-          max_tokens: 450,
-        }),
-        signal: controller.signal,
-      });
+      }),
+      signal: controller.signal,
+    });
 
-      clearTimeout(timeoutId);
+    clearTimeout(timeoutId);
 
-      if (response.ok) {
-        const data = await response.json();
-        const content = data.choices?.[0]?.message?.content?.trim();
-        if (content) return content;
-      }
-    } catch (err) {
-      console.warn(`[Gemma AI] Model ${model} failed, trying fallback...`, err);
+    if (response.ok) {
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content?.trim();
+      if (content) return content;
     }
+  } catch (err) {
+    console.warn(`[Gemma AI] Model ${PRIMARY_MODEL} failed:`, err);
   }
 
   return getFallbackGemmaResponse(userMessage);
@@ -484,6 +493,7 @@ export interface GoodDeedAIVerdict {
   feedback: string;
   reasoning: string;
   model_used?: string;
+  apiError?: any;
   // Evidence pipeline fields
   evidence_id?: string | null;
   storage_url?: string | null;
@@ -522,6 +532,16 @@ export async function verifyGoodDeedMissionWithGemma(
   let imageSource = imageBase64;
   if (!imageSource && imageUrl && !imageUrl.startsWith('blob:')) {
     imageSource = imageUrl;
+  }
+
+  if (!imageSource && !imageFile) {
+    return {
+      is_valid: false,
+      confidence: 0,
+      detected_subject: 'No Proof Image',
+      feedback: 'Please select and upload a proof photo before submitting for verification.',
+      reasoning: 'AI Verification requires a valid photo of the completed mission proof.',
+    };
   }
 
   // ── Evidence Pipeline: Hash + Upload + Duplicate Check ──────
@@ -619,6 +639,17 @@ export async function verifyGoodDeedMissionWithGemma(
   const diagnostic = await executeGemmaMultimodalRequest(promptText, imageSource);
 
   let aiVerdict: GoodDeedAIVerdict | null = null;
+
+  if (diagnostic.apiError) {
+    return {
+      is_valid: false,
+      confidence: 0,
+      detected_subject: 'API Error',
+      feedback: `API Error: ${diagnostic.apiError.statusCode}`,
+      reasoning: diagnostic.apiError.message,
+      apiError: diagnostic.apiError,
+    };
+  }
 
   if (diagnostic.content) {
     try {
@@ -741,17 +772,6 @@ export async function verifyGoodDeedMissionWithGemma(
     } catch (e) {
       console.error('[Gemma Vision] JSON parse error:', e);
     }
-  }
-
-  if (diagnostic.apiError) {
-    return {
-      is_valid: false,
-      confidence: 0,
-      detected_subject: 'OpenRouter API Diagnostic Error',
-      feedback: `OpenRouter Error (${diagnostic.apiError.statusCode} ${diagnostic.apiError.statusText}): ${diagnostic.apiError.message}`,
-      reasoning: `Endpoint: ${diagnostic.apiError.endpoint} | Model: ${diagnostic.apiError.model} | Status: ${diagnostic.apiError.statusCode}.`,
-      model_used: diagnostic.apiError.model,
-    };
   }
 
   // Smart Heuristic Rule Engine Fallback

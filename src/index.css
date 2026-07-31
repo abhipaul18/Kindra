@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,6 +37,27 @@
   .glow-secondary {
     box-shadow: 0 0 20px rgba(0, 115, 44, 0.25);
   }
+
+  .shadow-level-1 { box-shadow: 0px 2px 4px rgba(0, 82, 204, 0.08); }
+  .shadow-level-2 { box-shadow: 0px 8px 16px rgba(0, 82, 204, 0.08); }
+  .shadow-level-3 { box-shadow: 0px 24px 48px rgba(0, 82, 204, 0.08); }
+
+  .bg-grid-pattern {
+    background-image: 
+      linear-gradient(to right, rgba(195, 198, 214, 0.2) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(195, 198, 214, 0.2) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+
+  .floating {
+    animation: float 6s ease-in-out infinite;
+  }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
 }
 
 /* Custom Smooth Scrollbar */

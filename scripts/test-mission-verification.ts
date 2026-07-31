@@ -1,3 +1,23 @@
+import fs from 'fs';
+import path from 'path';
+
+// Load .env.local manually
+try {
+  const envPath = path.resolve(process.cwd(), '.env.local');
+  if (fs.existsSync(envPath)) {
+    const envConfig = fs.readFileSync(envPath, 'utf8');
+    envConfig.split('\n').forEach(line => {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith('#')) {
+        const [key, ...vals] = trimmed.split('=');
+        if (key && vals.length > 0) {
+          process.env[key.trim()] = vals.join('=').trim();
+        }
+      }
+    });
+  }
+} catch (e) {}
+
 import { runActivityClassification } from '../src/lib/gemma/classificationEngine';
 import { runVerificationDecision } from '../src/lib/gemma/decisionEngine';
 import { runGPSValidation } from '../src/lib/gemma/gpsEngine';
@@ -8,40 +28,38 @@ interface TestCase {
   missionId: string;
   missionTitle: string;
   uploadDescription: string;
+  imageUrl: string;
   expectedResult: 'PASS' | 'FAIL';
 }
 
+const POTHOLE_IMG = 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=800&auto=format&fit=crop&q=60';
+const PLANT_IMG = 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&auto=format&fit=crop&q=60';
+
 const TEST_MATRIX: TestCase[] = [
-  // Plant a Tree semantic variations (all MUST PASS)
-  { missionId: 'tree_plantation', missionTitle: 'Plant a Tree', uploadDescription: 'person planting a young tree in soil', expectedResult: 'PASS' },
-  { missionId: 'tree_plantation', missionTitle: 'Plant a Tree', uploadDescription: 'tree sapling in garden soil', expectedResult: 'PASS' },
-  { missionId: 'tree_plantation', missionTitle: 'Plant a Tree', uploadDescription: 'planting vegetation outdoor garden', expectedResult: 'PASS' },
-  { missionId: 'tree_plantation', missionTitle: 'Plant a Tree', uploadDescription: 'small tree newly planted in earth', expectedResult: 'PASS' },
-  
-  // Rejections for Plant a Tree
-  { missionId: 'tree_plantation', missionTitle: 'Plant a Tree', uploadDescription: 'Deep pothole road damage asphalt', expectedResult: 'FAIL' },
-  { missionId: 'tree_plantation', missionTitle: 'Plant a Tree', uploadDescription: 'Overflowing garbage dumpster trash bags', expectedResult: 'FAIL' },
+  // PASS Test Cases for "Report Road Potholes" (road_damage) using Road Damage image
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Road with large pothole and broken asphalt hazard', imageUrl: POTHOLE_IMG, expectedResult: 'PASS' },
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Road with cracked asphalt surface depression', imageUrl: POTHOLE_IMG, expectedResult: 'PASS' },
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Damaged concrete road with deep cavity defect', imageUrl: POTHOLE_IMG, expectedResult: 'PASS' },
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Broken pavement and missing road surface', imageUrl: POTHOLE_IMG, expectedResult: 'PASS' },
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Road erosion and large road crack hazard', imageUrl: POTHOLE_IMG, expectedResult: 'PASS' },
 
-  // Road Potholes
-  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Pothole asphalt road crack hazard', expectedResult: 'PASS' },
-  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'tree sapling in garden soil', expectedResult: 'FAIL' },
-
-  // Garbage Cleanup
-  { missionId: 'garbage_cleanup', missionTitle: 'Garbage Cleanup', uploadDescription: 'Garbage bags trash cleanup litter', expectedResult: 'PASS' },
-  { missionId: 'garbage_cleanup', missionTitle: 'Garbage Cleanup', uploadDescription: 'tree sapling in garden soil', expectedResult: 'FAIL' },
-
-  // Blood Donation
-  { missionId: 'blood_donation', missionTitle: 'Blood Donation Drive', uploadDescription: 'Blood donor card hospital red cross', expectedResult: 'PASS' },
-  { missionId: 'blood_donation', missionTitle: 'Blood Donation Drive', uploadDescription: 'tree sapling in garden soil', expectedResult: 'FAIL' },
-
-  // Book Donation
-  { missionId: 'book_donation', missionTitle: 'Book Donation', uploadDescription: 'Educational textbooks library stack', expectedResult: 'PASS' },
-  { missionId: 'book_donation', missionTitle: 'Book Donation', uploadDescription: 'Deep pothole road damage asphalt', expectedResult: 'FAIL' },
+  // FAIL Test Cases for "Report Road Potholes" (Unrelated Content Must Reject) using Non-Road image
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Tree plantation with green sapling in soil', imageUrl: PLANT_IMG, expectedResult: 'FAIL' },
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Garbage cleanup drive with trash bags pile', imageUrl: PLANT_IMG, expectedResult: 'FAIL' },
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Blood donation chair and clinical donor card', imageUrl: PLANT_IMG, expectedResult: 'FAIL' },
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Food donation distribution meal packets', imageUrl: PLANT_IMG, expectedResult: 'FAIL' },
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Street dog eating food from bowl on pavement', imageUrl: PLANT_IMG, expectedResult: 'FAIL' },
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Commercial highrise building architecture view', imageUrl: PLANT_IMG, expectedResult: 'FAIL' },
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Indoor living room with sofa and furniture', imageUrl: PLANT_IMG, expectedResult: 'FAIL' },
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Car parking lot with parked sedan vehicles only', imageUrl: PLANT_IMG, expectedResult: 'FAIL' },
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Person selfie holding phone in bedroom', imageUrl: PLANT_IMG, expectedResult: 'FAIL' },
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Blank white image screen asset', imageUrl: PLANT_IMG, expectedResult: 'FAIL' },
+  { missionId: 'road_damage', missionTitle: 'Report Road Potholes', uploadDescription: 'Phone screen screenshot of social media post', imageUrl: PLANT_IMG, expectedResult: 'FAIL' },
 ];
 
 async function runTestSuite() {
   console.log('====================================================');
-  console.log(' KINDRA — Structured JSON Semantic Verification Test ');
+  console.log(' KINDRA — "Report Road Potholes" Verification Suite ');
   console.log('====================================================\n');
 
   let passedCount = 0;
@@ -54,7 +72,7 @@ async function runTestSuite() {
       selectedMissionId: test.missionId,
       title: test.missionTitle,
       notes: test.uploadDescription,
-      images: ['https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?w=800&auto=format&fit=crop&q=60'],
+      images: [test.imageUrl],
       gps: { currentLat: 28.6139, currentLng: 77.2090 },
     };
 

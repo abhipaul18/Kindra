@@ -63,7 +63,7 @@ export default function LeaderboardPage() {
 
           {/* Rank 1 - Gold */}
           <Card className="p-md flex flex-col items-center text-center gap-1 border-primary/50 bg-primary-container/10 shadow-md scale-105">
-            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary-container text-primary font-black flex items-center justify-center border-2 border-primary">
+            <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-primary text-on-primary font-black flex items-center justify-center shadow-sm">
               👑 #1
             </div>
             <span className="font-black text-sm text-on-surface truncate max-w-[120px]">{leaderboard[0]?.full_name}</span>

@@ -5,6 +5,7 @@ import { supabase } from '@/src/lib/supabase';
 import { useAuth } from '@/hooks/useAuth';
 import type { CivicReport, NotificationItem, Credential, UserCredential } from '@/src/types/database';
 import { mockCivicReports, mockNotifications } from '@/src/lib/mockData';
+import { getLevelFromKarma } from '@/src/lib/karmaProgression';
 
 export interface FormattedUserCredential {
   id: string;
@@ -103,20 +104,33 @@ export function useCitizenDashboard() {
         .limit(5);
 
       if (error || !data || data.length === 0) {
-        return [
-          { id: 'u1', full_name: 'Aarav Sharma', karma_points: 1450, rank_title: 'Civic Legend', rank_position: 1 },
-          { id: 'u2', full_name: 'Priya Patel', karma_points: 1220, rank_title: 'Civic Hero', rank_position: 2 },
-          { id: 'u3', full_name: 'Rahul Verma', karma_points: 980, rank_title: 'Civic Champion', rank_position: 3 },
-          { id: 'u4', full_name: 'Ananya Gupta', karma_points: 750, rank_title: 'Civic Guardian', rank_position: 4 },
-          { id: 'u5', full_name: 'Vikram Singh', karma_points: 620, rank_title: 'Civic Reporter', rank_position: 5 },
+        const mockRaw = [
+          { id: 'u1', full_name: 'Aarav Sharma', karma_points: 1450 },
+          { id: 'u2', full_name: 'Priya Patel', karma_points: 1220 },
+          { id: 'u3', full_name: 'Rahul Verma', karma_points: 980 },
+          { id: 'u4', full_name: 'Ananya Gupta', karma_points: 750 },
+          { id: 'u5', full_name: 'Vikram Singh', karma_points: 620 },
         ];
+        return mockRaw.map((item, index) => {
+          const info = getLevelFromKarma(item.karma_points);
+          return {
+            ...item,
+            rank_title: info.title,
+            rank_position: index + 1,
+          };
+        });
       }
 
-      return data.map((item, index) => ({
-        ...item,
-        rank_position: index + 1,
-      }));
+      return data.map((item, index) => {
+        const info = getLevelFromKarma(item.karma_points);
+        return {
+          ...item,
+          rank_title: info.title,
+          rank_position: index + 1,
+        };
+      });
     },
+    refetchOnWindowFocus: true,
   });
 
   // 5. User Reports Activity

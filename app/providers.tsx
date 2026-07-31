@@ -17,18 +17,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
     },
   }));
 
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={m3Theme}>
         <CssBaseline />
         <AuthProvider>
-          {mounted ? children : null}
+          {children}
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>

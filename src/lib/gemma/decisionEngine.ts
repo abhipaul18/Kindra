@@ -7,7 +7,7 @@ import type {
 } from './types';
 
 export function runVerificationDecision(
-  classification: ClassificationResult & { apiError?: any },
+  classification: ClassificationResult & { apiError?: any; confidenceScorePercent?: number },
   fraud: FraudDetectionResult,
   gps: GPSValidationResult,
   missionMatch: boolean = true,
@@ -16,11 +16,12 @@ export function runVerificationDecision(
 ): VerificationDecisionResult {
   let confidenceScore = classification.confidence;
 
-  if (!gps.isWithinGeofence) confidenceScore *= 0.85;
+  if (!gps.isWithinGeofence) confidenceScore *= 0.90;
   if (gps.isSpoofed) confidenceScore *= 0.1;
   if (fraud.fraudScore > 0) confidenceScore *= (1 - fraud.fraudScore / 100);
 
   confidenceScore = Math.min(1.0, Math.max(0.05, Number(confidenceScore.toFixed(2))));
+  const confPercent = Math.round(confidenceScore * 100);
 
   let status: VerificationDecisionStatus = 'pending';
   let requiresManualReview = false;
@@ -29,7 +30,7 @@ export function runVerificationDecision(
   let rejectionReason: string | undefined;
   let suggestedAction: string | undefined;
 
-  // RULE 0: OpenRouter API Error -> Explicit API Failure Diagnostic
+  // RULE 0: OpenRouter API Error -> Diagnostic Error State
   if (classification.apiError) {
     return {
       status: 'manual_review_required',
@@ -46,39 +47,44 @@ export function runVerificationDecision(
     };
   }
 
-  // RULE 1: Mission Match Failure -> Immediately Reject with 0 Karma
-  if (!missionMatch) {
+  const isFraud = fraud.fraudScore >= 50 || fraud.isDuplicate || gps.isSpoofed || fraud.isAiGenerated;
+
+  // RULE 1: Fraud -> Immediately Reject
+  if (isFraud) {
     status = 'auto_rejected';
     autoRejected = true;
-    rejectionReason = 'The uploaded evidence does not satisfy the selected mission requirements.';
-    suggestedAction = `Please upload evidence satisfying mission: "${expectedActivity}".`;
-    decisionReasoning = `Verification Failed: Gemini/Gemma AI determined mission_match == false for "${expectedActivity}". Detected: "${detectedActivity}". Reason: ${classification.reasoning}. Karma awarded: 0 XP.`;
-  }
-  // RULE 2: Fraud Score or GPS Spoofing -> Immediately Reject
-  else if (fraud.fraudScore >= 50 || fraud.isDuplicate || gps.isSpoofed) {
-    status = 'auto_rejected';
-    autoRejected = true;
-    rejectionReason = 'Security alert: Fraud risk score exceeded threshold.';
-    suggestedAction = 'Please submit original, non-edited photo proof.';
+    rejectionReason = 'Security alert: Fraud risk score exceeded threshold or duplicate/synthetic image detected.';
+    suggestedAction = 'Please submit original, non-edited photo proof taken on location.';
     decisionReasoning = `Submission rejected by Gemma AI Engine due to fraud risk score (${fraud.fraudScore}/100). Flags: ${
       fraud.isDuplicate ? 'Duplicate image match. ' : ''
     }${gps.isSpoofed ? 'GPS Spoofing detected. ' : ''}${fraud.isAiGenerated ? 'AI Generated Synthetic Media. ' : ''}`;
   }
-  // RULE 3: confidence >= 90% -> Auto Approve
-  else if (confidenceScore >= 0.90 && missionMatch) {
+  // RULE 2: Mission Match == false -> Reject
+  else if (!missionMatch) {
+    status = 'auto_rejected';
+    autoRejected = true;
+    rejectionReason = 'The uploaded evidence does not satisfy the selected mission requirements.';
+    suggestedAction = `Please upload evidence satisfying mission: "${expectedActivity}".`;
+    decisionReasoning = `Verification Failed: Gemma AI determined mission_match == false for "${expectedActivity}". Detected: "${detectedActivity}". Reason: ${classification.reasoning}. Karma awarded: 0 XP.`;
+  }
+  // RULE 3: Confidence >= 85 (Approve & Very High Confidence)
+  else if (confPercent >= 85 && missionMatch) {
     status = 'auto_verified';
-    decisionReasoning = `Mission Approved by Gemma AI. High confidence (${(confidenceScore * 100).toFixed(0)}%), mission_match == true (${detectedActivity}). Reason: ${classification.reasoning}`;
+    decisionReasoning = `Mission Approved by KINDRA Primary Object Engine (${confPercent}% Confidence). Reason: ${classification.reasoning}`;
   }
-  // RULE 4: confidence 80% - 89% -> Needs Additional Validation / Low Confidence Approval
-  else if (confidenceScore >= 0.80 && missionMatch) {
-    status = 'verified_low_confidence';
-    decisionReasoning = `Verified with Low Confidence (${(confidenceScore * 100).toFixed(0)}%). Mission match passed, queued for optional officer audit. Reason: ${classification.reasoning}`;
-  }
-  // RULE 5: confidence < 80% -> Manual Review Required
-  else {
+  // RULE 4: Confidence 70–84 -> Needs Manual Review
+  else if (confPercent >= 70 && confPercent < 85 && missionMatch) {
     status = 'manual_review_required';
     requiresManualReview = true;
-    decisionReasoning = `Confidence score (${(confidenceScore * 100).toFixed(0)}%) is below 80%. Queued for manual review. Reason: ${classification.reasoning}`;
+    decisionReasoning = `Needs Manual Review: Confidence score (${confPercent}%) is between 70-84%. Queued for civic officer manual review. Reason: ${classification.reasoning}`;
+  }
+  // RULE 5: Confidence Below 70 -> Reject
+  else {
+    status = 'auto_rejected';
+    autoRejected = true;
+    rejectionReason = `Confidence score (${confPercent}%) is below 70% threshold.`;
+    suggestedAction = `Please re-take photo showing primary object(s) clearly for "${expectedActivity}".`;
+    decisionReasoning = `Rejected: Confidence score (${confPercent}%) is below 70%. Reason: ${classification.reasoning}`;
   }
 
   return {

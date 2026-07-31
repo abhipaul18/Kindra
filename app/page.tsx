@@ -21,12 +21,19 @@ import { RedeemRewardsView } from '@/src/components/views/RedeemRewardsView';
 import { OfficerDashboardView } from '@/src/components/views/OfficerDashboardView';
 import { PartnerDashboardView } from '@/src/components/views/PartnerDashboardView';
 import { AdminDashboardView } from '@/src/components/views/AdminDashboardView';
+import { AuthLoginView } from '@/src/components/views/AuthLoginView';
+import KindraLandingPage from '@/components/landing/KindraLandingPage';
 import { Card } from '@/src/components/ui/Card';
 import { Button } from '@/src/components/ui/Button';
+import { FloatingAIButton } from '@/src/components/ui/FloatingAIButton';
+
+import { useAuth } from '@/hooks/useAuth';
 
 export default function HomePage() {
+  const { user, role } = useAuth() || {};
   const [currentRole, setCurrentRole] = useState<UserRole>('citizen');
-  const [activeTab, setActiveTab] = useState<string>('dashboard');
+  const [activeTab, setActiveTab] = useState<string>('landing');
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const [reports, setReports] = useState<CivicReport[]>(mockCivicReports);
   const [tasks] = useState<VolunteerTask[]>(mockVolunteerTasks);
@@ -36,9 +43,21 @@ export default function HomePage() {
   const [karmaPoints, setKarmaPoints] = useState<number>(350);
 
   const [showNotifications, setShowNotifications] = useState<boolean>(false);
+  const [mounted, setMounted] = useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div suppressHydrationWarning className="min-h-screen bg-background text-on-surface flex flex-col font-sans" />
+    );
+  }
 
   const handleRoleChange = (role: UserRole) => {
     setCurrentRole(role);
+    setIsLoggedIn(true);
     if (role === 'citizen') setActiveTab('dashboard');
     else if (role === 'officer') setActiveTab('officer_dashboard');
     else if (role === 'partner') setActiveTab('partner_dashboard');
@@ -73,73 +92,45 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-on-background flex flex-col font-sans">
+    <div suppressHydrationWarning className="min-h-screen bg-background text-on-surface flex flex-col font-sans">
       {/* Navigation Top Bar */}
       <TopAppBar
         currentRole={currentRole}
         onRoleChange={handleRoleChange}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(tab) => {
+          setActiveTab(tab);
+        }}
         karmaPoints={karmaPoints}
         unreadNotifications={notifications.filter((n) => !n.is_read).length}
         onOpenNotifications={() => setShowNotifications(true)}
+        isLoggedIn={isLoggedIn}
       />
 
-      {/* Portal Main Content */}
-      <main className="flex-1 pt-16 pb-lg">
-        {/* Live Portal Navigation — For Hackathon Judges */}
-        <section className="max-w-5xl mx-auto px-margin-mobile md:px-margin-desktop py-lg">
-          <div className="flex flex-col gap-md mb-lg">
-            <div className="text-center">
-              <h2 className="text-xl font-black text-on-surface">🚀 Launch Live Portals</h2>
-              <p className="text-xs text-on-surface-variant mt-1">Authenticated portals connected to Supabase + Gemma AI</p>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-md">
-              <a href="/citizen/dashboard">
-                <Card hoverable className="p-md flex flex-col items-center text-center gap-sm border-primary/30 hover:border-primary hover:shadow-md transition-all">
-                  <div className="w-12 h-12 rounded-xl bg-primary-container/20 text-primary flex items-center justify-center">
-                    <span className="material-symbols-outlined text-2xl">person</span>
-                  </div>
-                  <span className="font-bold text-sm text-on-surface">Citizen Portal</span>
-                  <span className="text-[10px] text-on-surface-variant">Report • Verify • Earn Karma</span>
-                </Card>
-              </a>
-              <a href="/officer/dashboard">
-                <Card hoverable className="p-md flex flex-col items-center text-center gap-sm border-blue-500/30 hover:border-blue-500 hover:shadow-md transition-all">
-                  <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-2xl">shield</span>
-                  </div>
-                  <span className="font-bold text-sm text-on-surface">Officer Portal</span>
-                  <span className="text-[10px] text-on-surface-variant">Queue • Review • Resolve</span>
-                </Card>
-              </a>
-              <a href="/partner/dashboard">
-                <Card hoverable className="p-md flex flex-col items-center text-center gap-sm border-amber-500/30 hover:border-amber-500 hover:shadow-md transition-all">
-                  <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-2xl">storefront</span>
-                  </div>
-                  <span className="font-bold text-sm text-on-surface">Partner Portal</span>
-                  <span className="text-[10px] text-on-surface-variant">Rewards • Campaigns</span>
-                </Card>
-              </a>
-              <a href="/admin/dashboard">
-                <Card hoverable className="p-md flex flex-col items-center text-center gap-sm border-red-500/30 hover:border-red-500 hover:shadow-md transition-all">
-                  <div className="w-12 h-12 rounded-xl bg-red-500/10 text-red-600 flex items-center justify-center">
-                    <span className="material-symbols-outlined text-2xl">admin_panel_settings</span>
-                  </div>
-                  <span className="font-bold text-sm text-on-surface">Admin Portal</span>
-                  <span className="text-[10px] text-on-surface-variant">Analytics • Users • Settings</span>
-                </Card>
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {activeTab === 'role_selection' && (
-          <RoleSelectionView onSelectRole={handleRoleChange} />
+      {/* Main Content Area */}
+      <main className="flex-1 pt-0">
+        {/* Login / Sign Up Page from Stitch Screen */}
+        {(activeTab === 'login' || activeTab === 'register') && (
+          <AuthLoginView
+            onLoginSuccess={() => {
+              window.location.href = '/citizen/dashboard';
+            }}
+            onRoleSelect={(role) => handleRoleChange(role)}
+          />
         )}
 
-        {/* Citizen Portal */}
+        {/* Premium AI-Powered Landing Page (Default View) */}
+        {activeTab === 'landing' && (
+          <KindraLandingPage
+            onExploreMissions={() => setActiveTab('dashboard')}
+            onNavigateToRole={(role) => handleRoleChange(role as UserRole)}
+            onNavigateToAuth={() => setActiveTab('login')}
+          />
+        )}
+
+        {activeTab === 'role_selection' && <RoleSelectionView onSelectRole={handleRoleChange} />}
+
+        {/* Citizen Portal Views */}
         {currentRole === 'citizen' && activeTab === 'dashboard' && (
           <CitizenDashboardView
             reports={reports}
@@ -164,7 +155,7 @@ export default function HomePage() {
           <RedeemRewardsView rewards={rewards} karmaPoints={karmaPoints} onRedeem={handleRedeemReward} />
         )}
 
-        {/* Officer Portal */}
+        {/* Officer Portal Views */}
         {currentRole === 'officer' && (
           <OfficerDashboardView
             reports={reports}
@@ -173,15 +164,11 @@ export default function HomePage() {
           />
         )}
 
-        {/* Partner Portal */}
-        {currentRole === 'partner' && (
-          <PartnerDashboardView campaigns={campaigns} rewards={rewards} />
-        )}
+        {/* Partner Portal Views */}
+        {currentRole === 'partner' && <PartnerDashboardView campaigns={campaigns} rewards={rewards} />}
 
-        {/* Admin Portal */}
-        {currentRole === 'admin' && (
-          <AdminDashboardView departments={mockDepartments} reports={reports} />
-        )}
+        {/* Admin Portal Views */}
+        {currentRole === 'admin' && <AdminDashboardView departments={mockDepartments} reports={reports} />}
       </main>
 
       {/* Notifications Modal Drawer */}
@@ -207,7 +194,9 @@ export default function HomePage() {
                   <Card key={n.id} className="p-sm bg-surface-container-low border border-outline-variant/20 gap-1">
                     <span className="font-bold text-on-surface text-sm">{n.title}</span>
                     <p className="text-xs text-on-surface-variant leading-relaxed">{n.message}</p>
-                    <span className="text-[10px] text-outline mt-1">{new Date(n.created_at || Date.now()).toLocaleTimeString()}</span>
+                    <span className="text-[10px] text-outline mt-1">
+                      {new Date(n.created_at || Date.now()).toLocaleTimeString()}
+                    </span>
                   </Card>
                 ))}
               </div>
@@ -227,6 +216,9 @@ export default function HomePage() {
           </div>
         </div>
       )}
+
+      {/* Floating Gemma AI Assistant Button */}
+      <FloatingAIButton />
     </div>
   );
 }

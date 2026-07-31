@@ -1,12 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Card } from '@/src/components/ui/Card';
 import { Button } from '@/src/components/ui/Button';
 import { AIVerificationCard } from '@/components/reports/AIVerificationCard';
 
-export default function ReportSubmittedPage() {
+function ReportSubmittedContent() {
   const searchParams = useSearchParams();
   const reportId = searchParams.get('id') || 'rep-94218';
 
@@ -49,5 +49,13 @@ export default function ReportSubmittedPage() {
         </div>
       </Card>
     </div>
+  );
+}
+
+export default function ReportSubmittedPage() {
+  return (
+    <Suspense fallback={<div className="min-h-[75vh] flex items-center justify-center text-on-surface-variant text-sm">Loading report details...</div>}>
+      <ReportSubmittedContent />
+    </Suspense>
   );
 }

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import type { CompleteVerificationPipelineOutput } from '@/src/lib/gemma/types';
+import GemmaApiErrorCard from '@/components/ui/GemmaApiErrorCard';
 import { 
   ShieldCheck, AlertTriangle, CheckCircle2, XCircle, MapPin, 
   FileText, Award, Layers, Sparkles, User, RefreshCw, Cpu, Activity, Send, X, Check
@@ -50,42 +51,13 @@ export default function VerificationDashboard({ data, isLoading, onRefresh }: Pr
 
   return (
     <div className="bg-slate-950 border border-slate-800 rounded-3xl overflow-hidden shadow-2xl text-slate-100 font-sans">
-      {/* OpenRouter API Error Diagnostic Banner */}
+      {/* Clean Gemma API Error Card */}
       {decision.apiError && (
-        <div className="bg-amber-950/90 border-b border-amber-800/90 p-6">
-          <div className="flex items-start space-x-4">
-            <div className="p-3 bg-amber-500/20 text-amber-400 border border-amber-500/40 rounded-2xl">
-              <AlertTriangle className="w-8 h-8" />
-            </div>
-            <div className="flex-1">
-              <div className="flex items-center justify-between">
-                <span className="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-full text-xs font-bold uppercase tracking-wider">
-                  ⚠️ OpenRouter API Diagnostic Error ({decision.apiError.statusCode})
-                </span>
-                <span className="text-xs font-mono text-amber-400">Endpoint: {decision.apiError.endpoint}</span>
-              </div>
-              <h3 className="text-xl font-black text-white mt-2">
-                OpenRouter Request Failed ({decision.apiError.statusCode} {decision.apiError.statusText})
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mt-4 text-xs font-mono">
-                <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
-                  <span className="text-slate-400 block font-sans">Selected Model:</span>
-                  <strong className="text-amber-400 text-sm">{decision.apiError.model}</strong>
-                </div>
-                <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
-                  <span className="text-slate-400 block font-sans">HTTP Method:</span>
-                  <strong className="text-white text-sm">POST</strong>
-                </div>
-                <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
-                  <span className="text-slate-400 block font-sans">Endpoint URL:</span>
-                  <strong className="text-slate-300 text-xs truncate block">{decision.apiError.endpoint}</strong>
-                </div>
-              </div>
-              <div className="mt-3 bg-slate-950/90 p-3 rounded-xl border border-slate-800 font-mono text-xs text-rose-300 whitespace-pre-wrap">
-                {decision.apiError.message}
-              </div>
-            </div>
-          </div>
+        <div className="p-6">
+          <GemmaApiErrorCard
+            errorInput={decision.apiError}
+            onRetry={onRefresh}
+          />
         </div>
       )}
 
@@ -144,7 +116,7 @@ export default function VerificationDashboard({ data, isLoading, onRefresh }: Pr
                 <span className="text-sm font-black text-emerald-400">Karma Awarded: +{karma.finalKarmaAwarded} XP</span>
               </div>
               <h3 className="text-xl font-black text-white mt-2">
-                Evidence verified for "{data.payload.title}"
+                Evidence verified for &quot;{data.payload.title}&quot;
               </h3>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4 text-xs font-mono">
                 <div className="bg-slate-900/90 p-3 rounded-xl border border-slate-800">
@@ -270,7 +242,7 @@ export default function VerificationDashboard({ data, isLoading, onRefresh }: Pr
                 <span>Gemma Executive Reasoning & Summary</span>
               </h4>
               <p className="text-slate-300 text-sm leading-relaxed bg-slate-950/60 p-4 rounded-xl border border-slate-800/80 font-mono">
-                "{summaries.executiveSummary}"
+                &quot;{summaries.executiveSummary}&quot;
               </p>
               <div className="mt-4 pt-4 border-t border-slate-800/80 flex flex-wrap gap-2">
                 <span className="px-3 py-1 bg-slate-800 text-slate-300 rounded-lg text-xs font-medium border border-slate-700">

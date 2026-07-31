@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { AuthGuard } from '@/components/auth/AuthGuard';
 import { useAuth } from '@/hooks/useAuth';
 import { useCitizenDashboard } from '@/hooks/useCitizenDashboard';
+import { M3NavigationDrawer } from '@/components/ui/M3NavigationDrawer';
 
 export default function CitizenLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -92,69 +93,37 @@ export default function CitizenLayout({ children }: { children: React.ReactNode 
         </header>
 
         {/* Main Body with Sidebar */}
-        <div className="flex-1 flex max-w-7xl w-full mx-auto">
-          {/* Desktop Sidebar Navigation */}
-          <aside className="hidden md:flex flex-col w-64 border-r border-outline-variant/30 p-md gap-2 bg-surface">
-            {navItems.map((item) => {
-              const isActive = pathname === item.path;
-              return (
-                <a
-                  key={item.path}
-                  href={item.path}
-                  className={`flex items-center justify-between px-4 py-3 rounded-xl font-semibold text-sm transition-all ${
-                    isActive
-                      ? 'bg-primary-container/15 text-primary border-l-4 border-primary shadow-sm'
-                      : 'text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="material-symbols-outlined text-xl">{item.icon}</span>
-                    <span>{item.label}</span>
-                  </div>
-                  {item.badge !== undefined && item.badge > 0 && (
-                    <span className="bg-error text-on-error px-2 py-0.5 rounded-full text-xs font-bold">
-                      {item.badge}
-                    </span>
-                  )}
-                </a>
-              );
-            })}
+        <div className="flex-1 flex w-full">
+          {/* Desktop Material 3 Navigation Drawer */}
+          <aside className="hidden md:flex flex-col w-64 border-r border-outline-variant/20 p-3 bg-surface-container-low/40 shrink-0 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto">
+            <M3NavigationDrawer navItems={navItems} currentPath={pathname} accentColor="blue" />
           </aside>
 
           {/* Mobile Drawer Menu */}
           {isMobileMenuOpen && (
             <div className="fixed inset-0 z-50 bg-on-surface/40 md:hidden" onClick={() => setIsMobileMenuOpen(false)}>
               <div
-                className="w-4/5 max-w-xs h-full bg-surface p-lg flex flex-col gap-md shadow-2xl"
+                className="w-4/5 max-w-xs h-full bg-surface p-4 flex flex-col gap-md shadow-2xl"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="flex items-center justify-between pb-md border-b border-outline-variant/30">
+                <div className="flex items-center justify-between pb-3 border-b border-outline-variant/30 px-2">
                   <span className="font-bold text-lg text-on-surface">Menu</span>
                   <button onClick={() => setIsMobileMenuOpen(false)} className="p-1 rounded-lg">
                     <span className="material-symbols-outlined text-xl">close</span>
                   </button>
                 </div>
-                <div className="flex flex-col gap-2">
-                  {navItems.map((item) => (
-                    <a
-                      key={item.path}
-                      href={item.path}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm ${
-                        pathname === item.path ? 'bg-primary-container/15 text-primary' : 'text-on-surface-variant'
-                      }`}
-                    >
-                      <span className="material-symbols-outlined text-xl">{item.icon}</span>
-                      <span>{item.label}</span>
-                    </a>
-                  ))}
-                </div>
+                <M3NavigationDrawer
+                  navItems={navItems}
+                  currentPath={pathname}
+                  accentColor="blue"
+                  onItemClick={() => setIsMobileMenuOpen(false)}
+                />
               </div>
             </div>
           )}
 
           {/* Main Content Area */}
-          <main className="flex-1 p-margin-mobile md:p-margin-desktop overflow-x-hidden">{children}</main>
+          <main className="flex-1 p-margin-mobile md:p-margin-desktop overflow-x-hidden max-w-6xl mx-auto w-full">{children}</main>
         </div>
       </div>
     </AuthGuard>

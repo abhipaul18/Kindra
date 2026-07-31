@@ -297,6 +297,12 @@ export type Database = {
           id: string;
           reference_id: string | null;
           user_id: string;
+          mission_id: string | null;
+          mission_name: string | null;
+          previous_karma: number | null;
+          new_karma: number | null;
+          verification_id: string | null;
+          reason: string | null;
         };
         Insert: {
           action_type: string;
@@ -306,6 +312,12 @@ export type Database = {
           id?: string;
           reference_id?: string | null;
           user_id: string;
+          mission_id?: string | null;
+          mission_name?: string | null;
+          previous_karma?: number | null;
+          new_karma?: number | null;
+          verification_id?: string | null;
+          reason?: string | null;
         };
         Update: {
           action_type?: string;
@@ -315,6 +327,12 @@ export type Database = {
           id?: string;
           reference_id?: string | null;
           user_id?: string;
+          mission_id?: string | null;
+          mission_name?: string | null;
+          previous_karma?: number | null;
+          new_karma?: number | null;
+          verification_id?: string | null;
+          reason?: string | null;
         };
         Relationships: [];
       };
@@ -832,6 +850,7 @@ export type Database = {
           duplicate_of_id: string | null;
           duplicate_type: string | null;
           similarity_score: number | null;
+          reward_processed: boolean | null;
           created_at: string;
           verified_at: string | null;
           updated_at: string | null;
@@ -860,6 +879,7 @@ export type Database = {
           duplicate_of_id?: string | null;
           duplicate_type?: string | null;
           similarity_score?: number | null;
+          reward_processed?: boolean | null;
           created_at?: string;
           verified_at?: string | null;
           updated_at?: string | null;
@@ -888,6 +908,7 @@ export type Database = {
           duplicate_of_id?: string | null;
           duplicate_type?: string | null;
           similarity_score?: number | null;
+          reward_processed?: boolean | null;
           created_at?: string;
           verified_at?: string | null;
           updated_at?: string | null;
@@ -1445,6 +1466,17 @@ export type Database = {
         };
         Returns: undefined;
       };
+      process_mission_karma_reward: {
+        Args: {
+          p_user_id: string;
+          p_evidence_id: string;
+          p_mission_id: string;
+          p_mission_name: string;
+          p_karma_amount: number;
+          p_verification_id?: string;
+        };
+        Returns: Json;
+      };
     };
     Enums: {
       campaign_status: "draft" | "active" | "completed" | "paused";
@@ -1547,3 +1579,25 @@ export interface Campaign {
 export type Reward = Database['public']['Tables']['rewards']['Row'];
 export type Redemption = Database['public']['Tables']['redemptions']['Row'];
 export type NotificationItem = Database['public']['Tables']['notifications']['Row'];
+
+// Karma Reward Engine types
+export interface KarmaRewardResponse {
+  success: boolean;
+  karma_awarded: number;
+  previous_karma?: number;
+  new_karma?: number;
+  transaction_id?: string;
+  reason?: string;
+}
+
+export interface MissionRecord {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  base_karma: number;
+  expected_subject: string;
+  is_active: boolean;
+  created_at?: string;
+  updated_at?: string;
+}

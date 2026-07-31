@@ -79,21 +79,23 @@ export async function executeGemmaMultimodalRequest(
     return { content: null };
   }
 
-  // Determine the model — no local capability filtering
-  const primaryModel = modelOverride || process.env.NEXT_PUBLIC_OPENROUTER_MODEL || 'google/gemma-4-26b-a4b-it:free';
-
-  const fallbackModels = [
-    primaryModel,
-    'meta-llama/llama-3.2-11b-vision-instruct:free',
-    'qwen/qwen-2-vl-7b-instruct:free',
-    'google/gemini-2.0-flash-exp:free',
-  ];
-  // Deduplicate while preserving order
-  const models = Array.from(new Set(fallbackModels));
+  // Determine single configured primary model — NO multi-model fallback list
+  const primaryModel = modelOverride || process.env.NEXT_PUBLIC_OPENROUTER_MODEL || process.env.OPENROUTER_MODEL || 'google/gemma-4-26b-a4b-it:free';
+  const models = [primaryModel];
 
   let lastApiError: OpenRouterDiagnosticResult['apiError'] | undefined;
 
   for (const model of models) {
+    const TIMEOUT_MS = 60000; // 60s timeout for vision models
+    const controller = new AbortController();
+    let isTimedOut = false;
+
+    const timeoutId = setTimeout(() => {
+      isTimedOut = true;
+      console.warn(`[OpenRouter] Request timed out after ${TIMEOUT_MS / 1000} seconds. Aborting request.`);
+      controller.abort();
+    }, TIMEOUT_MS);
+
     try {
       const normalizedImage = normalizeImageToDataUrl(imageUrl);
 
@@ -127,27 +129,29 @@ export async function executeGemmaMultimodalRequest(
         messages,
         temperature: 0.1,
         max_tokens: 600,
+        provider: {
+          allow_fallbacks: true,
+        },
       };
 
       // ── Debug: Full Request Diagnostics ──────────────────────────
       console.log('====================================================');
       console.log('[OpenRouter Request Diagnostics]');
-      console.log('  Selected Model  :', model);
-      console.log('  Request URL     :', endpointUrl);
-      console.log('  HTTP Method     : POST');
-      console.log('  Image Included  :', Boolean(normalizedImage));
-      console.log('  Headers (redacted):', {
+      console.log('  Selected Model          :', model);
+      console.log('  Request URL             :', endpointUrl);
+      console.log('  HTTP Method             : POST');
+      console.log('  Timeout Configured      :', `${TIMEOUT_MS / 1000}s`);
+      console.log('  Fallback Models Chain   : Disabled (Single Model Mode)');
+      console.log('  Provider Allow Fallback :', true);
+      console.log('  Image Included          :', Boolean(normalizedImage));
+      console.log('  Headers (redacted)      :', {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer [REDACTED]',
         'HTTP-Referer': 'https://kindra.app',
         'X-Title': 'KINDRA Gemma Verification Engine',
       });
-      console.log('  Request Body    :', JSON.stringify(requestBody, null, 2));
-      console.log('  Request Sent    : true');
+      console.log('  Request Body            :', JSON.stringify(requestBody, null, 2));
       console.log('====================================================');
-
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 15000);
 
       const response = await fetch(endpointUrl, {
         method: 'POST',
@@ -177,8 +181,13 @@ export async function executeGemmaMultimodalRequest(
           model,
           message: rawResponseText,
         };
-        // Try next fallback model on 400/404/429/5xx
-        continue;
+
+        console.error(`[OpenRouter API Error] Status ${response.status} ${response.statusText} for model "${model}".`);
+        if (response.status === 404) {
+          console.error(`[OpenRouter 404] No endpoints found for model "${model}". Stopping execution immediately.`);
+        }
+        // Do NOT retry or loop to fallback models
+        break;
       }
 
       let data: any;
@@ -186,11 +195,14 @@ export async function executeGemmaMultimodalRequest(
         data = JSON.parse(rawResponseText);
       } catch {
         console.error('[OpenRouter] Could not parse JSON response:', rawResponseText);
-        continue;
+        break;
       }
 
       const rawContent = data.choices?.[0]?.message?.content?.trim();
-      if (!rawContent) continue;
+      if (!rawContent) {
+        console.error('[OpenRouter] Model returned empty content response.');
+        break;
+      }
 
       const cleanedContent = rawContent
         .replace(/```json/gi, '')
@@ -202,10 +214,16 @@ export async function executeGemmaMultimodalRequest(
         modelUsed: model,
       };
     } catch (err: any) {
-      console.warn(`[Gemma AI Client] Exception invoking model ${model}:`, err);
+      clearTimeout(timeoutId);
+      if (err.name === 'AbortError') {
+        console.error(`[OpenRouter] Request aborted. Reason: ${isTimedOut ? `Timed out after ${TIMEOUT_MS / 1000}s` : 'Cancelled by caller/page unmount'}`);
+      } else {
+        console.error(`[OpenRouter] Unexpected Error for model ${model}:`, err);
+      }
+
       lastApiError = {
         statusCode: 500,
-        statusText: 'Client Fetch Exception',
+        statusText: err.name === 'AbortError' ? 'Request Timeout (60s)' : 'Client Fetch Exception',
         endpoint: endpointUrl,
         model,
         message: String(err?.message || err),
@@ -213,7 +231,7 @@ export async function executeGemmaMultimodalRequest(
     }
   }
 
-  // All models exhausted — return the last error for the UI to display
+  // Return the raw error for the UI to display cleanly
   return {
     content: null,
     apiError: lastApiError,

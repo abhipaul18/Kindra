@@ -33,7 +33,7 @@ export default function CitizenProfilePage() {
     <div className="max-w-4xl mx-auto flex flex-col gap-lg pb-xl p-margin-mobile">
       {/* User Header Profile Card */}
       <Card className="p-lg border-primary-container/30 bg-surface-container-lowest shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-md">
-        <div className="w-20 h-20 rounded-full bg-primary-container text-primary font-black text-2xl flex items-center justify-center border-2 border-primary shadow-inner">
+        <div className="w-20 h-20 rounded-full bg-primary text-on-primary font-black text-2xl flex items-center justify-center shadow-md shrink-0">
           {user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || 'C'}
         </div>
 

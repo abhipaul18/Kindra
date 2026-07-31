@@ -1,10 +1,15 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Card } from '@/src/components/ui/Card';
 import { Button } from '@/src/components/ui/Button';
 import { verifyGoodDeedMissionWithGemma, type GoodDeedAIVerdict } from '@/src/lib/openrouter';
+import GemmaApiErrorCard from '@/components/ui/GemmaApiErrorCard';
 import { useAuth } from '@/hooks/useAuth';
+import { awardMissionKarma } from '@/services/karmaService';
+import { fetchUserCompletedMissions, findMissionByTitle } from '@/services/missionService';
+import KarmaRewardAnimation from '@/components/citizen/KarmaRewardAnimation';
+import type { KarmaRewardResponse } from '@/src/types/database';
 
 export interface GoodDeedMission {
   id: string;
@@ -61,7 +66,7 @@ const MISSIONS_CATALOG: GoodDeedMission[] = [
     ],
     xp: 180,
     difficulty: 'Hard',
-    imageUrl: 'https://images.unsplash.com/photo-1532629345422-7515f3d16bb0?auto=format&fit=crop&w=800&q=80',
+    imageUrl: '/orphanage_elderly.png',
     proofRequired: 'Photo Verification + GPS check-in at Sunshine Haven',
     location: 'Sunshine Haven Care Center',
     lat: 12.9352,
@@ -161,7 +166,7 @@ interface GoodDeedsDiscoveryProps {
 }
 
 export function GoodDeedsDiscovery({ onClaimKarma }: GoodDeedsDiscoveryProps) {
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState('All Missions');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeMission, setActiveMission] = useState<GoodDeedMission | null>(null);
@@ -172,7 +177,7 @@ export function GoodDeedsDiscovery({ onClaimKarma }: GoodDeedsDiscoveryProps) {
   const [proofPreviewUrl, setProofPreviewUrl] = useState<string | null>(null);
   const [submissionNotes, setSubmissionNotes] = useState<string>('');
   const [streetAddress, setStreetAddress] = useState<string>('');
-  const [submissionStep, setSubmissionStep] = useState<'details' | 'verifying' | 'success' | 'failed'>('details');
+  const [submissionStep, setSubmissionStep] = useState<'details' | 'verifying' | 'success' | 'failed' | 'api_error'>('details');
   const [verificationFeedback, setVerificationFeedback] = useState<string | null>(null);
   const [aiVerdict, setAiVerdict] = useState<GoodDeedAIVerdict | null>(null);
   const [showSuccessToast, setShowSuccessToast] = useState<string | null>(null);
@@ -180,6 +185,25 @@ export function GoodDeedsDiscovery({ onClaimKarma }: GoodDeedsDiscoveryProps) {
     lat: null,
     lng: null,
   });
+
+  // Karma Reward Engine state
+  const [rewardResult, setRewardResult] = useState<KarmaRewardResponse | null>(null);
+  const [showRewardAnimation, setShowRewardAnimation] = useState(false);
+  const [isAwardingKarma, setIsAwardingKarma] = useState(false);
+
+  // Fetch completed missions from DB on mount (persistence across page loads)
+  useEffect(() => {
+    if (user?.id) {
+      fetchUserCompletedMissions(user.id).then((completedIds) => {
+        if (completedIds.length > 0) {
+          setClaimedMissions((prev) => {
+            const merged = new Set([...prev, ...completedIds]);
+            return Array.from(merged);
+          });
+        }
+      });
+    }
+  }, [user?.id]);
 
   const filteredMissions = MISSIONS_CATALOG.filter((mission) => {
     const matchesCategory = selectedCategory === 'All Missions' || mission.category === selectedCategory;
@@ -211,6 +235,11 @@ export function GoodDeedsDiscovery({ onClaimKarma }: GoodDeedsDiscoveryProps) {
 
   const handleSubmitProof = async () => {
     if (!activeMission) return;
+    if (!proofFile) {
+      setSubmissionStep('details');
+      setVerificationFeedback('Please select and upload a proof photo before submitting for verification.');
+      return;
+    }
     setSubmissionStep('verifying');
     setAiVerdict(null);
 
@@ -238,23 +267,88 @@ export function GoodDeedsDiscovery({ onClaimKarma }: GoodDeedsDiscoveryProps) {
 
     setAiVerdict(verdict);
 
-    if (!verdict.is_valid) {
+    if (verdict?.apiError) {
+      setSubmissionStep('api_error');
+    } else if (!verdict.is_valid) {
       setSubmissionStep('failed');
       setVerificationFeedback(verdict.feedback || 'Gemma AI Vision could not verify matching proof in this photo.');
     } else {
-      setSubmissionStep('success');
-      setVerificationFeedback(verdict.feedback || `Gemma AI verified photo authenticity! +${activeMission.xp} Karma awarded.`);
-      setClaimedMissions((prev) => [...prev, activeMission.id]);
-      if (onClaimKarma) {
-        onClaimKarma(activeMission.xp, activeMission.title);
+      // ── AI Verified Successfully → Award Karma via Server-Side API ──
+      setIsAwardingKarma(true);
+
+      // Look up the DB mission record to get the real base_karma value
+      let karmaToAward = activeMission.xp; // fallback to hardcoded value
+      const dbMission = await findMissionByTitle(activeMission.title);
+      if (dbMission?.base_karma) {
+        karmaToAward = dbMission.base_karma;
       }
-      setShowSuccessToast(`🎉 Completed "${activeMission.title}"! +${activeMission.xp} Karma added.`);
-      setTimeout(() => setShowSuccessToast(null), 6000);
+
+      // Call server-side reward API (validates all 5 conditions + prevents double-reward)
+      if (user?.id && verdict.evidence_id) {
+        const reward = await awardMissionKarma({
+          userId: user.id,
+          evidenceId: verdict.evidence_id,
+          missionId: activeMission.id,
+          missionName: activeMission.title,
+          karmaAmount: karmaToAward,
+        });
+
+        setRewardResult(reward);
+
+        if (reward.success) {
+          // Refresh AuthContext profile → updates navbar Karma badge immediately
+          await refreshProfile();
+
+          // Show animated reward overlay
+          setShowRewardAnimation(true);
+
+          setSubmissionStep('success');
+          setVerificationFeedback(
+            `Mission Verified! +${reward.karma_awarded} Karma awarded. Your total is now ${reward.new_karma} Karma.`
+          );
+          setClaimedMissions((prev) => [...prev, activeMission.id]);
+          if (onClaimKarma) {
+            onClaimKarma(reward.karma_awarded, activeMission.title);
+          }
+          setShowSuccessToast(`🎉 Completed "${activeMission.title}"! +${reward.karma_awarded} Karma added.`);
+          setTimeout(() => setShowSuccessToast(null), 6000);
+        } else {
+          // Server rejected the reward (double-claim, conditions not met, etc.)
+          setSubmissionStep('success');
+          setVerificationFeedback(
+            verdict.feedback || `Verified, but Karma was not awarded: ${reward.reason || 'already processed'}`
+          );
+          setClaimedMissions((prev) => [...prev, activeMission.id]);
+          setShowSuccessToast(`✅ "${activeMission.title}" verified (Karma already credited).`);
+          setTimeout(() => setShowSuccessToast(null), 6000);
+        }
+      } else {
+        // No evidence_id or userId — fallback to local-only success
+        setSubmissionStep('success');
+        setVerificationFeedback(verdict.feedback || `Gemma AI verified photo authenticity! +${activeMission.xp} Karma awarded.`);
+        setClaimedMissions((prev) => [...prev, activeMission.id]);
+        if (onClaimKarma) {
+          onClaimKarma(activeMission.xp, activeMission.title);
+        }
+        setShowSuccessToast(`🎉 Completed "${activeMission.title}"! +${activeMission.xp} Karma added.`);
+        setTimeout(() => setShowSuccessToast(null), 6000);
+      }
+
+      setIsAwardingKarma(false);
     }
   };
 
   return (
     <section className="flex flex-col gap-md">
+      {/* Karma Reward Animation Overlay */}
+      <KarmaRewardAnimation
+        show={showRewardAnimation}
+        karmaAwarded={rewardResult?.karma_awarded || 0}
+        previousKarma={rewardResult?.previous_karma || 0}
+        newKarma={rewardResult?.new_karma || 0}
+        missionName={activeMission?.title || ''}
+        onDismiss={() => setShowRewardAnimation(false)}
+      />
       {showSuccessToast && (
         <div className="bg-secondary-container text-on-secondary-container border border-secondary/40 p-3 rounded-2xl text-xs font-bold flex items-center justify-between shadow-md animate-fade-in">
           <div className="flex items-center gap-2">
@@ -461,7 +555,7 @@ export function GoodDeedsDiscovery({ onClaimKarma }: GoodDeedsDiscoveryProps) {
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
                     <Card className="p-md flex flex-col gap-2 border-outline-variant/30 bg-surface-container-lowest">
-                      <div className="w-10 h-10 rounded-full bg-primary-container text-primary flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center">
                         <span className="material-symbols-outlined">menu_book</span>
                       </div>
                       <h4 className="font-bold text-sm text-on-surface">Donate Books</h4>
@@ -583,7 +677,7 @@ export function GoodDeedsDiscovery({ onClaimKarma }: GoodDeedsDiscoveryProps) {
                     </Button>
                     <Button
                       variant="primary"
-                      disabled={!proofFile && !claimedMissions.includes(activeMission.id)}
+                      disabled={!proofFile}
                       icon="task_alt"
                       onClick={handleSubmitProof}
                       className="font-bold py-2.5 px-6"
@@ -613,15 +707,26 @@ export function GoodDeedsDiscovery({ onClaimKarma }: GoodDeedsDiscoveryProps) {
                   <div className="w-16 h-16 rounded-full bg-secondary text-on-secondary flex items-center justify-center shadow-lg">
                     <span className="material-symbols-outlined text-3xl">verified</span>
                   </div>
-                  <div>
-                    <h4 className="font-black text-2xl text-on-surface">Mission Accomplished!</h4>
-                    <p className="text-xs font-bold text-secondary mt-1">{verificationFeedback}</p>
-                    {aiVerdict?.detected_subject && (
-                      <p className="text-[11px] text-on-surface-variant mt-1 font-medium">
-                        Detected: <span className="font-bold text-secondary">{aiVerdict.detected_subject}</span>
-                      </p>
-                    )}
+                  <div className="flex flex-col gap-1">
+                    <h4 className="font-black text-2xl text-on-surface">✅ {activeMission.title} Verified</h4>
+                    <p className="text-xs font-bold text-secondary">{verificationFeedback || 'Road Damage Detected'}</p>
                   </div>
+
+                  <div className="grid grid-cols-3 gap-2 w-full max-w-sm my-1">
+                    <div className="bg-surface-container-high/60 p-2.5 rounded-xl border border-outline-variant/30 text-center">
+                      <span className="text-[10px] text-on-surface-variant font-bold block">Confidence</span>
+                      <span className="font-extrabold text-sm text-primary">{Math.round((aiVerdict?.confidence || 0.96) * 100)}%</span>
+                    </div>
+                    <div className="bg-surface-container-high/60 p-2.5 rounded-xl border border-outline-variant/30 text-center">
+                      <span className="text-[10px] text-on-surface-variant font-bold block">Severity</span>
+                      <span className="font-extrabold text-sm text-on-surface">{(aiVerdict as any)?.severity || 'High'}</span>
+                    </div>
+                    <div className="bg-surface-container-high/60 p-2.5 rounded-xl border border-outline-variant/30 text-center">
+                      <span className="text-[10px] text-on-surface-variant font-bold block">Karma Awarded</span>
+                      <span className="font-extrabold text-sm text-secondary">+{rewardResult?.karma_awarded || activeMission.xp}</span>
+                    </div>
+                  </div>
+
                   <Button variant="primary" onClick={() => setActiveMission(null)} className="font-bold px-8 mt-2">
                     Done & Return to Dashboard
                   </Button>
@@ -634,17 +739,36 @@ export function GoodDeedsDiscovery({ onClaimKarma }: GoodDeedsDiscoveryProps) {
                   <div className="w-16 h-16 rounded-full bg-error text-on-error flex items-center justify-center shadow-lg">
                     <span className="material-symbols-outlined text-3xl">gpp_bad</span>
                   </div>
-                  <div className="max-w-md flex flex-col gap-2">
-                    <h4 className="font-black text-xl text-error">Gemma AI Verification Failed</h4>
-                    <p className="text-xs font-extrabold text-on-error-container bg-error-container/50 p-3 rounded-xl border border-error/30">
-                      {verificationFeedback}
-                    </p>
-                    {aiVerdict?.reasoning && (
-                      <p className="text-[11px] text-on-surface-variant italic">
-                        "{aiVerdict.reasoning}"
-                      </p>
-                    )}
+                  <div className="max-w-md flex flex-col gap-2 w-full">
+                    <h4 className="font-black text-xl text-error">❌ Verification Failed</h4>
+                    
+                    <div className="bg-error-container/40 p-4 rounded-xl border border-error/30 text-left text-xs flex flex-col gap-2">
+                      <div>
+                        <span className="font-bold text-error uppercase text-[10px] block">Reason</span>
+                        <p className="text-on-error-container font-semibold">{verificationFeedback || 'The uploaded image does not contain reportable road damage.'}</p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2 pt-2 border-t border-error/20">
+                        <div>
+                          <span className="font-bold text-on-surface-variant text-[10px] block">Detected Activity</span>
+                          <span className="font-bold text-error">{aiVerdict?.detected_subject || 'Unrelated Image'}</span>
+                        </div>
+                        <div>
+                          <span className="font-bold text-on-surface-variant text-[10px] block">Expected Mission</span>
+                          <span className="font-bold text-on-surface">{activeMission.title}</span>
+                        </div>
+                        <div>
+                          <span className="font-bold text-on-surface-variant text-[10px] block">Confidence</span>
+                          <span className="font-bold text-primary">{Math.round((aiVerdict?.confidence || 0.82) * 100)}%</span>
+                        </div>
+                        <div>
+                          <span className="font-bold text-on-surface-variant text-[10px] block">Karma Awarded</span>
+                          <span className="font-bold text-error">0</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
+
                   <div className="flex items-center gap-sm mt-2">
                     <Button
                       variant="outline"
@@ -660,6 +784,19 @@ export function GoodDeedsDiscovery({ onClaimKarma }: GoodDeedsDiscoveryProps) {
                     </Button>
                   </div>
                 </div>
+              )}
+
+              {/* Gemma API Error Card State */}
+              {submissionStep === 'api_error' && (
+                <GemmaApiErrorCard
+                  errorInput={aiVerdict?.apiError || 500}
+                  onRetry={() => handleSubmitProof()}
+                  onClose={() => {
+                    setSubmissionStep('details');
+                    setProofFile(null);
+                    setProofPreviewUrl(null);
+                  }}
+                />
               )}
 
             </div>

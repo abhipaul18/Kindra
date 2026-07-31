@@ -6,8 +6,15 @@ export async function GET(request: Request) {
   const code = requestUrl.searchParams.get('code');
 
   if (code) {
-    await supabase.auth.exchangeCodeForSession(code);
+    try {
+      console.log('[Auth Debug] OAuth callback exchanging authorization code for session...');
+      await supabase.auth.exchangeCodeForSession(code);
+      console.log('[Auth Debug] OAuth session exchange completed successfully.');
+    } catch (err) {
+      console.error('[Auth Debug] OAuth session exchange error (redirecting anyway):', err);
+    }
   }
 
+  console.log('[Auth Debug] OAuth callback redirecting to /');
   return NextResponse.redirect(new URL('/', requestUrl.origin));
 }

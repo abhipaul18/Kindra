@@ -42,21 +42,54 @@ export async function verifyCivicReport(reportId: string): Promise<{
     locationAddress: report.location_name,
   });
 
-  const isDuplicate = pipelineOutput.fraud.isDuplicate;
-  const finalKarma = pipelineOutput.karma.finalKarmaAwarded;
+  // Handle early duplicate termination response
+  if ((pipelineOutput as any).status === 'duplicate') {
+    await supabase
+      .from('reports')
+      .update({
+        status: 'rejected',
+        karma_awarded: 0,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', reportId);
+
+    return {
+      aiResult: {
+        is_valid: false,
+        category: 'Duplicate Evidence',
+        confidence: 1.0,
+        severity: 'Low',
+        urgency: 'Low',
+        department: 'Civic Support',
+        summary: 'Exact duplicate image already submitted.',
+        reasoning: 'Submission terminated immediately due to duplicate detection (0 Karma awarded).',
+        environment_score: 0,
+        public_safety_score: 0,
+        karma: 0,
+      },
+      isDuplicate: true,
+      duplicateCount: 1,
+      finalKarma: 0,
+      pipelineOutput,
+    };
+  }
+
+  const fullOutput = pipelineOutput as any;
+  const isDuplicate = fullOutput.fraud?.isDuplicate || false;
+  const finalKarma = fullOutput.karma?.finalKarmaAwarded || 0;
 
   let mappedPriority: ReportPriority = 'medium';
-  if (pipelineOutput.impact.urgencyRating > 80) mappedPriority = 'urgent';
-  else if (pipelineOutput.impact.urgencyRating > 60) mappedPriority = 'high';
-  else if (pipelineOutput.impact.urgencyRating < 30) mappedPriority = 'low';
+  if (fullOutput.impact?.urgencyRating > 80) mappedPriority = 'urgent';
+  else if (fullOutput.impact?.urgencyRating > 60) mappedPriority = 'high';
+  else if (fullOutput.impact?.urgencyRating < 30) mappedPriority = 'low';
 
   // 3. Query Department ID for matching department name
   let assignedDepartmentId = report.assigned_department_id;
-  if (pipelineOutput.routing.destinationDepartment) {
+  if (fullOutput.routing?.destinationDepartment) {
     const { data: dept } = await supabase
       .from('departments')
       .select('id')
-      .ilike('name', `%${pipelineOutput.routing.routingTargetEntity}%`)
+      .ilike('name', `%${fullOutput.routing.routingTargetEntity}%`)
       .maybeSingle();
 
     if (dept) {
@@ -65,8 +98,8 @@ export async function verifyCivicReport(reportId: string): Promise<{
   }
 
   // 4. Update Reports PostgreSQL Table with verified state
-  const isApproved = pipelineOutput.decision.status === 'auto_verified' || pipelineOutput.decision.status === 'verified_low_confidence';
-  const newStatus = isApproved ? 'approved' : pipelineOutput.decision.requiresManualReview ? 'ai_verifying' : 'rejected';
+  const isApproved = fullOutput.decision?.status === 'auto_verified' || fullOutput.decision?.status === 'verified_low_confidence';
+  const newStatus = isApproved ? 'approved' : fullOutput.decision?.requiresManualReview ? 'ai_verifying' : 'rejected';
 
   await supabase
     .from('reports')
@@ -82,28 +115,26 @@ export async function verifyCivicReport(reportId: string): Promise<{
   // 5. Insert into report_ai_results table for backwards compatibility
   await supabase.from('report_ai_results').upsert({
     report_id: reportId,
-    suggested_category: pipelineOutput.classification.category,
-    confidence_score: pipelineOutput.decision.confidenceScore,
+    suggested_category: fullOutput.classification?.category,
+    confidence_score: fullOutput.decision?.confidenceScore,
     severity_rating: mappedPriority.toUpperCase(),
-    ai_summary: pipelineOutput.summaries.executiveSummary,
+    ai_summary: fullOutput.summaries?.executiveSummary,
     is_duplicate: isDuplicate,
-    raw_response: JSON.parse(JSON.stringify(pipelineOutput)),
+    raw_response: JSON.parse(JSON.stringify(fullOutput)),
   });
 
   const aiResult: AIVerificationResult = {
     is_valid: isApproved,
-    category: pipelineOutput.classification.category,
-    confidence: pipelineOutput.decision.confidenceScore,
+    category: fullOutput.classification?.category || 'Civic Contribution',
+    confidence: fullOutput.decision?.confidenceScore || 0.85,
     severity: mappedPriority === 'urgent' ? 'Critical' : mappedPriority === 'high' ? 'High' : 'Medium',
     urgency: mappedPriority === 'urgent' ? 'Urgent' : mappedPriority === 'high' ? 'High' : 'Medium',
-    department: pipelineOutput.routing.destinationDepartment,
-    summary: pipelineOutput.summaries.executiveSummary,
-    reasoning: pipelineOutput.decision.decisionReasoning,
-    environment_score: pipelineOutput.impact.environmentalScore,
-    public_safety_score: pipelineOutput.impact.communityScore,
-    karma: finalKarma,
-    model_used: 'gemma-4-26b-a4b-it:free',
-    prompt_version: 'v2.4-enterprise',
+    department: fullOutput.routing?.destinationDepartment || 'Civic Support',
+    summary: fullOutput.summaries?.executiveSummary || 'Verified Civic Report',
+    reasoning: fullOutput.decision?.decisionReasoning || 'Passed verification',
+    environment_score: fullOutput.impact?.environmentalScore || 50,
+    public_safety_score: fullOutput.impact?.communityScore || 50,
+    karma: isApproved ? finalKarma : 0,
   };
 
   return {
@@ -111,6 +142,6 @@ export async function verifyCivicReport(reportId: string): Promise<{
     isDuplicate,
     duplicateCount: isDuplicate ? 1 : 0,
     finalKarma,
-    pipelineOutput,
+    pipelineOutput: fullOutput,
   };
 }
